@@ -32,30 +32,29 @@ public struct coord {
 
 public class GameManagerScript : MonoBehaviour {
 
-    [SerializeField]
-	List<MoveableScript> moveables;
-    [SerializeField]
-    PlayerScript player;
-
-    [SerializeField]
-    List<coord> goalCoords;
+	List<MoveableScript> moveables = new List<MoveableScript>();
+    public PlayerScript player;
+    public MimicScript mimic;
+    public MirrorScript mirror;
+    public GameObject wall;
+    public GameObject goal; 
+    
+    List<coord> goalCoords = new List<coord>();
 
     public Vector2 mapOrigin;
 
     [SerializeField]
     bool inputReady = true;
     Direction? inputDir;
-
-    [SerializeField]
-    int rows = 8;
-    [SerializeField]
-    int cols = 7;
-    [SerializeField]
+    
 	Stack<int[,]> boardStates; //TODO: refactor so that this is a stack of boardcode arrays
 
-    int[,] boardState; //Row, Column
+    [SerializeField]
+    string levelName; 
+    Level boardState; //Row, Column
     // East col+, North row+
 
+    int[] moveableTypes = new int[] {2,3,4}; 
     /* 0 = empty
      * 1 = wall
      * 2 = player
@@ -66,10 +65,39 @@ public class GameManagerScript : MonoBehaviour {
 
     // Use this for initialization
     void Start() {
-		//This is where it should be loaded using Melody's I/O
-        boardState = new int[8, 7] { { 0, 0, 0, 1, 0, 0, 0 }, { 0, 0, 1, 3, 1, 0, 0 }, { 0, 1, 0, 0, 0, 1, 0 }, { 0, 1, 0, 2, 0, 1, 0 }, { 1, 0, 0, 0, 0, 0, 1 }, { 1, 0, 10, 4, 10, 0, 1 }, { 1, 0, 0, 1, 0, 0, 1 }, { 0, 1, 1, 0, 1, 1, 0 }};
-		boardStates = new Stack<int[,]> ();
-		boardStates.Push (boardState);
+        //load level using Melody's I/O
+        boardState = IOScript.ParseLevel(levelName); 
+        boardStates = new Stack<int[,]> ();
+		boardStates.Push (boardState.board);
+
+        //instantiate items based on board
+        for(int i = 0; i < boardState.rows; i++) {
+            for(int j = 0; j < boardState.cols; j++) {
+                if(boardState.board[i, j] == 2) {
+                    player = GameObject.Instantiate(player);
+                    player.SetCoords(j, i); 
+                    player.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0);
+                    moveables.Add(player); 
+                } else if (boardState.board[i,j] == 3) {
+                    MimicScript m = GameObject.Instantiate(mimic);
+                    m.SetCoords(j, i);
+                    m.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0);
+                    moveables.Add(m); 
+                } else if (boardState.board[i,j] == 4) {
+                    MirrorScript m = GameObject.Instantiate(mirror);
+                    m.SetCoords(j, i);
+                    m.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0);
+                    moveables.Add(m);
+                } else if (boardState.board[i,j] == 1) {
+                    GameObject w = GameObject.Instantiate(wall);
+                    w.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0); 
+                } else if (boardState.board[i,j] == 10) {
+                    GameObject c = GameObject.Instantiate(goal);
+                    c.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0); 
+                    goalCoords.Add(new coord(i, j)); 
+                }
+            }
+        }
 	}
 
 	// Update is called once per frame
@@ -111,11 +139,11 @@ public class GameManagerScript : MonoBehaviour {
 
     bool checkWin() {
         foreach (coord c in goalCoords) {
-			if (boardState[c.row, c.col] <= 5 ) { //FIVE IS CURRENT COMBO MAX
+			if (boardState.board[c.row, c.col] <= 5 ) { //FIVE IS CURRENT COMBO MAX
                 return false;
             }
         }
-        Debug.Log("VICTORY!");
+        //Debug.Log("VICTORY!");
         return true;
     }
 

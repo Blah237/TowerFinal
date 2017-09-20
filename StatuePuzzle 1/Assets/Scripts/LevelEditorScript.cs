@@ -86,7 +86,7 @@ public class LevelEditorScript : MonoBehaviour {
     // Update is called once per frame
     void Update () {
         // escape or right click resets delegate
-        if (Input.GetKeyDown(KeyCode.Escape) || Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Alpha0) 
+        if (Input.GetKeyDown(KeyCode.Escape) || Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Alpha0)
             || Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Keypad0) || Input.GetKeyDown(KeyCode.Keypad1)) {
             clickTile = this.toggleWall;
             // p enters player placement mode
@@ -98,6 +98,8 @@ public class LevelEditorScript : MonoBehaviour {
             clickTile = this.place3;
         } else if (Input.GetKeyDown(KeyCode.Alpha4) || Input.GetKeyDown(KeyCode.Alpha4)) {
             clickTile = this.place4;
+        } else if (Input.GetKeyDown(KeyCode.Alpha5) || Input.GetKeyDown(KeyCode.Alpha5)) {
+            clickTile = this.place10; 
             // if left click this frame, handle click0
         } else if (Input.GetMouseButtonDown(0)) {
             click0(Input.mousePosition.x, Input.mousePosition.y);
@@ -171,10 +173,23 @@ public class LevelEditorScript : MonoBehaviour {
         }
     }
 
+    //place goal tile
+    void placeGoal(int row, int col) {
+        if(level.board[row, col] == 10) {
+            level.board[row, col] = 0;
+            displayGrid[row, col].sprite = tileSprites[0]; 
+        } else {
+            level.board[row, col] = 10;
+            displayGrid[row, col].color = Color.white;
+            displayGrid[row, col].sprite = tileSprites[10];
+        }
+    }
+
     //use placeStatue with a defined value of stat
     //void place2(int row, int col) { placeStatue(2, row, col); }
     void place3(int row, int col) { placeStatue(3, row, col); }
     void place4(int row, int col) { placeStatue(4, row, col); }
+    void place10(int row, int col) { placeGoal(row, col); }
     #endregion
 
     // register a click on the right sidebar
