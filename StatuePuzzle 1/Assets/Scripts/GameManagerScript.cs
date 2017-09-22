@@ -212,6 +212,20 @@ public class GameManagerScript : MonoBehaviour {
 
         }  
 
+		// Check for collisions moving into pieces that couldn't move
+		foreach (MoveableScript m in moveables) {
+			foreach (MoveableScript other in moveables) {
+				if (other == m || other == null) {
+					continue;
+				} else if (moveDirections[other] == Direction.NONE
+					&& other.GetCoords().row == goalCoords[m].row 
+					&& other.GetCoords().col == goalCoords[m].col) {
+					moveDirections [m] = Direction.NONE;
+				}
+			}
+		}
+
+
 		if (moveDirections [player] != Direction.NONE) {
 			foreach (MoveableScript moveable in moveDirections.Keys) {
 				//Debug.Log (moveable.name + " " + moveDirections[moveable].ToString() + " after " + moveable.GetAttemptedMoveDirection(dir, boardState));
