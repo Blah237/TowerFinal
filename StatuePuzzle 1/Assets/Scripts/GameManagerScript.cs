@@ -37,7 +37,13 @@ public class GameManagerScript : MonoBehaviour {
     public MimicScript mimic;
     public MirrorScript mirror;
     public GameObject wall;
-    public GameObject goal; 
+    public GameObject goal;
+	
+	public WinScript winscript;
+	public DeathScript deathscript;
+
+	public bool win;
+	public bool dead;
     
     List<coord> goalCoords = new List<coord>();
 
@@ -140,13 +146,19 @@ public class GameManagerScript : MonoBehaviour {
 
     bool checkWin() {
         foreach (coord c in goalCoords) {
-			if (boardState.board[c.row, c.col] <= 5 ) { //FIVE IS CURRENT COMBO MAX
+	        Debug.Log(boardState.board[c.row,c.col]);
+			if (boardState.board[c.row, c.col] !=  13 || boardState.board[c.row, c.col] != 14) { //FIVE IS CURRENT COMBO MAX
                 return false;
             }
         }
         //Debug.Log("VICTORY!");
+	    winscript.playerWin = true;
         return true;
     }
+
+	void setLevelName(string level) {
+		levelName = level;
+	}
 
     void move(Direction dir) {
 
@@ -173,6 +185,8 @@ public class GameManagerScript : MonoBehaviour {
 					Debug.Log ("Collision at " + goal.row + " " + goal.col + ": " + m.name + " " + other.name);
 					moveDirections[other] = Direction.NONE;
 					moveDirections[m] = Direction.NONE;
+					dead = true;
+					deathscript.playerDeath = true;
 				}
 			}
 
