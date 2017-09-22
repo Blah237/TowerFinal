@@ -10,7 +10,7 @@ public class WinScript : MonoBehaviour
 	public float restartDelay = 5f;
 
 	private Animator anim;
-	private float restartTimer;
+	//private float restartTimer;
 	
 	// Use this for initialization
 	void Start ()
@@ -23,7 +23,7 @@ public class WinScript : MonoBehaviour
 	{
 		if (playerWin) {
 			anim.SetTrigger("Win");
-			restartTimer += Time.deltaTime;
+			//restartTimer += Time.deltaTime;
 
 			//if (restartTimer >= restartDelay) {
 				//SceneManager.LoadScene(0);

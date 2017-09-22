@@ -146,7 +146,6 @@ public class GameManagerScript : MonoBehaviour {
 
     bool checkWin() {
         foreach (coord c in goalCoords) {
-	        Debug.Log(boardState.board[c.row,c.col]);
 			if (boardState.board[c.row, c.col] !=  13 || boardState.board[c.row, c.col] != 14) { //FIVE IS CURRENT COMBO MAX
                 return false;
             }
