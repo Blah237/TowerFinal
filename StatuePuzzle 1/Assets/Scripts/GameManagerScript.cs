@@ -82,10 +82,15 @@ public class GameManagerScript : MonoBehaviour {
                 if (boardState.board[i, j] == 1) {
                     GameObject w = GameObject.Instantiate(wall);
                     w.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0);
+                } else if (boardState.board[i, j] >= 10) {
+                    GameObject c = GameObject.Instantiate(goal);
+                    c.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0);
+                    goalCoords.Add(new coord(i, j));
                 } else {
                     GameObject g = GameObject.Instantiate(ground);
                     g.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0);
                 }
+
                 if (boardState.board[i, j] == 2 || boardState.board[i,j] == 12) {
                     player = GameObject.Instantiate(player);
                     player.SetCoords(j, i); 
@@ -102,11 +107,6 @@ public class GameManagerScript : MonoBehaviour {
                     m.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0);
                     moveables.Add(m);
                 } 
-                if (boardState.board[i,j] >= 10) {
-                    GameObject c = GameObject.Instantiate(goal);
-                    c.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0); 
-                    goalCoords.Add(new coord(i, j)); 
-                }
             }
         }
 	}
