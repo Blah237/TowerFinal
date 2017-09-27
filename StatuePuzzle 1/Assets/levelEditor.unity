@@ -457,8 +457,8 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 9519a70874306d546b2344d5f6697bd3, type: 3}
   - {fileID: 21300000, guid: 3bbd7957474e7b440a46d4dd95935267, type: 3}
   - {fileID: 21300000, guid: eee58fb0bd1e51a419b35c91bb576cfc, type: 3}
-  loadLevel: 0
-  levelName: level3
+  loadLevel: 1
+  levelName: Benlvl1
 --- !u!4 &1432372767
 Transform:
   m_ObjectHideFlags: 0

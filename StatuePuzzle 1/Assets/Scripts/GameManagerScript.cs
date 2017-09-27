@@ -37,7 +37,9 @@ public class GameManagerScript : MonoBehaviour {
     public MimicScript mimic;
     public MirrorScript mirror;
     public GameObject wall;
-    public GameObject goal; 
+    public GameObject goal;
+    public GameObject ground;
+    public Camera mainCamera; 
     
     List<coord> goalCoords = new List<coord>();
 
@@ -70,10 +72,26 @@ public class GameManagerScript : MonoBehaviour {
         boardStates = new Stack<int[,]> ();
 		boardStates.Push (boardState.board);
 
+        mapOrigin = new Vector2(-boardState.cols / 2, -boardState.rows / 2);
+        int dim = boardState.rows > boardState.cols ? boardState.rows : boardState.cols;
+        mainCamera.transform.position = new Vector3(0, 0, -(dim / 2) / Mathf.Tan(Mathf.PI / 6)); 
+        
         //instantiate items based on board
         for(int i = 0; i < boardState.rows; i++) {
             for(int j = 0; j < boardState.cols; j++) {
-                if(boardState.board[i, j] == 2 || boardState.board[i,j] == 12) {
+                if (boardState.board[i, j] == 1) {
+                    GameObject w = GameObject.Instantiate(wall);
+                    w.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0);
+                } else if (boardState.board[i, j] >= 10) {
+                    GameObject c = GameObject.Instantiate(goal);
+                    c.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0);
+                    goalCoords.Add(new coord(i, j));
+                } else {
+                    GameObject g = GameObject.Instantiate(ground);
+                    g.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0);
+                }
+
+                if (boardState.board[i, j] == 2 || boardState.board[i,j] == 12) {
                     player = GameObject.Instantiate(player);
                     player.SetCoords(j, i); 
                     player.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0);
@@ -88,15 +106,7 @@ public class GameManagerScript : MonoBehaviour {
                     m.SetCoords(j, i);
                     m.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0);
                     moveables.Add(m);
-                } else if (boardState.board[i,j] == 1) {
-                    GameObject w = GameObject.Instantiate(wall);
-                    w.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0); 
-                }
-                if (boardState.board[i,j] >= 10) {
-                    GameObject c = GameObject.Instantiate(goal);
-                    c.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0); 
-                    goalCoords.Add(new coord(i, j)); 
-                }
+                } 
             }
         }
 	}
