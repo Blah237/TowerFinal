@@ -9,6 +9,7 @@ public class LevelEditorScript : MonoBehaviour {
 
     public float width;
     public float height;
+    private float sidebarWidth;
     public float padding;
     
     private Image[,] displayGrid;
@@ -25,13 +26,18 @@ public class LevelEditorScript : MonoBehaviour {
     private delegate void ClickTileDelegate(int row, int col);
     private ClickTileDelegate clickTile;
 
-    public bool loadLevel;
-    public string levelName; 
+    public bool loadedLevel;
+    public string levelName;
+
+    [SerializeField]
+    private RawImage saveButton;
+    [SerializeField]
+    private RawImage saveAsButton;
 
 	// Use this for initialization
 	void Start () {
         // initialize grid
-        if (loadLevel && levelName != null) {
+        if (loadedLevel && levelName != null) {
             level = IOScript.ParseLevel(levelName);
         }
         else {
@@ -40,6 +46,7 @@ public class LevelEditorScript : MonoBehaviour {
         }
         displayGrid = new Image[level.rows, level.cols];
         width *= canvas.pixelRect.width;
+        sidebarWidth = canvas.pixelRect.width - width;
         height *= canvas.pixelRect.height;
 
         clickTile = toggleWall;
@@ -63,7 +70,15 @@ public class LevelEditorScript : MonoBehaviour {
                 i.color = level.board[r, c] == 1 ? Color.black : Color.white;
             }
         }
-	}
+
+        // position sidebar buttons
+        saveAsButton.rectTransform.anchoredPosition = new Vector2((width + sidebarWidth/2f), sidebarWidth/4f);
+        saveAsButton.rectTransform.sizeDelta = new Vector2(sidebarWidth, sidebarWidth/2f);
+        saveAsButton.rectTransform.localScale = Vector2.one;
+        saveButton.rectTransform.anchoredPosition = new Vector2((width + sidebarWidth / 2f), 3f*sidebarWidth/4f);
+        saveButton.rectTransform.sizeDelta = new Vector2(sidebarWidth, sidebarWidth / 2f);
+        saveButton.rectTransform.localScale = Vector2.one;
+    }
 
     // position square in the correct row/column
     void positionSquare(Image square, int r, int c) {
@@ -203,8 +218,40 @@ public class LevelEditorScript : MonoBehaviour {
 
     // register a click on the right sidebar
     void clickRightSidebar(float mouseX, float mouseY) {
-        Debug.Log("Sidebar Clicked");
-        Debug.Log(IOScript.ExportLevel(level)); 
+        if(mouseY < sidebarWidth / 2f) {
+            Debug.Log("SaveAs Clicked");
+            clickSaveAs();
+        }
+        else if (mouseY < sidebarWidth) {
+            Debug.Log("Save Clicked");
+            clickSave();
+        } else {
+            Debug.Log("Sidebar Clicked");
+        }
+        //Debug.Log(IOScript.ExportLevel(level)); 
+    }
+
+    void clickSaveAs() {
+        // define level name
+
+        // TODO make this involve inputting a level name.
+        levelName = "FIXME";
+        loadedLevel = true;
+        clickSave();
+    }
+
+    void clickSave() {
+        if (!loadedLevel) {
+            clickSaveAs();
+            return;   
+        }
+        save(this.levelName);
+    }
+
+    void save(string fileName) {
+        // TODO mix me with IO
+        Debug.Log("Saving Level...");
+        Debug.Log(IOScript.ExportLevel(level, levelName));
     }
 
     // returns a representation of the stored level
