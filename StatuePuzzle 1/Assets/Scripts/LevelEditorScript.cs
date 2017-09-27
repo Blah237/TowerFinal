@@ -251,7 +251,7 @@ public class LevelEditorScript : MonoBehaviour {
     void save(string fileName) {
         // TODO mix me with IO
         Debug.Log("Saving Level...");
-        Debug.Log(IOScript.ExportLevel(level));
+        Debug.Log(IOScript.ExportLevel(level, levelName));
     }
 
     // returns a representation of the stored level
