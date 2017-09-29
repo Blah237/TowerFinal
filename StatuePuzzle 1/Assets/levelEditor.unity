@@ -429,29 +429,36 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   level:
-    rows: 12
-    cols: 12
+    rows: 7
+    cols: 7
     flatBoard: 
   width: 0.85
   height: 1
   padding: 10
+  playerCoord:
+    row: -1
+    col: -1
   gridSquare: {fileID: 114604249758133132, guid: 82ce6dbeceee7234783aa0bfec718e3d,
     type: 2}
   canvas: {fileID: 1232514340}
   tileSprites:
   - {fileID: 0}
   - {fileID: 0}
+  - {fileID: 21300000, guid: 23d9b6ce83c3c1f4ab79efd484c20896, type: 3}
+  - {fileID: 21300000, guid: 4cfa326495b558f4b9ebeb07379efe8c, type: 3}
+  - {fileID: 21300000, guid: 0c56d2c9c7b3f794097d64ccead4f915, type: 3}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  - {fileID: 21300000, guid: c9de83436759e004d82055efde60d62e, type: 3}
   - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 21300000, guid: 9519a70874306d546b2344d5f6697bd3, type: 3}
+  - {fileID: 21300000, guid: 3bbd7957474e7b440a46d4dd95935267, type: 3}
+  - {fileID: 21300000, guid: eee58fb0bd1e51a419b35c91bb576cfc, type: 3}
   loadLevel: 1
-  levelName: level3
+  levelName: Benlvl1
 --- !u!4 &1432372767
 Transform:
   m_ObjectHideFlags: 0

@@ -13,6 +13,7 @@ public class LevelEditorScript : MonoBehaviour {
     
     private Image[,] displayGrid;
 
+    [SerializeField]
     private coord playerCoord = new coord(-1, -1);
 
     public Image gridSquare;
@@ -51,8 +52,8 @@ public class LevelEditorScript : MonoBehaviour {
                 positionSquare(i, r, c);
                 displayGrid[r, c] = i;
                 i.sprite = tileSprites[level.board[r, c]];
-                if (level.board[r, c] == 2) {
-                    if(playerCoord.row == -1 && playerCoord.col == -1) {
+                if (level.board[r, c] % 10 == 2) {
+                    if (playerCoord.row == -1 && playerCoord.col == -1) {
                         playerCoord.row = r;
                         playerCoord.col = c;
                     } else {
@@ -98,8 +99,9 @@ public class LevelEditorScript : MonoBehaviour {
             clickTile = this.place3;
         } else if (Input.GetKeyDown(KeyCode.Alpha4) || Input.GetKeyDown(KeyCode.Alpha4)) {
             clickTile = this.place4;
-        } else if (Input.GetKeyDown(KeyCode.Alpha5) || Input.GetKeyDown(KeyCode.Alpha5)) {
-            clickTile = this.place10; 
+            // g enters goal placement mode
+        } else if (Input.GetKeyDown(KeyCode.G)) {
+            clickTile = this.placeGoal;
             // if left click this frame, handle click0
         } else if (Input.GetMouseButtonDown(0)) {
             click0(Input.mousePosition.x, Input.mousePosition.y);
@@ -128,6 +130,14 @@ public class LevelEditorScript : MonoBehaviour {
         }
     }
 
+    // returns the tile sprite for this title
+    Sprite getTileSprite(int val) {
+        if (val >= tileSprites.Count || val < 0) {
+            return null;
+        }
+        return tileSprites[val];
+    }
+
     #region clickTile methods
     // sets grid space [r, c] to 0 if 1, and to 1 if 0
     void toggleWall(int row, int col) {
@@ -146,42 +156,42 @@ public class LevelEditorScript : MonoBehaviour {
 
     //sets the player position
     void placePlayer(int row, int col) {
-        if(level.board[row, col] == 0) {
+        if (level.board[row, col] % 10 == 0) {
             int r = playerCoord.row;
             int c = playerCoord.col;
 
             if (r != -1 && c != -1) {
-                level.board[r, c] = 0;
+                level.board[r, c] = (level.board[r, c] / 10) * 10;
                 displayGrid[r, c].color = Color.white;
-                displayGrid[r, c].sprite = tileSprites[0];
+                displayGrid[r, c].sprite = getTileSprite(level.board[r, c]);
             }
             playerCoord.row = row;
             playerCoord.col = col;
-            displayGrid[row, col].sprite = tileSprites[2];
+            level.board[row, col] = (level.board[row, col] / 10) * 10 + 2;
+            displayGrid[row, col].sprite = getTileSprite(level.board[row, col]);
         }
+    }
+
+    //places and removes goals
+    void placeGoal(int row, int col) {
+        // check if there's a goal
+        if (level.board[row, col] >= 10 && level.board[row, col] < 20) {
+            level.board[row, col] -= 10;
+        } else {
+            level.board[row, col] = (level.board[row, col] % 10) + 10;
+        }
+        displayGrid[row, col].sprite = getTileSprite(level.board[row, col]);
     }
 
     //places any kind of statue
     void placeStatue(int stat, int row, int col) {
-        if(level.board[row, col] == stat) {
-            level.board[row, col] = 0;
-            displayGrid[row, col].sprite = tileSprites[0];
+        if (level.board[row, col] % 10 == stat) {
+            level.board[row, col] = (level.board[row, col] / 10) * 10;
+            displayGrid[row, col].sprite = getTileSprite(level.board[row, col]);
         } else {
-            level.board[row, col] = stat;
+            level.board[row, col] = (level.board[row, col] / 10) * 10 + stat;
             displayGrid[row, col].color = Color.white;
-            displayGrid[row, col].sprite = tileSprites[stat];
-        }
-    }
-
-    //place goal tile
-    void placeGoal(int row, int col) {
-        if(level.board[row, col] == 10) {
-            level.board[row, col] = 0;
-            displayGrid[row, col].sprite = tileSprites[0]; 
-        } else {
-            level.board[row, col] = 10;
-            displayGrid[row, col].color = Color.white;
-            displayGrid[row, col].sprite = tileSprites[10];
+            displayGrid[row, col].sprite = getTileSprite(level.board[row, col]);
         }
     }
 
@@ -189,7 +199,6 @@ public class LevelEditorScript : MonoBehaviour {
     //void place2(int row, int col) { placeStatue(2, row, col); }
     void place3(int row, int col) { placeStatue(3, row, col); }
     void place4(int row, int col) { placeStatue(4, row, col); }
-    void place10(int row, int col) { placeGoal(row, col); }
     #endregion
 
     // register a click on the right sidebar

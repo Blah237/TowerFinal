@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -38,15 +38,17 @@ public class GameManagerScript : MonoBehaviour {
     public MirrorScript mirror;
     public GameObject wall;
     public GameObject goal;
+<<<<<<< HEAD
 	
 	public WinScript winscript;
 	public DeathScript deathscript;
-	
-	public GameObject ground;
-	public Camera mainCamera; 
 
 	public bool win;
 	public bool dead;
+=======
+    public GameObject ground;
+    public Camera mainCamera; 
+>>>>>>> 4094c216f2f0a0a9c3baa98b9e1d5658749a918d
     
     List<coord> goalCoords = new List<coord>();
 
@@ -59,7 +61,7 @@ public class GameManagerScript : MonoBehaviour {
 	Stack<int[,]> boardStates; //TODO: refactor so that this is a stack of boardcode arrays
 
     [SerializeField]
-    public static string levelName; 
+    string levelName; 
     Level boardState; //Row, Column
     // East col+, North row+
 
@@ -157,8 +159,7 @@ public class GameManagerScript : MonoBehaviour {
 
     bool checkWin() {
         foreach (coord c in goalCoords) {
-			if (boardStates.Peek()[c.row, c.col] !=  13 && boardStates.Peek()[c.row, c.col] != 14) { //FIVE IS CURRENT COMBO MAX
-				//Debug.Log(boardStates.Peek()[c.row,c.col]);
+			if (boardState.board[c.row, c.col] !=  13 || boardState.board[c.row, c.col] != 14) { //FIVE IS CURRENT COMBO MAX
                 return false;
             }
         }
@@ -167,7 +168,7 @@ public class GameManagerScript : MonoBehaviour {
         return true;
     }
 
-	public static void setLevelName(string level) {
+	void setLevelName(string level) {
 		levelName = level;
 	}
 

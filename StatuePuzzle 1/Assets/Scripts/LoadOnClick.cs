@@ -7,8 +7,9 @@ public class LoadOnClick : MonoBehaviour {
 
 	public GameObject loadingImage;
 
-	public void LoadScene(int level)
+	public void LoadScene(string level)
 	{
-		SceneManager.LoadScene(level);
+		GameManagerScript.levelName = level;
+		SceneManager.LoadScene(1);
 	}
 }

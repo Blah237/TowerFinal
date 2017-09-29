@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class LoadLevelSelect : MonoBehaviour {
+	
+	void Start() { Time.timeScale = 1; }
 
 	public void LoadScene(int level)
 	{
