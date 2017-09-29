@@ -53,7 +53,7 @@ public class GameManagerScript : MonoBehaviour {
     public Vector2 mapOrigin;
 
     [SerializeField]
-    bool inputReady = true;
+    public static bool inputReady = true;
     Direction? inputDir;
     
 	Stack<int[,]> boardStates; //TODO: refactor so that this is a stack of boardcode arrays

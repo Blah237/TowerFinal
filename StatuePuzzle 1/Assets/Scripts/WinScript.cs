@@ -23,12 +23,13 @@ public class WinScript : MonoBehaviour
 	{
 		if (playerWin) {
 			anim.SetTrigger("Win");
+			GameManagerScript.inputReady = false;
 			//restartTimer += Time.deltaTime;
 
 			//if (restartTimer >= restartDelay) {
-				//SceneManager.LoadScene(0);
+			//SceneManager.LoadScene(0);
 			//}
-			
+
 		}
 	}
 }

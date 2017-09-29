@@ -24,6 +24,7 @@ public class DeathScript : MonoBehaviour
 		if (playerDeath) {
 			anim.SetTrigger("Dead");
 			restartTimer += Time.deltaTime;
+			GameManagerScript.inputReady = false;
 
 			if (restartTimer >= restartDelay) {
 				SceneManager.LoadScene(1);
