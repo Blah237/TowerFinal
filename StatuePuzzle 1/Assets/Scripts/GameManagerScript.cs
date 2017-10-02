@@ -39,9 +39,11 @@ public class GameManagerScript : MonoBehaviour {
     public GameObject wall;
     public GameObject goal;
     public GameObject ground;
+    public GameObject laser; 
     public Camera mainCamera; 
     
     List<coord> goalCoords = new List<coord>();
+    List<Laser> laserList = new List<Laser>(); 
 
     public Vector2 mapOrigin;
 
@@ -107,6 +109,18 @@ public class GameManagerScript : MonoBehaviour {
                     m.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0);
                     moveables.Add(m);
                 } 
+            }
+        }
+
+        //instantiate lasers based on parsed lasers
+        foreach(Laser la in boardState.lasers) {
+            GameObject l = GameObject.Instantiate(laser);
+            l.transform.position = new Vector3(la.startCol + mapOrigin.x - 0.5f, la.startRow + mapOrigin.y + 0.5f, -0.1f);
+            l.transform.localScale = new Vector3(1, 1, la.length);
+            int rotateDir = la.direction == Direction.NORTH ? -90 : la.direction == Direction.SOUTH ? 90 : la.direction == Direction.EAST ? 0 : 180; 
+            l.transform.Rotate(rotateDir, 90, 0);
+            if(la.state == 0) {
+                l.SetActive(false); 
             }
         }
 	}
