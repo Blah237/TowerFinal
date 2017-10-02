@@ -45,7 +45,10 @@ public class GameManagerScript : MonoBehaviour {
     public GameObject goal;
     public GameObject swap;
     public GameObject ground;
-    public Camera mainCamera; 
+    public Camera mainCamera;
+
+    public WinScript winscript;
+    public DeathScript deathscript;
 
     public bool win;
     public bool dead;
