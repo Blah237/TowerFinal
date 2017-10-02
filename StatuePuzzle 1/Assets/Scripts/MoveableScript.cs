@@ -59,7 +59,7 @@ public abstract class MoveableScript : MonoBehaviour {
 
 	public abstract Direction GetAttemptedMoveDirection (Direction direction, int[,] boardState);
 
-	public void ExecuteMove(Direction direction, int[,] boardState, int numSpaces) {
+	public void ExecuteMove(Direction direction, int[,] boardState, int numSpaces, bool animOnly = false) {
 
 		//TODO: Make this assert more robust so it doesn't just check every overlap possibility
 		//(currently the only overlap possibility is a goal)
@@ -99,8 +99,10 @@ public abstract class MoveableScript : MonoBehaviour {
 			break;
 		}
 
-		//update board
-		boardState[oldCoords.row,oldCoords.col] = boardState[oldCoords.row,oldCoords.col] - (int) type;
-		boardState[coords.row,coords.col] = (int) type + boardState[coords.row,coords.col];
-	}
+        //update board
+        if (!animOnly) {
+            boardState[oldCoords.row, oldCoords.col] = boardState[oldCoords.row, oldCoords.col] - (int)type;
+            boardState[coords.row, coords.col] = (int)type + boardState[coords.row, coords.col];
+        }
+    }
 }

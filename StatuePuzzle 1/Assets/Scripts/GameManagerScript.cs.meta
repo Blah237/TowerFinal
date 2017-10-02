@@ -1,10 +1,20 @@
 fileFormatVersion: 2
 guid: 68d9fdf0cb082de41bb798913a30cc9b
-timeCreated: 1504556665
+timeCreated: 1506982893
 licenseType: Free
 MonoImporter:
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - player: {instanceID: 0}
+  - mimic: {instanceID: 0}
+  - mirror: {instanceID: 0}
+  - wall: {instanceID: 0}
+  - goal: {instanceID: 0}
+  - swap: {instanceID: 0}
+  - ground: {instanceID: 0}
+  - mainCamera: {instanceID: 0}
+  - winscript: {instanceID: 0}
+  - deathscript: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
