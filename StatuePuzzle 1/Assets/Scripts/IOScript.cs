@@ -46,12 +46,12 @@ public abstract class IOScript : MonoBehaviour {
     public static String ExportLevel(Level level, string levelName) {
         level.MakeFlatBoard();
 
-        int levelNum = 1;
         string json = JsonUtility.ToJson(level);
         string path = "Assets/Resources/Levels/"; 
 
-        while (File.Exists(path + levelName + ".json")) {
-            levelNum++; 
+        if (File.Exists(path + levelName + ".json")) {
+            //levelNum++;
+            File.Delete(path + levelName + ".json");
         }
 
         File.WriteAllText(path + levelName + ".json", json);
