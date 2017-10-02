@@ -30,9 +30,15 @@ public class LevelEditorScript : MonoBehaviour {
     public string levelName;
 
     [SerializeField]
+    private RectTransform gridHolder;
+    [SerializeField]
     private RawImage saveButton;
     [SerializeField]
     private RawImage saveAsButton;
+    [SerializeField]
+    private RawImage namePopUp;
+    [SerializeField]
+    private Text inputText;
 
 	// Use this for initialization
 	void Start () {
@@ -55,7 +61,7 @@ public class LevelEditorScript : MonoBehaviour {
         for (int r = 0; r < level.rows; r++) {
             for (int c = 0; c < level.cols; c++){
                 Image i = GameObject.Instantiate(gridSquare);
-                i.transform.parent = canvas.transform;
+                i.transform.parent = gridHolder.transform;
                 positionSquare(i, r, c);
                 displayGrid[r, c] = i;
                 i.sprite = tileSprites[level.board[r, c]];
@@ -78,6 +84,8 @@ public class LevelEditorScript : MonoBehaviour {
         saveButton.rectTransform.anchoredPosition = new Vector2((width + sidebarWidth / 2f), 3f*sidebarWidth/4f);
         saveButton.rectTransform.sizeDelta = new Vector2(sidebarWidth, sidebarWidth / 2f);
         saveButton.rectTransform.localScale = Vector2.one;
+
+        setPopUpVisible(false);
     }
 
     // position square in the correct row/column
@@ -101,26 +109,28 @@ public class LevelEditorScript : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
-        // escape or right click resets delegate
-        if (Input.GetKeyDown(KeyCode.Escape) || Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Alpha0)
-            || Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Keypad0) || Input.GetKeyDown(KeyCode.Keypad1)) {
-            clickTile = this.toggleWall;
-            // p enters player placement mode
-        } else if (Input.GetKeyDown(KeyCode.P)) {
-            clickTile = this.placePlayer;
-        } else if (Input.GetKeyDown(KeyCode.Alpha2) || Input.GetKeyDown(KeyCode.Alpha2)) {
-            clickTile = this.placePlayer;
-        } else if (Input.GetKeyDown(KeyCode.Alpha3) || Input.GetKeyDown(KeyCode.Alpha3)) {
-            clickTile = this.place3;
-        } else if (Input.GetKeyDown(KeyCode.Alpha4) || Input.GetKeyDown(KeyCode.Alpha4)) {
-            clickTile = this.place4;
-            // g enters goal placement mode
-        } else if (Input.GetKeyDown(KeyCode.G)) {
-            clickTile = this.placeGoal;
-            // if left click this frame, handle click0
-        } else if (Input.GetMouseButtonDown(0)) {
-            click0(Input.mousePosition.x, Input.mousePosition.y);
-        }
+        if (!namePopUp.isActiveAndEnabled) {
+            // escape or right click resets delegate
+            if (Input.GetKeyDown(KeyCode.Escape) || Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Alpha0)
+                || Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Keypad0) || Input.GetKeyDown(KeyCode.Keypad1)) {
+                clickTile = this.toggleWall;
+                // p enters player placement mode
+            } else if (Input.GetKeyDown(KeyCode.P)) {
+                clickTile = this.placePlayer;
+            } else if (Input.GetKeyDown(KeyCode.Alpha2) || Input.GetKeyDown(KeyCode.Alpha2)) {
+                clickTile = this.placePlayer;
+            } else if (Input.GetKeyDown(KeyCode.Alpha3) || Input.GetKeyDown(KeyCode.Alpha3)) {
+                clickTile = this.place3;
+            } else if (Input.GetKeyDown(KeyCode.Alpha4) || Input.GetKeyDown(KeyCode.Alpha4)) {
+                clickTile = this.place4;
+                // g enters goal placement mode
+            } else if (Input.GetKeyDown(KeyCode.G)) {
+                clickTile = this.placeGoal;
+                // if left click this frame, handle click0
+            } else if (Input.GetMouseButtonDown(0)) {
+                click0(Input.mousePosition.x, Input.mousePosition.y);
+            }
+        } 
 	}
 
     // return the grid column that should fall under mouseX
@@ -232,12 +242,7 @@ public class LevelEditorScript : MonoBehaviour {
     }
 
     void clickSaveAs() {
-        // define level name
-
-        // TODO make this involve inputting a level name.
-        levelName = "FIXME";
-        loadedLevel = true;
-        clickSave();
+        openPopUp();
     }
 
     void clickSave() {
@@ -254,8 +259,28 @@ public class LevelEditorScript : MonoBehaviour {
         Debug.Log(IOScript.ExportLevel(level, levelName));
     }
 
+    void setPopUpVisible(bool value) {
+        this.namePopUp.gameObject.SetActive(value);
+    }
+
+    public void setLevelName(string newName) {
+        levelName = newName;
+    }
+
     // returns a representation of the stored level
     public int[,] getLevelOutput() {
         return this.level.board;
+    }
+
+    private void openPopUp() {
+        this.setPopUpVisible(true);
+        this.inputText.text = levelName;
+    }
+
+    public void closePopUp() {
+        levelName = this.inputText.text;
+        loadedLevel = true;
+        this.setPopUpVisible(false);
+        clickSave();
     }
 }
