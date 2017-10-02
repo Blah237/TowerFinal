@@ -43,7 +43,6 @@ public class GameManagerScript : MonoBehaviour {
     public MirrorScript mirror;
     public GameObject wall;
     public GameObject goal;
-
     public GameObject swap;
     public GameObject ground;
     public Camera mainCamera; 
@@ -176,6 +175,7 @@ public class GameManagerScript : MonoBehaviour {
 	    winscript.playerWin = true;
         return true;
     }
+
 
 
 	public static void setLevelName(string level) {
