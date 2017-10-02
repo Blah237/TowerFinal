@@ -120,17 +120,17 @@ public class GameManagerScript : MonoBehaviour {
         }
 
         //instantiate lasers based on parsed lasers
-        foreach(Laser la in boardState.lasers) {
-            GameObject l = GameObject.Instantiate(laser);
-            l.transform.position = new Vector3(la.startCol + mapOrigin.x - 0.5f, la.startRow + mapOrigin.y + 0.5f, -0.1f);
-            l.transform.localScale = new Vector3(1, 1, la.length);
-            //TODO: rotation does not work currently 
-            //TODO: implement laser-character collisions
-            //TODO: implement button control of laser 
-            int rotateDir = la.direction == Direction.NORTH ? -90 : la.direction == Direction.SOUTH ? 90 : la.direction == Direction.EAST ? 0 : 180; 
-            l.transform.Rotate(rotateDir, 90, 0);
-            if(la.state == 0) {
-                l.SetActive(false); 
+        if (boardState.lasers != null) {
+            foreach (Laser la in boardState.lasers) {
+                GameObject l = GameObject.Instantiate(laser);
+                l.transform.position = new Vector3(la.startCol + mapOrigin.x - 0.5f, la.startRow + mapOrigin.y + 0.5f, -0.1f);
+                l.transform.localScale = new Vector3(1, 1, la.length);
+                //TODO: implement button control of laser based on ID of laser
+                int rotateDir = la.direction == Direction.NORTH ? -90 : la.direction == Direction.SOUTH ? 90 : la.direction == Direction.EAST ? 0 : 180;
+                l.transform.Rotate(rotateDir, 90, 0, Space.World);
+                if (la.state == 0) {
+                    l.SetActive(false);
+                }
             }
         }
 	}
@@ -253,6 +253,8 @@ public class GameManagerScript : MonoBehaviour {
 				}
 			}
 		}
+
+        //TODO: Check for collisions with lasers 
 
 
 		if (moveDirections [player] != Direction.NONE) {
