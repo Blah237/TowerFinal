@@ -5,6 +5,17 @@ using UnityEngine.UI;
 
 public class LevelEditorScript : MonoBehaviour {
 
+    [System.Serializable]
+    public struct SpriteMapping
+    {
+        public Sprite sprite;
+        public int value;
+        public SpriteMapping(Sprite sprite, int value) {
+            this.sprite = sprite;
+            this.value = value;
+        }
+    }
+
     public Level level; 
 
     public float width;
@@ -21,7 +32,7 @@ public class LevelEditorScript : MonoBehaviour {
 
     public Canvas canvas;
 
-    public List<Sprite> tileSprites;
+    public List<SpriteMapping> tileSprites;
 
     private delegate void ClickTileDelegate(int row, int col);
     private ClickTileDelegate clickTile;
@@ -64,7 +75,7 @@ public class LevelEditorScript : MonoBehaviour {
                 i.transform.parent = gridHolder.transform;
                 positionSquare(i, r, c);
                 displayGrid[r, c] = i;
-                i.sprite = tileSprites[level.board[r, c]];
+                i.sprite = getTileSprite(level.board[r, c]);
                 if (level.board[r, c] % 10 == 2) {
                     if (playerCoord.row == -1 && playerCoord.col == -1) {
                         playerCoord.row = r;
@@ -126,6 +137,9 @@ public class LevelEditorScript : MonoBehaviour {
                 // g enters goal placement mode
             } else if (Input.GetKeyDown(KeyCode.G)) {
                 clickTile = this.placeGoal;
+                // s enters swap placement mode
+            } else if (Input.GetKeyDown(KeyCode.S)) {
+                clickTile = this.placeSwap;
                 // if left click this frame, handle click0
             } else if (Input.GetMouseButtonDown(0)) {
                 click0(Input.mousePosition.x, Input.mousePosition.y);
@@ -157,10 +171,12 @@ public class LevelEditorScript : MonoBehaviour {
 
     // returns the tile sprite for this title
     Sprite getTileSprite(int val) {
-        if (val >= tileSprites.Count || val < 0) {
-            return null;
+        foreach(SpriteMapping sm in tileSprites) {
+            if(sm.value == val) {
+                return sm.sprite;
+            }
         }
-        return tileSprites[val];
+        return null;
     }
 
     #region clickTile methods
@@ -175,7 +191,7 @@ public class LevelEditorScript : MonoBehaviour {
         int v2 = v == 0 ? 1 : 0;
 
         level.board[row, col] = v2;
-        displayGrid[row, col].sprite = tileSprites[v2];
+        displayGrid[row, col].sprite = getTileSprite(v2);
         displayGrid[row, col].color = v2 == 1 ? Color.black : Color.white;
     }
 
@@ -204,6 +220,17 @@ public class LevelEditorScript : MonoBehaviour {
             level.board[row, col] -= 10;
         } else {
             level.board[row, col] = (level.board[row, col] % 10) + 10;
+        }
+        displayGrid[row, col].sprite = getTileSprite(level.board[row, col]);
+    }
+
+    //places and removes swaps
+    void placeSwap(int row, int col) {
+        // check if there's a goal
+        if (level.board[row, col] >= 20 && level.board[row, col] < 30) {
+            level.board[row, col] -= 20;
+        } else {
+            level.board[row, col] = (level.board[row, col] % 10) + 20;
         }
         displayGrid[row, col].sprite = getTileSprite(level.board[row, col]);
     }
