@@ -131,6 +131,7 @@ public class GameManagerScript : MonoBehaviour {
                 if (la.state == 0) {
                     l.SetActive(false);
                 }
+                laserList.Add(la); 
             }
         }
 	}
@@ -199,6 +200,7 @@ public class GameManagerScript : MonoBehaviour {
 
 		foreach(MoveableScript m in moveables) {
 			coord goal = m.GetAttemptedMoveCoords(dir, boardState, 1);
+            Direction direction = m.GetAttemptedMoveDirection(dir, boardState); 
 			goalCoords.Add(m,goal);
 
 			// Check for collisions moving into the same spot
@@ -235,7 +237,28 @@ public class GameManagerScript : MonoBehaviour {
 				}
 			}
 
-			if (!moveDirections.ContainsKey(m)) {
+            //Check for collisions with lasers 
+            foreach (Laser laser in laserList) {
+                // if laser is active && laser can collide with this moveable 
+                if (laser.state == 1 && (laser.canCollide & m.collisionMask) > 0) {
+                    //if moveable is jumping through a horizontal laser
+                    if ((direction == Direction.NORTH && m.GetCoords().row == laser.startRow) ||
+                       (direction == Direction.SOUTH && goal.row == laser.startRow)) {
+                        if (m.GetCoords().col >= laser.startCol && m.GetCoords().col < laser.startCol + laser.length) {
+                            moveDirections[m] = Direction.NONE;
+                        }
+                    }
+                    //if moveable is jumping through a vertical laser 
+                    if ((direction == Direction.EAST && goal.col == laser.startCol) || 
+                        (direction == Direction.WEST && m.GetCoords().col == laser.startCol)) {
+                        if (m.GetCoords().row >= laser.startRow && m.GetCoords().row < laser.startRow + laser.length) {
+                            moveDirections[m] = Direction.NONE;
+                        }
+                    }
+                }
+            }
+
+            if (!moveDirections.ContainsKey(m)) {
 				moveDirections.Add(m, m.GetAttemptedMoveDirection(dir, boardState)); 
 			}
 
@@ -253,9 +276,6 @@ public class GameManagerScript : MonoBehaviour {
 				}
 			}
 		}
-
-        //TODO: Check for collisions with lasers 
-
 
 		if (moveDirections [player] != Direction.NONE) {
 			foreach (MoveableScript moveable in moveDirections.Keys) {
