@@ -42,6 +42,26 @@ public class Laser {
     public int length; //How many squares the laser covers
     public int state; //0 is off, 1 is on 
     public int canCollide; //Can range from 0-7. A 1 in each binary digit signifies that it can collide with player, mimic, and mirror respectively 
+
+    public bool isBetweenRow(int coord) {
+        if (direction == Direction.NORTH) {
+            return (startRow < coord && coord <= startRow + length); 
+        }
+        if (direction == Direction.SOUTH) {
+            return (startRow - length < coord && coord <= startRow); 
+        }
+        return false; 
+    }
+
+    public bool isBetweenCol(int coord) {
+        if (direction == Direction.EAST) {
+            return (startCol <= coord && coord < startCol + length);
+        }
+        if (direction == Direction.WEST) {
+            return (startCol - length <= coord && coord < startCol);
+        }
+        return false; 
+    }
 }
 
 public abstract class IOScript : MonoBehaviour {

@@ -203,40 +203,6 @@ public class GameManagerScript : MonoBehaviour {
             Direction direction = m.GetAttemptedMoveDirection(dir, boardState); 
 			goalCoords.Add(m,goal);
 
-			// Check for collisions moving into the same spot
-			foreach (MoveableScript other in moveables) {
-				if (other == m || other == null) {
-					continue;
-				//TODO: For these else-ifs we need equals operator for coords, but I'm on a plane without
-				//wifi and can't look up how C# operator overloading works :( -Reid
-
-				//Check for moving into same spot
-				} else if (goalCoords.ContainsKey(other) && goalCoords[other].row == goal.row && goalCoords[other].col == goal.col) {
-					Debug.Log ("Collision at " + goal.row + " " + goal.col + ": " + m.name + " " + other.name);
-					moveDirections[other] = Direction.NONE;
-					moveDirections[m] = Direction.NONE;
-					dead = true;
-					deathscript.playerDeath = true;
-				}
-			}
-
-			// Check for collisions moving through each other
-			foreach (MoveableScript other in moveables) {
-                if (other == null) {
-                    throw new System.NullReferenceException("One Entity in moveables is null!");
-                } else if (other == m) {
-					continue;
-				} else if (goalCoords.ContainsKey (other)
-				           && goalCoords [other].row == m.GetCoords ().row
-				           && goalCoords [other].col == m.GetCoords ().col
-				           && goal.row == other.GetCoords ().row
-				           && goal.col == other.GetCoords ().col) {
-					Debug.Log ("Move Through: " + m.name + " " + other.name);
-					moveDirections [other] = Direction.NONE;
-					moveDirections [m] = Direction.NONE;
-				}
-			}
-
             //Check for collisions with lasers 
             foreach (Laser laser in laserList) {
                 // if laser is active && laser can collide with this moveable 
@@ -244,16 +210,55 @@ public class GameManagerScript : MonoBehaviour {
                     //if moveable is jumping through a horizontal laser
                     if ((direction == Direction.NORTH && m.GetCoords().row == laser.startRow) ||
                        (direction == Direction.SOUTH && goal.row == laser.startRow)) {
-                        if (m.GetCoords().col >= laser.startCol && m.GetCoords().col < laser.startCol + laser.length) {
+                        if (laser.isBetweenCol(m.GetCoords().col)) {
                             moveDirections[m] = Direction.NONE;
                         }
                     }
                     //if moveable is jumping through a vertical laser 
-                    if ((direction == Direction.EAST && goal.col == laser.startCol) || 
+                    if ((direction == Direction.EAST && goal.col == laser.startCol) ||
                         (direction == Direction.WEST && m.GetCoords().col == laser.startCol)) {
-                        if (m.GetCoords().row >= laser.startRow && m.GetCoords().row < laser.startRow + laser.length) {
+                        if (laser.isBetweenRow(m.GetCoords().row)) {
                             moveDirections[m] = Direction.NONE;
                         }
+                    }
+                }
+            }
+
+            if (!moveDirections.ContainsKey(m)) {
+                // Check for collisions moving into the same spot
+                foreach (MoveableScript other in moveables) {
+                    if (other == m || other == null) {
+                        continue;
+                        //TODO: For these else-ifs we need equals operator for coords, but I'm on a plane without
+                        //wifi and can't look up how C# operator overloading works :( -Reid
+
+                        //Check for moving into same spot
+                    }
+                    else if (goalCoords.ContainsKey(other) && goalCoords[other].row == goal.row && goalCoords[other].col == goal.col) {
+                        Debug.Log("Collision at " + goal.row + " " + goal.col + ": " + m.name + " " + other.name);
+                        moveDirections[other] = Direction.NONE;
+                        moveDirections[m] = Direction.NONE;
+                        dead = true;
+                        deathscript.playerDeath = true;
+                    }
+                }
+
+                // Check for collisions moving through each other
+                foreach (MoveableScript other in moveables) {
+                    if (other == null) {
+                        throw new System.NullReferenceException("One Entity in moveables is null!");
+                    }
+                    else if (other == m) {
+                        continue;
+                    }
+                    else if (goalCoords.ContainsKey(other)
+                             && goalCoords[other].row == m.GetCoords().row
+                             && goalCoords[other].col == m.GetCoords().col
+                             && goal.row == other.GetCoords().row
+                             && goal.col == other.GetCoords().col) {
+                        Debug.Log("Move Through: " + m.name + " " + other.name);
+                        moveDirections[other] = Direction.NONE;
+                        moveDirections[m] = Direction.NONE;
                     }
                 }
             }
