@@ -16,16 +16,17 @@ public class LevelEditorScript : MonoBehaviour {
         }
     }
 
-    public Level level; 
+    public Level level;
+    private Level cacheLevel;
 
-    public float width;
-    public float height;
+    private float width = .85f;
+    private float height = 1f;
     private float sidebarWidth;
     public float padding;
     
     private Image[,] displayGrid;
 
-    [SerializeField]
+    //[SerializeField]
     private coord playerCoord = new coord(-1, -1);
 
     public Image gridSquare;
@@ -47,7 +48,11 @@ public class LevelEditorScript : MonoBehaviour {
     [SerializeField]
     private RawImage saveAsButton;
     [SerializeField]
+    private RawImage resizeButton;
+    [SerializeField]
     private RawImage namePopUp;
+    [SerializeField]
+    private RawImage sizePopUp;
     [SerializeField]
     private Text inputText;
 
@@ -59,18 +64,52 @@ public class LevelEditorScript : MonoBehaviour {
         }
         else {
             level.board = new int[level.rows, level.cols];
-            fillOutline();
+            fillOutline(level);
         }
-        displayGrid = new Image[level.rows, level.cols];
         width *= canvas.pixelRect.width;
         sidebarWidth = canvas.pixelRect.width - width;
         height *= canvas.pixelRect.height;
 
         clickTile = toggleWall;
 
+        // creates entire view
+        createAndPositionSquares(level);
+
+        // position sidebar buttons
+        saveAsButton.rectTransform.anchoredPosition = new Vector2((width + sidebarWidth/2f), sidebarWidth/4f);
+        saveAsButton.rectTransform.sizeDelta = new Vector2(sidebarWidth, sidebarWidth/2f);
+        saveAsButton.rectTransform.localScale = Vector2.one;
+        saveButton.rectTransform.anchoredPosition = new Vector2((width + sidebarWidth / 2f), 3f*sidebarWidth/4f);
+        saveButton.rectTransform.sizeDelta = new Vector2(sidebarWidth, sidebarWidth / 2f);
+        saveButton.rectTransform.localScale = Vector2.one;
+        resizeButton.rectTransform.anchoredPosition = new Vector2((width + sidebarWidth / 2f), 5f * sidebarWidth / 4f);
+        resizeButton.rectTransform.sizeDelta = new Vector2(sidebarWidth, sidebarWidth / 2f);
+        resizeButton.rectTransform.localScale = Vector2.one;
+
+        setNamePopUpVisible(false);
+        setSizePopUpVisible(false);
+    }
+
+    // position square in the correct row/column
+    void positionSquare(Image square, int r, int c) {
+        square.rectTransform.anchoredPosition = new Vector2(width / level.cols * (c + 0.5f), height / level.rows * (r + 0.5f));
+        square.rectTransform.sizeDelta = new Vector2(width / (float)level.cols - padding / 2f, height / (float)level.rows - padding / 2f);
+        square.rectTransform.localScale = Vector2.one;
+    }
+
+    void createAndPositionSquares(Level level) {
+        if (displayGrid != null) {
+            for (int r = 0; r < displayGrid.GetLength(0); r++) {
+                for (int c = 0; c < displayGrid.GetLength(1); c++) {
+                    Destroy(displayGrid[r, c]);
+                }
+            }
+        }
+        displayGrid = new Image[level.rows, level.cols];
+        playerCoord = new coord(-1, -1);
         // create gridSquares
         for (int r = 0; r < level.rows; r++) {
-            for (int c = 0; c < level.cols; c++){
+            for (int c = 0; c < level.cols; c++) {
                 Image i = GameObject.Instantiate(gridSquare);
                 i.transform.parent = gridHolder.transform;
                 positionSquare(i, r, c);
@@ -81,33 +120,16 @@ public class LevelEditorScript : MonoBehaviour {
                         playerCoord.row = r;
                         playerCoord.col = c;
                     } else {
-                        throw new System.Exception("Can't have two players in initial level!");
+                        throw new System.Exception("Can't have two players in level!");
                     }
                 }
                 i.color = level.board[r, c] == 1 ? Color.black : Color.white;
             }
         }
-
-        // position sidebar buttons
-        saveAsButton.rectTransform.anchoredPosition = new Vector2((width + sidebarWidth/2f), sidebarWidth/4f);
-        saveAsButton.rectTransform.sizeDelta = new Vector2(sidebarWidth, sidebarWidth/2f);
-        saveAsButton.rectTransform.localScale = Vector2.one;
-        saveButton.rectTransform.anchoredPosition = new Vector2((width + sidebarWidth / 2f), 3f*sidebarWidth/4f);
-        saveButton.rectTransform.sizeDelta = new Vector2(sidebarWidth, sidebarWidth / 2f);
-        saveButton.rectTransform.localScale = Vector2.one;
-
-        setPopUpVisible(false);
-    }
-
-    // position square in the correct row/column
-    void positionSquare(Image square, int r, int c) {
-        square.rectTransform.anchoredPosition = new Vector2(width / level.cols * (c + 0.5f), height / level.rows * (r + 0.5f));
-        square.rectTransform.sizeDelta = new Vector2(width / (float)level.cols - padding / 2f, height / (float)level.rows - padding / 2f);
-        square.rectTransform.localScale = Vector2.one;
     }
 
     // Set the outer rows/columns of the grid to be walls
-    void fillOutline() {
+    void fillOutline(Level level) {
         for (int r = 0; r < level.rows; r++) {
             level.board[r, 0] = 1;
             level.board[r, level.cols - 1] = 1;
@@ -120,7 +142,7 @@ public class LevelEditorScript : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
-        if (!namePopUp.isActiveAndEnabled) {
+        if (!namePopUp.isActiveAndEnabled && !sizePopUp.isActiveAndEnabled) {
             // escape or right click resets delegate
             if (Input.GetKeyDown(KeyCode.Escape) || Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Alpha0)
                 || Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Keypad0) || Input.GetKeyDown(KeyCode.Keypad1)) {
@@ -262,6 +284,9 @@ public class LevelEditorScript : MonoBehaviour {
         else if (mouseY < sidebarWidth) {
             Debug.Log("Save Clicked");
             clickSave();
+        } else if (mouseY < sidebarWidth * 3f / 2f) {
+            Debug.Log("Resize Clicked");
+            openSizePopUp();
         } else {
             Debug.Log("Sidebar Clicked");
         }
@@ -269,7 +294,7 @@ public class LevelEditorScript : MonoBehaviour {
     }
 
     void clickSaveAs() {
-        openPopUp();
+        openNamePopUp();
     }
 
     void clickSave() {
@@ -286,10 +311,6 @@ public class LevelEditorScript : MonoBehaviour {
         Debug.Log(IOScript.ExportLevel(level, levelName));
     }
 
-    void setPopUpVisible(bool value) {
-        this.namePopUp.gameObject.SetActive(value);
-    }
-
     public void setLevelName(string newName) {
         levelName = newName;
     }
@@ -299,15 +320,186 @@ public class LevelEditorScript : MonoBehaviour {
         return this.level.board;
     }
 
-    private void openPopUp() {
-        this.setPopUpVisible(true);
+    void setNamePopUpVisible(bool value) {
+        this.namePopUp.gameObject.SetActive(value);
+    }
+
+    private void openNamePopUp() {
+        this.setNamePopUpVisible(true);
         this.inputText.text = levelName;
     }
 
-    public void closePopUp() {
+    public void closeNamePopUp() {
         levelName = this.inputText.text;
         loadedLevel = true;
-        this.setPopUpVisible(false);
+        this.setNamePopUpVisible(false);
         clickSave();
     }
+
+    void setSizePopUpVisible(bool value) {
+        this.sizePopUp.gameObject.SetActive(value);
+    }
+
+    public void openSizePopUp() {
+        this.setSizePopUpVisible(true);
+    }
+
+    public void closeSizePopUp() {
+        this.setSizePopUpVisible(false);
+    }
+
+    #region add/remove cols/rows
+    public void addColLeft() {
+        cacheLevel = new Level();
+        cacheLevel.rows = level.rows;
+        cacheLevel.cols = level.cols + 1;
+        cacheLevel.board = new int[cacheLevel.rows, cacheLevel.cols];
+        fillOutline(cacheLevel);
+        for(int r = 1; r < level.rows - 1; r++) {
+            int i = level.board[r, 1];
+            i = i != 1 ? 0 : 1;
+            cacheLevel.board[r, 1] = i;
+        }
+        for(int c = 2; c < level.cols; c++) {
+            for(int r = 1; r < level.rows; r++) {
+                int i = level.board[r, c - 1];
+                cacheLevel.board[r, c] = i;
+            }
+        }
+        level = cacheLevel;
+        this.createAndPositionSquares(cacheLevel);
+    }
+    public void addColRight() {
+        cacheLevel = new Level();
+        cacheLevel.rows = level.rows;
+        cacheLevel.cols = level.cols + 1;
+        cacheLevel.board = new int[cacheLevel.rows, cacheLevel.cols];
+        fillOutline(cacheLevel);
+        for (int r = 1; r < level.rows - 1; r++) {
+            int i = level.board[r, level.cols - 2];
+            i = i != 1 ? 0 : 1;
+            cacheLevel.board[r, level.cols - 2] = i;
+        }
+        for (int c = 1; c < level.cols - 1; c++) {
+            for (int r = 1; r < level.rows; r++) {
+                int i = level.board[r, c];
+                cacheLevel.board[r, c] = i;
+            }
+        }
+        level = cacheLevel;
+        this.createAndPositionSquares(cacheLevel);
+    }
+    public void removeColLeft() {
+        if (level.cols <= 3) {
+            return;
+        }
+        cacheLevel = new Level();
+        cacheLevel.rows = level.rows;
+        cacheLevel.cols = level.cols - 1;
+        cacheLevel.board = new int[cacheLevel.rows, cacheLevel.cols];
+        fillOutline(cacheLevel);
+        for (int c = 1; c < level.cols - 1; c++) {
+            for (int r = 1; r < level.rows; r++) {
+                int i = level.board[r, c + 1];
+                cacheLevel.board[r, c] = i;
+            }
+        }
+        level = cacheLevel;
+        this.createAndPositionSquares(cacheLevel);
+    }
+    public void removeColRight() {
+        if(level.cols <= 3) {
+            return;
+        }
+        cacheLevel = new Level();
+        cacheLevel.rows = level.rows;
+        cacheLevel.cols = level.cols - 1;
+        cacheLevel.board = new int[cacheLevel.rows, cacheLevel.cols];
+        fillOutline(cacheLevel);
+        for (int c = 1; c < level.cols - 2; c++) {
+            for (int r = 1; r < level.rows; r++) {
+                int i = level.board[r, c];
+                cacheLevel.board[r, c] = i;
+            }
+        }
+        level = cacheLevel;
+        this.createAndPositionSquares(cacheLevel);
+    }
+    public void addRowAbove() {
+        cacheLevel = new Level();
+        cacheLevel.rows = level.rows + 1;
+        cacheLevel.cols = level.cols;
+        cacheLevel.board = new int[cacheLevel.rows, cacheLevel.cols];
+        fillOutline(cacheLevel);
+        for (int c = 1; c < level.cols - 1; c++) {
+            int i = level.board[level.rows - 2, c];
+            i = i != 1 ? 0 : 1;
+            cacheLevel.board[level.rows - 2, c] = i;
+        }
+        for (int r = 1; r < level.rows - 1; r++) {
+            for (int c = 1; c < level.cols; c++) {
+                int i = level.board[r, c];
+                cacheLevel.board[r, c] = i;
+            }
+        }
+        level = cacheLevel;
+        this.createAndPositionSquares(cacheLevel);
+    }
+    public void addRowBelow() {
+        cacheLevel = new Level();
+        cacheLevel.rows = level.rows + 1;
+        cacheLevel.cols = level.cols;
+        cacheLevel.board = new int[cacheLevel.rows, cacheLevel.cols];
+        fillOutline(cacheLevel);
+        for (int c = 1; c < level.cols - 1; c++) {
+            int i = level.board[1, c];
+            i = i != 1 ? 0 : 1;
+            cacheLevel.board[1, c] = i;
+        }
+        for (int r = 2; r < level.rows; r++) {
+            for (int c = 1; c < level.cols; c++) {
+                int i = level.board[r - 1, c];
+                cacheLevel.board[r, c] = i;
+            }
+        }
+        level = cacheLevel;
+        this.createAndPositionSquares(cacheLevel);
+    }
+    public void removeRowAbove() {
+        if (level.rows <= 3) {
+            return;
+        }
+        cacheLevel = new Level();
+        cacheLevel.rows = level.rows - 1;
+        cacheLevel.cols = level.cols;
+        cacheLevel.board = new int[cacheLevel.rows, cacheLevel.cols];
+        fillOutline(cacheLevel);
+        for (int r = 1; r < level.rows - 2; r++) {
+            for (int c = 1; c < level.cols; c++) {
+                int i = level.board[r, c];
+                cacheLevel.board[r, c] = i;
+            }
+        }
+        level = cacheLevel;
+        this.createAndPositionSquares(cacheLevel);
+    }
+    public void removeRowBelow() {
+        if (level.rows <= 3) {
+            return;
+        }
+        cacheLevel = new Level();
+        cacheLevel.rows = level.rows - 1;
+        cacheLevel.cols = level.cols;
+        cacheLevel.board = new int[cacheLevel.rows, cacheLevel.cols];
+        fillOutline(cacheLevel);
+        for (int r = 1; r < level.rows - 1; r++) {
+            for (int c = 1; c < level.cols; c++) {
+                int i = level.board[r + 1, c];
+                cacheLevel.board[r, c] = i;
+            }
+        }
+        level = cacheLevel;
+        this.createAndPositionSquares(cacheLevel);
+    }
+    #endregion
 }
