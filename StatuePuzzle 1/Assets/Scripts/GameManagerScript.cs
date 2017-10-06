@@ -33,6 +33,20 @@ public struct coord {
     public override string ToString() {
         return "coord(r-" + row + ", c-" + col+")";
     }
+
+	public bool Equals (coord otherCoord) {
+		if ((System.Object)otherCoord == null) {
+			return false;
+		}
+
+		return row == otherCoord.row && col == otherCoord.col; 
+	}
+
+	public override int GetHashCode ()
+	{
+		return row ^ col;
+	}
+		
 }
 
 public class GameManagerScript : MonoBehaviour {
@@ -170,7 +184,6 @@ public class GameManagerScript : MonoBehaviour {
     bool checkWin() {
         foreach (coord c in goalCoords) {
 			if (boardStates.Peek()[c.row, c.col] !=  13 && boardStates.Peek()[c.row, c.col] != 14) { //FIVE IS CURRENT COMBO MAX
-				//Debug.Log(boardStates.Peek()[c.row,c.col]);
                 return false;
             }
         }
@@ -191,23 +204,20 @@ public class GameManagerScript : MonoBehaviour {
 		int[,] nextState = new int[boardState.GetLength (0), boardState.GetLength (1)];
 		System.Array.Copy (boardState, nextState, boardState.Length);
 
-		Dictionary<MoveableScript,coord> goalCoordMap = new Dictionary<MoveableScript, coord>();
-		Dictionary<MoveableScript,Direction> moveDirections = new Dictionary<MoveableScript, Direction>();
+		Dictionary<MoveableScript,coord> desiredCoords = new Dictionary<MoveableScript, coord>(); //where pieces would move without collisions/walls
+		Dictionary<MoveableScript,Direction> moveDirections = new Dictionary<MoveableScript, Direction>(); //directions pieces will actually move
 
 		foreach(MoveableScript m in moveables) {
-			coord goal = m.GetAttemptedMoveCoords(dir, boardState, 1);
-            goalCoordMap.Add(m,goal);
+			coord desired = m.GetAttemptedMoveCoords(dir, boardState, 1);
+            desiredCoords.Add(m,desired);
 
 			// Check for collisions moving into the same spot
 			foreach (MoveableScript other in moveables) {
 				if (other == m || other == null) {
 					continue;
-				//TODO: For these else-ifs we need equals operator for coords, but I'm on a plane without
-				//wifi and can't look up how C# operator overloading works :( -Reid
 
 				//Check for moving into same spot
-				} else if (goalCoordMap.ContainsKey(other) && goalCoordMap[other].row == goal.row && goalCoordMap[other].col == goal.col) {
-					Debug.Log ("Collision at " + goal.row + " " + goal.col + ": " + m.name + " " + other.name);
+				} else if (desiredCoords.ContainsKey(other) && desiredCoords[other].Equals(desired)) {
 					moveDirections[other] = Direction.NONE;
 					moveDirections[m] = Direction.NONE;
 					dead = true;
@@ -221,12 +231,7 @@ public class GameManagerScript : MonoBehaviour {
                     throw new System.NullReferenceException("One Entity in moveables is null!");
                 } else if (other == m) {
 					continue;
-				} else if (goalCoordMap.ContainsKey (other)
-				           && goalCoordMap[other].row == m.GetCoords ().row
-				           && goalCoordMap[other].col == m.GetCoords ().col
-				           && goal.row == other.GetCoords ().row
-				           && goal.col == other.GetCoords ().col) {
-					Debug.Log ("Move Through: " + m.name + " " + other.name);
+				} else if (desiredCoords.ContainsKey (other) && desiredCoords[other].Equals(m.GetCoords()) && desired.Equals(other.GetCoords())) {
 					moveDirections [other] = Direction.NONE;
 					moveDirections [m] = Direction.NONE;
 				}
@@ -244,8 +249,7 @@ public class GameManagerScript : MonoBehaviour {
 				if (other == m || other == null) {
 					continue;
 				} else if (moveDirections[other] == Direction.NONE
-					&& other.GetCoords().row == goalCoordMap[m].row 
-					&& other.GetCoords().col == goalCoordMap[m].col) {
+					&& other.GetCoords().Equals(desiredCoords[m])) {
 					moveDirections [m] = Direction.NONE;
 				}
 			}
