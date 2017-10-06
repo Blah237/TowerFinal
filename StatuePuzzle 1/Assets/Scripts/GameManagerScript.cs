@@ -123,17 +123,17 @@ public class GameManagerScript : MonoBehaviour {
                     g.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0);
                 }
 
-                if (boardState.board[i, j] == 2 || boardState.board[i,j] == 12) {
+                if (boardState.board[i, j] % 10 == 2) {
                     player = GameObject.Instantiate(player);
                     player.SetCoords(j, i); 
                     player.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0);
                     moveables.Add(player); 
-                } else if (boardState.board[i,j] == 3 || boardState.board[i, j] == 13) {
+                } else if (boardState.board[i,j] % 10 == 3) {
                     MimicScript m = GameObject.Instantiate(mimic);
                     m.SetCoords(j, i);
                     m.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0);
                     moveables.Add(m); 
-                } else if (boardState.board[i,j] == 4 || boardState.board[i, j] == 14) {
+                } else if (boardState.board[i,j] % 10 == 4) {
                     MirrorScript m = GameObject.Instantiate(mirror);
                     m.SetCoords(j, i);
                     m.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0);
