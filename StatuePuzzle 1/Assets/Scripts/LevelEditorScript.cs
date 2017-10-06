@@ -5,6 +5,15 @@ using UnityEngine.UI;
 
 public class LevelEditorScript : MonoBehaviour {
 
+    public enum clickTileOptions { WALL = 1, PLAYER = 2, MIMIC = 3, MIRROR = 4, GOAL = 10, SWAP = 20 }
+
+    [System.Serializable]
+    public struct clickSetter
+    {
+        public string label;
+        public clickTileOptions value;
+    }
+
     [System.Serializable]
     public struct SpriteMapping
     {
@@ -35,7 +44,7 @@ public class LevelEditorScript : MonoBehaviour {
 
     public List<SpriteMapping> tileSprites;
 
-    private delegate void ClickTileDelegate(int row, int col);
+    public delegate void ClickTileDelegate(int row, int col);
     private ClickTileDelegate clickTile;
 
     public bool loadedLevel;
@@ -49,6 +58,10 @@ public class LevelEditorScript : MonoBehaviour {
     private RawImage saveAsButton;
     [SerializeField]
     private RawImage resizeButton;
+    [SerializeField]
+    private RawImage sidebarPiece;
+    [SerializeField]
+    public List<clickSetter> clickSetters;
     [SerializeField]
     private RawImage namePopUp;
     [SerializeField]
@@ -86,6 +99,15 @@ public class LevelEditorScript : MonoBehaviour {
         resizeButton.rectTransform.sizeDelta = new Vector2(sidebarWidth, sidebarWidth / 2f);
         resizeButton.rectTransform.localScale = Vector2.one;
 
+        for (int i = 0; i < clickSetters.Count; i++) {
+            RawImage button = Instantiate(this.sidebarPiece);
+            button.transform.parent = this.canvas.transform;
+            positionSidebarPiece(button, clickSetters[i], i, clickSetters.Count, height, sidebarWidth * 3f / 2f);
+        }
+        /*sidebar.rectTransform.anchoredPosition = new Vector2((width + sidebarWidth / 2f), 2.35f * sidebarWidth);
+        sidebar.rectTransform.sizeDelta = new Vector2(sidebarWidth, height - (sidebarWidth * 3f / 2f) - padding);
+        sidebar.rectTransform.localScale = Vector2.one;*/
+            
         setNamePopUpVisible(false);
         setSizePopUpVisible(false);
     }
@@ -95,6 +117,14 @@ public class LevelEditorScript : MonoBehaviour {
         square.rectTransform.anchoredPosition = new Vector2(width / level.cols * (c + 0.5f), height / level.rows * (r + 0.5f));
         square.rectTransform.sizeDelta = new Vector2(width / (float)level.cols - padding / 2f, height / (float)level.rows - padding / 2f);
         square.rectTransform.localScale = Vector2.one;
+    }
+
+    void positionSidebarPiece(RawImage button, clickSetter setter, int index, int count, float topBarHeight, float bottomBarHeight) {
+        float t = index / (float)count;
+        button.rectTransform.anchoredPosition = new Vector2(width + sidebarWidth / 2f, topBarHeight * (1f - t) + bottomBarHeight * t - sidebarWidth/4f + padding);
+        button.rectTransform.sizeDelta = new Vector2(sidebarWidth, (topBarHeight - bottomBarHeight)/count);
+        button.rectTransform.localScale = Vector2.one;
+        button.GetComponentInChildren<Text>().text = setter.label;
     }
 
     void createAndPositionSquares(Level level) {
@@ -288,7 +318,12 @@ public class LevelEditorScript : MonoBehaviour {
             Debug.Log("Resize Clicked");
             openSizePopUp();
         } else {
-            Debug.Log("Sidebar Clicked");
+            float topHeight = this.height;
+            float botHeight = sidebarWidth * 3f / 2f;
+            float delt = (topHeight - botHeight) / (float)clickSetters.Count;
+            int ind = clickSetters.Count - 1 - (int)((mouseY - (sidebarWidth * 3f / 2f)) / delt);
+            setOnClick(clickSetters[ind].value);
+            Debug.Log("Sidebar Clicked, ind: " + ind);
         }
         //Debug.Log(IOScript.ExportLevel(level)); 
     }
@@ -500,6 +535,35 @@ public class LevelEditorScript : MonoBehaviour {
         }
         level = cacheLevel;
         this.createAndPositionSquares(cacheLevel);
+    }
+    #endregion
+
+    #region setClickMethods
+    public void setOnClick(int value) {
+        this.setOnClick((clickTileOptions)value);
+    }
+
+    public void setOnClick(clickTileOptions value) {
+        switch (value) {
+            case clickTileOptions.WALL:
+                clickTile = this.toggleWall;
+                break;
+            case clickTileOptions.PLAYER:
+                clickTile = placePlayer;
+                break;
+            case clickTileOptions.MIMIC:
+                clickTile = place3;
+                break;
+            case clickTileOptions.MIRROR:
+                clickTile = place4;
+                break;
+            case clickTileOptions.GOAL:
+                clickTile = placeGoal;
+                break;
+            case clickTileOptions.SWAP:
+                clickTile = placeSwap;
+                break;
+        }
     }
     #endregion
 }
