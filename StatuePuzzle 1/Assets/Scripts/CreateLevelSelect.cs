@@ -19,7 +19,7 @@ public class CreateLevelSelect : MonoBehaviour
 	public int cols;
 	public int rows;
 
-	private string[] levelList;
+	public static string[] levelList;
 
 	// Use this for initialization
 	void Start()
@@ -89,6 +89,11 @@ public static long DirCount(DirectoryInfo d)
 		square.rectTransform.anchoredPosition = new Vector2(width / cols * (c + 0.5f), height - (height / rows * (r + 0.5f)));
 		square.rectTransform.sizeDelta = new Vector2(width / (float)cols - padding / 2f, height / (float)rows - padding / 2f);
 		square.rectTransform.localScale = Vector2.one;
+	}
+
+	public static string[] getLevelList()
+	{
+		return levelList;
 	}
 	
 	// Update is called once per frame

@@ -10,6 +10,7 @@ public class LoadOnClick : MonoBehaviour {
 
 	public void LoadScene()
 	{
+		NextLevelScript.currentLevel = levelName;
 		GameManagerScript.levelName = levelName;
 		SceneManager.LoadScene(1);
 	}
