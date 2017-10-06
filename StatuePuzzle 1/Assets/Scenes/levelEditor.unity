@@ -1316,7 +1316,7 @@ MonoBehaviour:
     value: 23
   - sprite: {fileID: 21300000, guid: a92ea29e6060cc64e8b115c1f729f34a, type: 3}
     value: 24
-  loadedLevel: 1
+  loadedLevel: 0
   levelName: SwapTest
   gridHolder: {fileID: 324320328}
   saveButton: {fileID: 194176733}

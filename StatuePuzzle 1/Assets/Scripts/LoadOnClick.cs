@@ -6,10 +6,11 @@ using UnityEngine.SceneManagement;
 public class LoadOnClick : MonoBehaviour {
 
 	public GameObject loadingImage;
+	public string levelName;
 
-	public void LoadScene(string level)
+	public void LoadScene()
 	{
-		GameManagerScript.levelName = level;
+		GameManagerScript.levelName = levelName;
 		SceneManager.LoadScene(1);
 	}
 }
