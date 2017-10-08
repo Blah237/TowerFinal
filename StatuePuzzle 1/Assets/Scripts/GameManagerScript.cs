@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public enum Direction { NORTH, SOUTH, EAST, WEST, NONE }
 
@@ -128,20 +129,21 @@ public class GameManagerScript : MonoBehaviour {
                 } 
             }
         }
+
 	}
 
 	// Update is called once per frame
 	void Update () {
-        if (inputReady) {
-            Direction dir = readInput();
-            if(dir != Direction.NONE) {
-                inputReady = false;
-                move(dir);
-            }
-            checkWin();
-        } else {
-            inputReady = getAllDone();
-        }
+		if (inputReady) {
+			Direction dir = readInput();
+			if(dir != Direction.NONE) {
+				inputReady = false;
+				move(dir);
+			}
+			checkWin();
+		} else {
+			inputReady = getAllDone();
+		}
 	}
 
     bool getAllDone() {
@@ -174,7 +176,8 @@ public class GameManagerScript : MonoBehaviour {
                 return false;
             }
         }
-        //Debug.Log("VICTORY!");
+        Debug.Log("VICTORY!");
+		LoggingManager.instance.RecordLevelEnd ();
 	    winscript.playerWin = true;
         return true;
     }
