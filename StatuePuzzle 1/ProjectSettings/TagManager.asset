@@ -41,3 +41,12 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Floor
+    uniqueID: 981175403
+    locked: 0
+  - name: Moveables
+    uniqueID: 3060045517
+    locked: 0
+  - name: Extras
+    uniqueID: 3754407871
+    locked: 0
