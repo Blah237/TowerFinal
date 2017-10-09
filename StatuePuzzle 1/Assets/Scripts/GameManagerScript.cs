@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public enum Direction { NORTH, SOUTH, EAST, WEST, NONE }
 
@@ -33,6 +34,20 @@ public struct coord {
     public override string ToString() {
         return "coord(r-" + row + ", c-" + col+")";
     }
+
+	public bool Equals (coord otherCoord) {
+		if ((System.Object)otherCoord == null) {
+			return false;
+		}
+
+		return row == otherCoord.row && col == otherCoord.col; 
+	}
+
+	public override int GetHashCode ()
+	{
+		return row ^ col;
+	}
+		
 }
 
 public class GameManagerScript : MonoBehaviour {
@@ -153,16 +168,16 @@ public class GameManagerScript : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-        if (inputReady) {
-            Direction dir = readInput();
-            if(dir != Direction.NONE) {
-                inputReady = false;
-                move(dir);
-            }
-            checkWin();
-        } else {
-            inputReady = getAllDone();
-        }
+		if (inputReady) {
+			Direction dir = readInput();
+			if(dir != Direction.NONE) {
+				inputReady = false;
+				move(dir);
+			}
+			checkWin();
+		} else {
+			inputReady = getAllDone();
+		}
 	}
 
     bool getAllDone() {
@@ -191,11 +206,11 @@ public class GameManagerScript : MonoBehaviour {
     bool checkWin() {
         foreach (coord c in goalCoords) {
 			if (boardStates.Peek()[c.row, c.col] !=  13 && boardStates.Peek()[c.row, c.col] != 14) { //FIVE IS CURRENT COMBO MAX
-				//Debug.Log(boardStates.Peek()[c.row,c.col]);
                 return false;
             }
         }
-        //Debug.Log("VICTORY!");
+        Debug.Log("VICTORY!");
+		LoggingManager.instance.RecordLevelEnd ();
 	    winscript.playerWin = true;
         return true;
     }
@@ -212,70 +227,38 @@ public class GameManagerScript : MonoBehaviour {
 		int[,] nextState = new int[boardState.GetLength (0), boardState.GetLength (1)];
 		System.Array.Copy (boardState, nextState, boardState.Length);
 
-		Dictionary<MoveableScript,coord> goalCoordMap = new Dictionary<MoveableScript, coord>();
-		Dictionary<MoveableScript,Direction> moveDirections = new Dictionary<MoveableScript, Direction>();
+		Dictionary<MoveableScript,coord> desiredCoords = new Dictionary<MoveableScript, coord>(); //where pieces would move without collisions/walls
+		Dictionary<MoveableScript,Direction> moveDirections = new Dictionary<MoveableScript, Direction>(); //directions pieces will actually move
 
 		foreach(MoveableScript m in moveables) {
-			coord goal = m.GetAttemptedMoveCoords(dir, boardState, 1);
-            Direction direction = m.GetAttemptedMoveDirection(dir, boardState); 
-			goalCoordMap.Add(m,goal);
+			coord desired = m.GetAttemptedMoveCoords(dir, boardState, 1);
+            desiredCoords.Add(m,desired);
 
-            //Check for collisions with lasers 
-            foreach (Laser laser in laserList) {
-                // if laser is active && laser can collide with this moveable 
-                if (laser.state == 1 && (laser.canCollide & m.collisionMask) > 0) {
-                    //if moveable is jumping through a horizontal laser
-                    if ((direction == Direction.NORTH && m.GetCoords().row == laser.startRow) ||
-                       (direction == Direction.SOUTH && goal.row == laser.startRow)) {
-                        if (laser.isBetweenCol(m.GetCoords().col)) {
-                            moveDirections[m] = Direction.NONE;
-                        }
-                    }
-                    //if moveable is jumping through a vertical laser 
-                    if ((direction == Direction.EAST && goal.col == laser.startCol) ||
-                        (direction == Direction.WEST && m.GetCoords().col == laser.startCol)) {
-                        if (laser.isBetweenRow(m.GetCoords().row)) {
-                            moveDirections[m] = Direction.NONE;
-                        }
-                    }
-                }
-            }
+			// Check for collisions moving into the same spot
+			foreach (MoveableScript other in moveables) {
+				if (other == m || other == null) {
+					continue;
 
-            if (!moveDirections.ContainsKey(m)) {
-			    // Check for collisions moving into the same spot
-			    foreach (MoveableScript other in moveables) {
-				    if (other == m || other == null) {
-					    continue;
-				    //TODO: For these else-ifs we need equals operator for coords, but I'm on a plane without
-				    //wifi and can't look up how C# operator overloading works :( -Reid
+				//Check for moving into same spot
+				} else if (desiredCoords.ContainsKey(other) && desiredCoords[other].Equals(desired)) {
+					moveDirections[other] = Direction.NONE;
+					moveDirections[m] = Direction.NONE;
+					dead = true;
+					deathscript.playerDeath = true;
+				}
+			}
 
-				    //Check for moving into same spot
-				    } else if (goalCoordMap.ContainsKey(other) && goalCoordMap[other].row == goal.row && goalCoordMap[other].col == goal.col) {
-					    Debug.Log ("Collision at " + goal.row + " " + goal.col + ": " + m.name + " " + other.name);
-					    moveDirections[other] = Direction.NONE;
-					    moveDirections[m] = Direction.NONE;
-					    dead = true;
-					    deathscript.playerDeath = true;
-				    }
-			    }
-
-			    // Check for collisions moving through each other
-			    foreach (MoveableScript other in moveables) {
-                    if (other == null) {
-                        throw new System.NullReferenceException("One Entity in moveables is null!");
-                    } else if (other == m) {
-					    continue;
-				    } else if (goalCoordMap.ContainsKey (other)
-				               && goalCoordMap[other].row == m.GetCoords ().row
-				               && goalCoordMap[other].col == m.GetCoords ().col
-				               && goal.row == other.GetCoords ().row
-				               && goal.col == other.GetCoords ().col) {
-					    Debug.Log ("Move Through: " + m.name + " " + other.name);
-					    moveDirections [other] = Direction.NONE;
-					    moveDirections [m] = Direction.NONE;
-				    }
-			    }
-            }
+			// Check for collisions moving through each other
+			foreach (MoveableScript other in moveables) {
+                if (other == null) {
+                    throw new System.NullReferenceException("One Entity in moveables is null!");
+                } else if (other == m) {
+					continue;
+				} else if (desiredCoords.ContainsKey (other) && desiredCoords[other].Equals(m.GetCoords()) && desired.Equals(other.GetCoords())) {
+					moveDirections [other] = Direction.NONE;
+					moveDirections [m] = Direction.NONE;
+				}
+			}
 
             if (!moveDirections.ContainsKey(m)) {
 				moveDirections.Add(m, m.GetAttemptedMoveDirection(dir, boardState)); 
@@ -289,8 +272,7 @@ public class GameManagerScript : MonoBehaviour {
 				if (other == m || other == null) {
 					continue;
 				} else if (moveDirections[other] == Direction.NONE
-					&& other.GetCoords().row == goalCoordMap[m].row 
-					&& other.GetCoords().col == goalCoordMap[m].col) {
+					&& other.GetCoords().Equals(desiredCoords[m])) {
 					moveDirections [m] = Direction.NONE;
 				}
 			}
