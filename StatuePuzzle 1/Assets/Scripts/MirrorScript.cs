@@ -7,6 +7,7 @@ public class MirrorScript : MoveableScript {
 	protected override void InitializeType ()
 	{
 		this.type = BoardCodes.MIRROR;
+        this.collisionMask = 1; 
 	}
 
 	public override coord GetAttemptedMoveCoords (Direction direction, int[,] boardState, int numSpaces)
