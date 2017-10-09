@@ -1,6 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Schema;
+using Newtonsoft.Json.Serialization;
+using Newtonsoft.Json;
 
 public class DynamicState
 {
@@ -16,7 +20,7 @@ public class DynamicState
 	}
 
 	public string toJson() {
-		return "";
+		return JsonConvert.SerializeObject (this);
 	}
 }
 

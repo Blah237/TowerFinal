@@ -5,6 +5,9 @@ using UnityEngine.Networking;
 
 public class LoggingManager : MonoBehaviour
 {
+	public enum EventCodes:int {
+		DYNAMIC_STATE = 0
+	}
 
     public static LoggingManager instance;
 
@@ -66,7 +69,7 @@ public class LoggingManager : MonoBehaviour
     {
     }
 
-    public void RecordEvent(int actionId, string actionDetail = "")
+	public void RecordEvent(EventCodes actionId, string actionDetail = "")
     {
         if (isDebugging)
         {
@@ -75,7 +78,7 @@ public class LoggingManager : MonoBehaviour
 
         TestInitialization();
         Debug.Assert(isLevelStarted, "Cannot record a player's action before a level start.");
-        StartCoroutine(GetPlayerAction(actionId, actionDetail));
+		StartCoroutine(GetPlayerAction((int) actionId, actionDetail));
         sessionSeqId += 1;
         QuestSeqId += 1;
     }

@@ -318,5 +318,6 @@ public class GameManagerScript : MonoBehaviour {
 			}
 		} 
 		dynamicStateStack.Push (ds);
+		LoggingManager.instance.RecordEvent (LoggingManager.EventCodes.DYNAMIC_STATE, ds.toJson ());
 	}
 }
