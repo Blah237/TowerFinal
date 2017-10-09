@@ -883,7 +883,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   loadingImage: {fileID: 0}
   levelName: 
-  nextLevel: {fileID: 0}
 --- !u!114 &1910557004
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1077,9 +1076,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1910557010}
+      - m_Target: {fileID: 1910557002}
         m_MethodName: LoadScene
-        m_Mode: 1
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

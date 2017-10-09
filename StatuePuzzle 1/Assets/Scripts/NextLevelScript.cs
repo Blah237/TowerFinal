@@ -16,7 +16,7 @@ public class NextLevelScript : MonoBehaviour {
 		string[] levelList = CreateLevelSelect.getLevelList();
 		for (int i = 0; i < levelList.Length; i ++) {
 			if (levelList[i] == currentLevel) {
-				if (i == levelList.Length) {
+				if (i == levelList.Length - 1) {
 					currentLevel = levelList[0];
 					return levelList[0];
 				} else {

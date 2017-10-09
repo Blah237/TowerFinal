@@ -41,7 +41,7 @@ public class CreateLevelSelect : MonoBehaviour
 				Text text = button.GetComponentInChildren<Text>();
 				text.text = levelList[i];
 				Image bImage = button.GetComponent<Image>();
-				bImage.transform.parent = canvas.transform;
+				bImage.transform.SetParent(canvas.transform);
 				positionSquare(bImage, i / 3, i % 3);
 			}
 		}
