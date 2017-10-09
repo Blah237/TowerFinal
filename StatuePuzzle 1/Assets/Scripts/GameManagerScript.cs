@@ -233,6 +233,28 @@ public class GameManagerScript : MonoBehaviour {
 		foreach(MoveableScript m in moveables) {
 			coord desired = m.GetAttemptedMoveCoords(dir, boardState, 1);
             desiredCoords.Add(m,desired);
+			Direction direction = m.GetAttemptedMoveDirection(dir, boardState); 
+
+            //Check for collisions with lasers 
+            foreach (Laser laser in laserList) {
+                // if laser is active && laser can collide with this moveable 
+                if (laser.state == 1 && (laser.canCollide & m.collisionMask) > 0) {
+	                //if moveable is jumping through a horizontal laser
+                    if ((direction == Direction.NORTH && m.GetCoords().row == laser.startRow) ||
+		                       (direction == Direction.SOUTH && desired.row == laser.startRow)) {
+		                        if (laser.isBetweenCol(m.GetCoords().col)) {
+			                            moveDirections[m] = Direction.NONE;
+			                        }
+		                    }
+                    //if moveable is jumping through a vertical laser 
+                    if ((direction == Direction.EAST && desired.col == laser.startCol) ||
+	                        (direction == Direction.WEST && m.GetCoords().col == laser.startCol)) {
+	                        if (laser.isBetweenRow(m.GetCoords().row)) {
+		                            moveDirections[m] = Direction.NONE;
+		                    }
+	                    }
+	            }
+	        }
 
 			// Check for collisions moving into the same spot
 			foreach (MoveableScript other in moveables) {
