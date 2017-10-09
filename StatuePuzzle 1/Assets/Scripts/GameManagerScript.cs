@@ -57,18 +57,23 @@ public class GameManagerScript : MonoBehaviour {
     public MirrorScript mirror;
     public GameObject wall;
     public GameObject goal;
-    public GameObject swap;
-    public GameObject ground;
-    public Camera mainCamera;
+    public GameObject laser; 
+	
+	public WinScript winscript;
+	public DeathScript deathscript;
+	
+	public GameObject ground;
+	public Camera mainCamera; 
 
-    public WinScript winscript;
-    public DeathScript deathscript;
-
-    public bool win;
-    public bool dead;
+	public bool win;
+	public bool dead;
     
     List<coord> goalCoords = new List<coord>();
+    List<Laser> laserList = new List<Laser>(); 
+
+    public GameObject swap;
     List<coord> swapCoords = new List<coord>();
+
 
     public Vector2 mapOrigin;
 
@@ -140,6 +145,22 @@ public class GameManagerScript : MonoBehaviour {
                     m.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0);
                     moveables.Add(m);
                 } 
+            }
+        }
+
+        //instantiate lasers based on parsed lasers
+        if (boardState.lasers != null) {
+            foreach (Laser la in boardState.lasers) {
+                GameObject l = GameObject.Instantiate(laser);
+                l.transform.position = new Vector3(la.startCol + mapOrigin.x - 0.5f, la.startRow + mapOrigin.y + 0.5f, -0.1f);
+                l.transform.localScale = new Vector3(1, 1, la.length);
+                //TODO: implement button control of laser based on ID of laser
+                int rotateDir = la.direction == Direction.NORTH ? -90 : la.direction == Direction.SOUTH ? 90 : la.direction == Direction.EAST ? 0 : 180;
+                l.transform.Rotate(rotateDir, 90, 0, Space.World);
+                if (la.state == 0) {
+                    l.SetActive(false);
+                }
+                laserList.Add(la); 
             }
         }
 	}
@@ -237,7 +258,7 @@ public class GameManagerScript : MonoBehaviour {
 				}
 			}
 
-			if (!moveDirections.ContainsKey(m)) {
+            if (!moveDirections.ContainsKey(m)) {
 				moveDirections.Add(m, m.GetAttemptedMoveDirection(dir, boardState)); 
 			}
 
