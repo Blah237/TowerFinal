@@ -9,7 +9,6 @@ public class LoadLevelSelect : MonoBehaviour {
 
 	public void LoadScene(int level)
 	{
-		Debug.Log("Load Level Select");
 		SceneManager.LoadScene(0);
 	}
 }
