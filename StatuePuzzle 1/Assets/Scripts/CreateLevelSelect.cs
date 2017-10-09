@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System.CodeDom;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Security.Policy;
@@ -19,6 +20,8 @@ public class CreateLevelSelect : MonoBehaviour
 	public int cols;
 	public int rows;
 
+	private static int CANVAS_WIDTH_OFFSET = 130;
+
 	public static string[] levelList;
 
 	// Use this for initialization
@@ -31,7 +34,7 @@ public class CreateLevelSelect : MonoBehaviour
 		//levelList[3] = "level4";
 		//levelList[4] = "level5";
 		getFiles();
-		width *= canvas.pixelRect.width - 130;
+		width *= canvas.pixelRect.width - CANVAS_WIDTH_OFFSET;
 		height *= canvas.pixelRect.height;
 		for (int i = 0; i < levelList.Length; i++)
 		{
