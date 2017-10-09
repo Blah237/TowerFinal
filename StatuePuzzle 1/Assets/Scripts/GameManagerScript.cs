@@ -35,6 +35,20 @@ public struct coord {
     public override string ToString() {
         return "coord(r-" + row + ", c-" + col+")";
     }
+
+	public bool Equals (coord otherCoord) {
+		if ((System.Object)otherCoord == null) {
+			return false;
+		}
+
+		return row == otherCoord.row && col == otherCoord.col; 
+	}
+
+	public override int GetHashCode ()
+	{
+		return row ^ col;
+	}
+		
 }
 
 public class GameManagerScript : MonoBehaviour {
@@ -46,18 +60,23 @@ public class GameManagerScript : MonoBehaviour {
     public MirrorScript mirror;
     public GameObject wall;
     public GameObject goal;
-    public GameObject swap;
-    public GameObject ground;
-    public Camera mainCamera;
+    public GameObject laser; 
+	
+	public WinScript winscript;
+	public DeathScript deathscript;
+	
+	public GameObject ground;
+	public Camera mainCamera; 
 
-    public WinScript winscript;
-    public DeathScript deathscript;
-
-    public bool win;
-    public bool dead;
+	public bool win;
+	public bool dead;
     
     List<coord> goalCoords = new List<coord>();
+    List<Laser> laserList = new List<Laser>(); 
+
+    public GameObject swap;
     List<coord> swapCoords = new List<coord>();
+
 
     public Vector2 mapOrigin;
 
@@ -128,7 +147,25 @@ public class GameManagerScript : MonoBehaviour {
             }
         }
 
+<<<<<<< HEAD
 		recordDynamicState ();
+=======
+        //instantiate lasers based on parsed lasers
+        if (boardState.lasers != null) {
+            foreach (Laser la in boardState.lasers) {
+                GameObject l = GameObject.Instantiate(laser);
+                l.transform.position = new Vector3(la.startCol + mapOrigin.x - 0.5f, la.startRow + mapOrigin.y + 0.5f, -0.1f);
+                l.transform.localScale = new Vector3(1, 1, la.length);
+                //TODO: implement button control of laser based on ID of laser
+                int rotateDir = la.direction == Direction.NORTH ? -90 : la.direction == Direction.SOUTH ? 90 : la.direction == Direction.EAST ? 0 : 180;
+                l.transform.Rotate(rotateDir, 90, 0, Space.World);
+                if (la.state == 0) {
+                    l.SetActive(false);
+                }
+                laserList.Add(la); 
+            }
+        }
+>>>>>>> 6f80c370e910c8af735aa445ad14f1afc2041515
 	}
 
 	// Update is called once per frame
@@ -197,8 +234,12 @@ public class GameManagerScript : MonoBehaviour {
 
     bool checkWin() {
         foreach (coord c in goalCoords) {
+<<<<<<< HEAD
 			DynamicState ds = dynamicStateStack.Peek ();
 			if (!(ds.mimicPositions.Contains(c) || ds.mirrorPositions.Contains(c))) {
+=======
+			if (boardStates.Peek()[c.row, c.col] !=  13 && boardStates.Peek()[c.row, c.col] != 14) { //FIVE IS CURRENT COMBO MAX
+>>>>>>> 6f80c370e910c8af735aa445ad14f1afc2041515
                 return false;
             }
         }
@@ -216,23 +257,33 @@ public class GameManagerScript : MonoBehaviour {
 
     void move(Direction dir) {
 
+<<<<<<< HEAD
 		Dictionary<MoveableScript,coord> goalCoordMap = new Dictionary<MoveableScript, coord>();
 		Dictionary<MoveableScript,Direction> moveDirections = new Dictionary<MoveableScript, Direction>();
 
 		foreach(MoveableScript m in moveables) {
 			coord goal = m.GetAttemptedMoveCoords(dir, boardState.board, 1);
             goalCoordMap.Add(m,goal);
+=======
+		int[,] boardState = boardStates.Peek();
+		int[,] nextState = new int[boardState.GetLength (0), boardState.GetLength (1)];
+		System.Array.Copy (boardState, nextState, boardState.Length);
+
+		Dictionary<MoveableScript,coord> desiredCoords = new Dictionary<MoveableScript, coord>(); //where pieces would move without collisions/walls
+		Dictionary<MoveableScript,Direction> moveDirections = new Dictionary<MoveableScript, Direction>(); //directions pieces will actually move
+
+		foreach(MoveableScript m in moveables) {
+			coord desired = m.GetAttemptedMoveCoords(dir, boardState, 1);
+            desiredCoords.Add(m,desired);
+>>>>>>> 6f80c370e910c8af735aa445ad14f1afc2041515
 
 			// Check for collisions moving into the same spot
 			foreach (MoveableScript other in moveables) {
 				if (other == m || other == null) {
 					continue;
-				//TODO: For these else-ifs we need equals operator for coords, but I'm on a plane without
-				//wifi and can't look up how C# operator overloading works :( -Reid
 
 				//Check for moving into same spot
-				} else if (goalCoordMap.ContainsKey(other) && goalCoordMap[other].row == goal.row && goalCoordMap[other].col == goal.col) {
-					Debug.Log ("Collision at " + goal.row + " " + goal.col + ": " + m.name + " " + other.name);
+				} else if (desiredCoords.ContainsKey(other) && desiredCoords[other].Equals(desired)) {
 					moveDirections[other] = Direction.NONE;
 					moveDirections[m] = Direction.NONE;
 					dead = true;
@@ -246,12 +297,7 @@ public class GameManagerScript : MonoBehaviour {
                     throw new System.NullReferenceException("One Entity in moveables is null!");
                 } else if (other == m) {
 					continue;
-				} else if (goalCoordMap.ContainsKey (other)
-				           && goalCoordMap[other].row == m.GetCoords ().row
-				           && goalCoordMap[other].col == m.GetCoords ().col
-				           && goal.row == other.GetCoords ().row
-				           && goal.col == other.GetCoords ().col) {
-					Debug.Log ("Move Through: " + m.name + " " + other.name);
+				} else if (desiredCoords.ContainsKey (other) && desiredCoords[other].Equals(m.GetCoords()) && desired.Equals(other.GetCoords())) {
 					moveDirections [other] = Direction.NONE;
 					moveDirections [m] = Direction.NONE;
 				}
@@ -269,8 +315,7 @@ public class GameManagerScript : MonoBehaviour {
 				if (other == m || other == null) {
 					continue;
 				} else if (moveDirections[other] == Direction.NONE
-					&& other.GetCoords().row == goalCoordMap[m].row 
-					&& other.GetCoords().col == goalCoordMap[m].col) {
+					&& other.GetCoords().Equals(desiredCoords[m])) {
 					moveDirections [m] = Direction.NONE;
 				}
 			}

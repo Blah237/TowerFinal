@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4922256722465194}
   - component: {fileID: 114884060736431710}
   m_Layer: 0
-  m_Name: Logging Prefab
+  m_Name: Logging
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -51,3 +51,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 446d3d0dd75517d4689a815b16e85b89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isDebugging: 1
+  versionId: 0

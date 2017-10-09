@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class MimicScript : MoveableScript
 {
+    
     protected override void InitializeType() {
         this.type = BoardCodes.MIMIC;
+        this.collisionMask = 2;
     }
 
     public override coord GetAttemptedMoveCoords(Direction direction, int[,] boardState, int numSpaces) {

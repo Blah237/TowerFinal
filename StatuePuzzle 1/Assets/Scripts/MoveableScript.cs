@@ -15,6 +15,7 @@ public abstract class MoveableScript : MonoBehaviour {
 	[SerializeField]
 	protected coord coords;
 
+    public int collisionMask; 
 	public BoardCodes type { get; protected set;}
 
 	// Use this for initialization
