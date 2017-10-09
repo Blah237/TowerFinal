@@ -38,6 +38,7 @@ public struct coord {
 public class GameManagerScript : MonoBehaviour {
 
 	List<MoveableScript> moveables = new List<MoveableScript>();
+	public Stack<DynamicState> dynamicStateStack = new Stack<DynamicState>();
     public PlayerScript player;
     public MimicScript mimic;
     public MirrorScript mirror;
@@ -62,8 +63,6 @@ public class GameManagerScript : MonoBehaviour {
     public static bool inputReady = true;
     Direction? inputDir;
     
-	Stack<int[,]> boardStates; //TODO: refactor so that this is a stack of boardcode arrays
-
     [SerializeField]
     public static string levelName; 
     Level boardState; //Row, Column
@@ -82,8 +81,6 @@ public class GameManagerScript : MonoBehaviour {
     void Start() {
         //load level using Melody's I/O
         boardState = IOScript.ParseLevel(levelName); 
-        boardStates = new Stack<int[,]> ();
-		boardStates.Push (boardState.board);
 
         mapOrigin = new Vector2(-boardState.cols / 2, -boardState.rows / 2);
         int dim = boardState.rows > boardState.cols ? boardState.rows : boardState.cols;
@@ -128,6 +125,8 @@ public class GameManagerScript : MonoBehaviour {
                 } 
             }
         }
+
+		recordDynamicState ();
 	}
 
 	// Update is called once per frame
@@ -162,15 +161,15 @@ public class GameManagerScript : MonoBehaviour {
             return Direction.NORTH;
         } else if(Input.GetAxis("Vertical") <= -1f) {
             return Direction.SOUTH;
-        } else {
+		} {
             return Direction.NONE;
         }
     }
 
     bool checkWin() {
         foreach (coord c in goalCoords) {
-			if (boardStates.Peek()[c.row, c.col] !=  13 && boardStates.Peek()[c.row, c.col] != 14) { //FIVE IS CURRENT COMBO MAX
-				//Debug.Log(boardStates.Peek()[c.row,c.col]);
+			DynamicState ds = dynamicStateStack.Peek ();
+			if (!(ds.mimicPositions.Contains(c) || ds.mirrorPositions.Contains(c))) {
                 return false;
             }
         }
@@ -187,15 +186,11 @@ public class GameManagerScript : MonoBehaviour {
 
     void move(Direction dir) {
 
-		int[,] boardState = boardStates.Peek();
-		int[,] nextState = new int[boardState.GetLength (0), boardState.GetLength (1)];
-		System.Array.Copy (boardState, nextState, boardState.Length);
-
 		Dictionary<MoveableScript,coord> goalCoordMap = new Dictionary<MoveableScript, coord>();
 		Dictionary<MoveableScript,Direction> moveDirections = new Dictionary<MoveableScript, Direction>();
 
 		foreach(MoveableScript m in moveables) {
-			coord goal = m.GetAttemptedMoveCoords(dir, boardState, 1);
+			coord goal = m.GetAttemptedMoveCoords(dir, boardState.board, 1);
             goalCoordMap.Add(m,goal);
 
 			// Check for collisions moving into the same spot
@@ -233,7 +228,7 @@ public class GameManagerScript : MonoBehaviour {
 			}
 
 			if (!moveDirections.ContainsKey(m)) {
-				moveDirections.Add(m, m.GetAttemptedMoveDirection(dir, boardState)); 
+				moveDirections.Add(m, m.GetAttemptedMoveDirection(dir, boardState.board)); 
 			}
 
         }  
@@ -256,16 +251,16 @@ public class GameManagerScript : MonoBehaviour {
             Stack<MoveableScript> toDestroy = new Stack<MoveableScript>();
             foreach (MoveableScript moveable in moveDirections.Keys) {
 				//Debug.Log (moveable.name + " " + moveDirections[moveable].ToString() + " after " + moveable.GetAttemptedMoveDirection(dir, boardState));
-				moveable.ExecuteMove (moveDirections[moveable], nextState, 1);
+				moveable.ExecuteMove (moveDirections[moveable], 1, false);
 
                 // check for a swap
                 coord c = moveable.GetCoords();
                 if (moveDirections[moveable] != Direction.NONE && swapCoords.Contains(c)) {
-                    if (nextState[c.row, c.col] == 23) {
+					if (moveable.type == BoardCodes.MIMIC) {
                         Direction dr = moveDirections[moveable];
                         int dx = dr == Direction.EAST ? 1 : dr == Direction.WEST ? -1 : 0;
                         int dy = dr == Direction.NORTH ? 1 : dr == Direction.SOUTH ? -1 : 0;
-                        nextState[c.row, c.col] = 24;
+                        boardState.board[c.row, c.col] = 24;
                         this.moveables.Remove(moveable);
                         toDestroy.Push(moveable);
                         // Instantiate a Mirror
@@ -273,12 +268,12 @@ public class GameManagerScript : MonoBehaviour {
                         m.SetCoords(c.col-dx, c.row-dy);
                         m.transform.position = new Vector3(c.col-dx + mapOrigin.x, c.row-dy + mapOrigin.y, 0);
                         moveables.Add(m);
-                        m.ExecuteMove(dr, nextState, 1, true);
-                    } else if (nextState[c.row, c.col] == 24) {
+                        m.ExecuteMove(dr, 1, true);
+					} else if (moveable.type == BoardCodes.MIRROR) {
                         Direction dr = moveDirections[moveable];
                         int dx = dr == Direction.EAST ? 1 : dr == Direction.WEST ? -1 : 0;
                         int dy = dr == Direction.NORTH ? 1 : dr == Direction.SOUTH ? -1 : 0;
-                        nextState[c.row, c.col] = 23;
+                        boardState.board[c.row, c.col] = 23;
                         this.moveables.Remove(moveable);
                         toDestroy.Push(moveable);
                         // Instantiate a Mimic
@@ -286,7 +281,7 @@ public class GameManagerScript : MonoBehaviour {
                         m.SetCoords(c.col-dx, c.row-dy);
                         m.transform.position = new Vector3(c.col-dx + mapOrigin.x, c.row-dy + mapOrigin.y, 0);
                         moveables.Add(m);
-                        m.ExecuteMove(dr, nextState, 1, true);
+                        m.ExecuteMove(dr, 1, true);
                     }
                 }
 			}
@@ -300,8 +295,26 @@ public class GameManagerScript : MonoBehaviour {
             }
 		}
 
-		boardStates.Push (nextState);
+		recordDynamicState ();
     }
 
-
+	private void recordDynamicState() {
+		DynamicState ds = new DynamicState ();
+		foreach (MoveableScript m in moveables) {
+			switch (m.type) {
+			case BoardCodes.PLAYER:
+				ds.playerPosition = m.GetCoords ();
+				break;
+			case BoardCodes.MIMIC:
+				ds.mimicPositions.Add (m.GetCoords ());
+				break;
+			case BoardCodes.MIRROR:
+				ds.mirrorPositions.Add (m.GetCoords ());
+				break;
+			default:
+				continue;
+			}
+		} 
+		dynamicStateStack.Push (ds);
+	}
 }

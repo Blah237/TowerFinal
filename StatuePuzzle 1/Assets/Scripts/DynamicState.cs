@@ -2,25 +2,21 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class BoardState : MonoBehaviour
+public class DynamicState
 {
-
-	public BoardCodes[,] staticDefs;
 	public coord playerPosition;
 	public HashSet<coord> mimicPositions;
 	public HashSet<coord> mirrorPositions;
 	public Dictionary<coord,bool> buttonStates;
 
-	// Use this for initialization
-	void Start ()
-	{
-	
+	public DynamicState() {
+		mimicPositions = new HashSet<coord> ();
+		mirrorPositions = new HashSet<coord> ();
+		buttonStates = new Dictionary<coord,bool> ();
 	}
-	
-	// Update is called once per frame
-	void Update ()
-	{
-	
+
+	public string toJson() {
+		return "";
 	}
 }
 

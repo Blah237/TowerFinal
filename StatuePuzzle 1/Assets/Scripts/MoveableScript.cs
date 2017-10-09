@@ -59,18 +59,7 @@ public abstract class MoveableScript : MonoBehaviour {
 
 	public abstract Direction GetAttemptedMoveDirection (Direction direction, int[,] boardState);
 
-	public void ExecuteMove(Direction direction, int[,] boardState, int numSpaces, bool animOnly = false) {
-
-		//TODO: Make this assert more robust so it doesn't just check every overlap possibility
-		//(currently the only overlap possibility is a goal)
-		//TODO: Actually going to comment this assert out entirely temporarily, another thing we need
-		//to add for robustness is that when one piece moves into a space that another piece was just in,
-		//the sum is temporarily off until it gets subtracted by the later moving piece, which triggers
-		//the assert. 
-
-//		Debug.Assert(boardState[coords.row,coords.col] == (int) type ||
-//			boardState[coords.row,coords.col] > 5,
-//			"Expected " + coords.ToString() + " to be " + (int) type + " but was " + boardState[coords.row,coords.col]);
+	public void ExecuteMove(Direction direction, int numSpaces, bool animOnly = false) {
 
 		//TODO: animate 
 
@@ -100,9 +89,5 @@ public abstract class MoveableScript : MonoBehaviour {
 		}
 
         //update board
-        if (!animOnly) {
-            boardState[oldCoords.row, oldCoords.col] = boardState[oldCoords.row, oldCoords.col] - (int)type;
-            boardState[coords.row, coords.col] = (int)type + boardState[coords.row, coords.col];
-        }
     }
 }
