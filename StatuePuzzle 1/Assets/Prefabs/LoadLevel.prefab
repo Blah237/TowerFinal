@@ -41,7 +41,7 @@ GameObject:
   - component: {fileID: 114676696985429964}
   - component: {fileID: 114363034618108818}
   m_Layer: 5
-  m_Name: LoadLevel 1
+  m_Name: LoadLevel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -161,13 +161,13 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 114363034618108818}
         m_MethodName: LoadScene
-        m_Mode: 1
+        m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 1
           m_FloatArgument: 0
-          m_StringArgument: level1
+          m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
