@@ -31,7 +31,7 @@ public class CreateLevelSelect : MonoBehaviour
 		//levelList[3] = "level4";
 		//levelList[4] = "level5";
 		getFiles();
-		width *= canvas.pixelRect.width;
+		width *= canvas.pixelRect.width - 130;
 		height *= canvas.pixelRect.height;
 		for (int i = 0; i < levelList.Length; i++)
 		{
@@ -42,7 +42,7 @@ public class CreateLevelSelect : MonoBehaviour
 				text.text = levelList[i];
 				Image bImage = button.GetComponent<Image>();
 				bImage.transform.SetParent(canvas.transform);
-				positionSquare(bImage, i / 3, i % 3);
+				positionSquare(bImage, i / 4, i % 4);
 			}
 		}
 	}
