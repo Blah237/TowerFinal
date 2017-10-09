@@ -37,6 +37,10 @@ public abstract class MoveableScript : MonoBehaviour {
 		coords.row = row;
 	}
 
+	public void SetCoords(coord c) {
+		coords = c;
+	}
+
 	private void Update() {
 		if(isMoving) {
 			float dt = Time.deltaTime; 

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.Linq;
 
 public enum Direction { NORTH, SOUTH, EAST, WEST, NONE }
 
@@ -138,7 +139,6 @@ public class GameManagerScript : MonoBehaviour {
 				inputReady = false;
 				move(dir);
 			}
-			checkWin();
 		} else {
 			inputReady = getAllDone();
 		}
@@ -153,16 +153,44 @@ public class GameManagerScript : MonoBehaviour {
         return true;
     }
 
+	private void undo() {
+		DynamicState ds = dynamicStateStack.Pop();
+		int mimicIdx = 0;
+		int mirrorIdx = 0;
+		List<coord> mimicCoords = ds.mimicPositions.ToList ();
+		List<coord> mirrorCoords = ds.mirrorPositions.ToList ();
+		foreach (MoveableScript m in moveables) {
+			switch (m.type) {
+			case BoardCodes.PLAYER:
+				m.SetCoords (ds.playerPosition);
+				break;
+			case BoardCodes.MIMIC:
+				m.SetCoords (mimicCoords [mimicIdx]);
+				mimicIdx++;
+				break;
+			case BoardCodes.MIRROR:
+				m.SetCoords (mirrorCoords [mirrorIdx]);
+				mimicIdx++;
+				break;
+			default:
+				continue;
+			}
+		} 
+	}
+
     Direction readInput() {
-        if(Input.GetAxis("Horizontal") >= 1f) {
-            return Direction.EAST;
-        } else if(Input.GetAxis("Horizontal") <= -1f) {
-            return Direction.WEST;
-        } else if(Input.GetAxis("Vertical") >= 1f) {
-            return Direction.NORTH;
-        } else if(Input.GetAxis("Vertical") <= -1f) {
-            return Direction.SOUTH;
-		} {
+		if (Input.GetAxis ("Horizontal") >= 1f) {
+			return Direction.EAST;
+		} else if (Input.GetAxis ("Horizontal") <= -1f) {
+			return Direction.WEST;
+		} else if (Input.GetAxis ("Vertical") >= 1f) {
+			return Direction.NORTH;
+		} else if (Input.GetAxis ("Vertical") <= -1f) {
+			return Direction.SOUTH;
+		} else if (Input.GetKeyDown (KeyCode.Z)) {
+			undo ();
+			return Direction.NONE;
+		} else {
             return Direction.NONE;
         }
     }
@@ -298,6 +326,7 @@ public class GameManagerScript : MonoBehaviour {
 		}
 
 		recordDynamicState ();
+		checkWin ();
     }
 
 	private void recordDynamicState() {
