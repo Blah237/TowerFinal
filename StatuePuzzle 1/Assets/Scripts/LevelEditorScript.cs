@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class LevelEditorScript : MonoBehaviour {
 
-    public enum clickTileOptions { WALL = 1, PLAYER = 2, MIMIC = 3, MIRROR = 4, GOAL = 10, SWAP = 20 }
+    public enum clickTileOptions { WALL = 1, PLAYER = 2, MIMIC = 3, MIRROR = 4, GOAL = 10, SWAP = 20, PORTAL = 50 }
 
     [System.Serializable]
     public struct clickSetter
@@ -287,6 +287,17 @@ public class LevelEditorScript : MonoBehaviour {
         displayGrid[row, col].sprite = getTileSprite(level.board[row, col]);
     }
 
+    //places and removes portals
+    void placePortal(int row, int col) {
+        // check if there's a goal
+        if (level.board[row, col] >= 50 && level.board[row, col] < 60) {
+            level.board[row, col] -= 50;
+        } else {
+            level.board[row, col] = (level.board[row, col] % 10) + 50;
+        }
+        displayGrid[row, col].sprite = getTileSprite(level.board[row, col]);
+    }
+
     //places any kind of statue
     void placeStatue(int stat, int row, int col) {
         if (level.board[row, col] % 10 == stat) {
@@ -563,6 +574,11 @@ public class LevelEditorScript : MonoBehaviour {
             case clickTileOptions.SWAP:
                 clickTile = placeSwap;
                 break;
+            case clickTileOptions.PORTAL:
+                clickTile = placePortal;
+                break;
+            default:
+                throw new System.NotImplementedException();
         }
     }
     #endregion
