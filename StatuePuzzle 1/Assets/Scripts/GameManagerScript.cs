@@ -115,10 +115,28 @@ public class GameManagerScript : MonoBehaviour {
 
         mapOrigin = new Vector2(-boardState.cols / 2, -boardState.rows / 2);
         int dim = boardState.rows > boardState.cols ? boardState.rows : boardState.cols;
-        mainCamera.transform.position = new Vector3(0, 0, -(dim / 2) / Mathf.Tan(Mathf.PI / 6)); 
-        
+        mainCamera.transform.position = new Vector3(0, 0, -(dim / 2) / Mathf.Tan(Mathf.PI / 6));
+
+        int buttonCount = 0;
+
+        //instantiate lasers based on parsed lasers
+        if (boardState.lasers != null) {
+            foreach (Laser la in boardState.lasers) {
+                GameObject l = GameObject.Instantiate(laser);
+                l.transform.position = new Vector3(la.startCol + mapOrigin.x - 0.5f, la.startRow + mapOrigin.y + 0.5f, -0.1f);
+                l.transform.localScale = new Vector3(1, 1, la.length);
+                int rotateDir = la.direction == Direction.NORTH ? -90 : la.direction == Direction.SOUTH ? 90 : la.direction == Direction.EAST ? 0 : 180;
+                l.transform.Rotate(rotateDir, 90, 0, Space.World);
+                la.gameObject = l; 
+                if (la.state == 0) {
+                    l.SetActive(false);
+                }
+                laserList.Add(la);
+            }
+        }
+
         //instantiate items based on board
-        for(int i = 0; i < boardState.rows; i++) {
+        for (int i = 0; i < boardState.rows; i++) {
             for(int j = 0; j < boardState.cols; j++) {
                 if (boardState.board[i, j] == 1) {
                     GameObject w = GameObject.Instantiate(wall);
@@ -138,8 +156,11 @@ public class GameManagerScript : MonoBehaviour {
 	                //button
 	                ButtonToggleScript c = GameObject.Instantiate(button);
 	                c.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0);
+                    c.laser = laserList[boardState.buttons[buttonCount]];
+                    c.InitButton(); 
 	                buttonCoords.Add(new coord(i,j));
 	                ButtonManagerScript.buttonCoords.Add(new coord(i,j), c);
+                    buttonCount++; 
                 } else {
                     GameObject g = GameObject.Instantiate(ground);
                     g.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0);
@@ -161,22 +182,6 @@ public class GameManagerScript : MonoBehaviour {
                     m.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0);
                     moveables.Add(m);
                 } 
-            }
-        }
-
-        //instantiate lasers based on parsed lasers
-        if (boardState.lasers != null) {
-            foreach (Laser la in boardState.lasers) {
-                GameObject l = GameObject.Instantiate(laser);
-                l.transform.position = new Vector3(la.startCol + mapOrigin.x - 0.5f, la.startRow + mapOrigin.y + 0.5f, -0.1f);
-                l.transform.localScale = new Vector3(1, 1, la.length);
-                //TODO: implement button control of laser based on ID of laser
-                int rotateDir = la.direction == Direction.NORTH ? -90 : la.direction == Direction.SOUTH ? 90 : la.direction == Direction.EAST ? 0 : 180;
-                l.transform.Rotate(rotateDir, 90, 0, Space.World);
-                if (la.state == 0) {
-                    l.SetActive(false);
-                }
-                laserList.Add(la); 
             }
         }
 	}
@@ -329,16 +334,14 @@ public class GameManagerScript : MonoBehaviour {
                         m.transform.position = new Vector3(c.col-dx + mapOrigin.x, c.row-dy + mapOrigin.y, 0);
                         moveables.Add(m);
                         m.ExecuteMove(dr, nextState, 1, true);
-	                    
-	                 //check for button press   
-                    } else if (nextState[c.row, c.col] > 30 && nextState[c.row, c.col] < 40) {
-	                    coord buttonCoord = new coord(c.row, c.col);
-	                    ButtonManagerScript.buttonCoords[buttonCoord].pressed =
-		                    !ButtonManagerScript.buttonCoords[buttonCoord];
-
-                    }
+                    } 
                 }
-			}
+                //check for button press 
+                if (nextState[c.row, c.col] >= 30 && nextState[c.row, c.col] < 40) {
+                    coord buttonCoord = new coord(c.row, c.col);
+                    ButtonManagerScript.buttonCoords[buttonCoord].TogglePressed();
+                }
+            }
 
             moveDirections.Clear();
             // destroy old objects

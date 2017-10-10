@@ -568,14 +568,14 @@ MonoBehaviour:
   wall: {fileID: 1784765721464430, guid: b9ab2db89b3ea7740901f43e7eb60526, type: 2}
   goal: {fileID: 1070575984611532, guid: c83ab70655bd8a14e82dc9f920175f50, type: 2}
   laser: {fileID: 1441265804993748, guid: 6533f532150bcdd4d9bc409cbee8708d, type: 2}
-  swap: {fileID: 1489777977322046, guid: 8840d96f49251704bb39ec1725e419bc, type: 2}
-  button: {fileID: 0}
-  ground: {fileID: 1900275814461204, guid: a0a76314bf72774499c31c852003199e, type: 2}
-  mainCamera: {fileID: 1768258437}
   winscript: {fileID: 1910557009}
   deathscript: {fileID: 1910557008}
+  button: {fileID: 114314181420704094, guid: 33cd7d1640e4b45d693dbcd62a4cbd9e, type: 2}
+  ground: {fileID: 1900275814461204, guid: a0a76314bf72774499c31c852003199e, type: 2}
+  mainCamera: {fileID: 1768258437}
   win: 0
   dead: 0
+  swap: {fileID: 1489777977322046, guid: 8840d96f49251704bb39ec1725e419bc, type: 2}
   mapOrigin: {x: 0, y: 0}
 --- !u!4 &1271382224
 Transform:
