@@ -108,5 +108,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pressed: 0
-  onMaterial: {fileID: 2100000, guid: 39eef778ca0226845b893c628860c28e, type: 2}
-  offMaterial: {fileID: 2100000, guid: 6b2f36c640af1f24c86891373af702a2, type: 2}
+  onMaterial: {fileID: 2100000, guid: 0dbae27b5fb541b41a15412bac32fb3d, type: 2}
+  offMaterial: {fileID: 2100000, guid: 378abe0599f7cbb4684f6da930ce8770, type: 2}
