@@ -258,7 +258,7 @@ public class GameManagerScript : MonoBehaviour {
             //Check for collisions with lasers 
             foreach (Laser laser in laserList) {
                 // if laser is active && laser can collide with this moveable 
-                if (laser.state == 1 && (laser.canCollide & m.collisionMask) > 0) {
+                if (laser.gameObject.activeInHierarchy && (laser.canCollide & m.collisionMask) > 0) {
 	                //if moveable is jumping through a horizontal laser
                     if ((direction == Direction.NORTH && m.GetCoords().row == laser.startRow) ||
 		                       (direction == Direction.SOUTH && desired.row == laser.startRow)) {
