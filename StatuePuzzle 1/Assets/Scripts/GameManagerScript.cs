@@ -329,8 +329,13 @@ public class GameManagerScript : MonoBehaviour {
                         m.transform.position = new Vector3(c.col-dx + mapOrigin.x, c.row-dy + mapOrigin.y, 0);
                         moveables.Add(m);
                         m.ExecuteMove(dr, nextState, 1, true);
-                    } else if (nextState[c.row, c.col] > 30 && nextState[c.row, c.col] < 40) {
 	                    
+	                 //check for button press   
+                    } else if (nextState[c.row, c.col] > 30 && nextState[c.row, c.col] < 40) {
+	                    coord buttonCoord = new coord(c.row, c.col);
+	                    ButtonManagerScript.buttonCoords[buttonCoord].pressed =
+		                    !ButtonManagerScript.buttonCoords[buttonCoord];
+
                     }
                 }
 			}

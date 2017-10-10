@@ -12,6 +12,9 @@ public class ButtonToggleScript : MonoBehaviour
 	[SerializeField]
 	private Material offMaterial;
 	
+	//TODO: Fix button to laser framework
+	private Laser laser;
+	
 	// Use this for initialization
 	void Start () {
 		
@@ -21,8 +24,13 @@ public class ButtonToggleScript : MonoBehaviour
 	void Update () {
 		if (pressed){
 			GetComponent<MeshRenderer>().material = offMaterial;
+			//TODO: Turn laser on.
 		} else {
 			GetComponent<MeshRenderer>().material = onMaterial;
+			//TODO: Turn laser off.
 		}
+	
 	}
+	
+	
 }
