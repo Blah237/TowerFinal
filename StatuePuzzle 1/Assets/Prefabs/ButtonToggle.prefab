@@ -107,8 +107,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2bfca402f889f481ea56c9498e7f5c0a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  onMaterial: {fileID: 2100000, guid: c1197739b43b57248a2233b650016dc8, type: 2}
-  offMaterial: {fileID: 2100000, guid: a242af0b60811274c83475443c1c7ce7, type: 2}
+  onMaterial: {fileID: 2100000, guid: babec0ccb99436f40a05bf89b03258e6, type: 2}
+  offMaterial: {fileID: 2100000, guid: c682f9ff4fa831d4f8948a5f95d0efb8, type: 2}
   laser:
     startRow: 0
     startCol: 0
