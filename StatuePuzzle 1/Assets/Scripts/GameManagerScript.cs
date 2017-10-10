@@ -21,6 +21,11 @@ public enum BoardCodes:int {
     PLAYER_ON_SWAP = 22,
     MIMIC_ON_SWAP = 23,
     MIRROR_ON_SWAP = 24,
+	
+	BUTTON = 30,
+	PLAYER_ON_BUTTON = 32,
+	MIMIC_ON_BUTTON = 33,
+	MIRROR_ON_BUTTON = 34,
 }
 
 [System.Serializable]
@@ -63,6 +68,8 @@ public class GameManagerScript : MonoBehaviour {
 	
 	public WinScript winscript;
 	public DeathScript deathscript;
+
+	public ButtonToggleScript button;
 	
 	public GameObject ground;
 	public Camera mainCamera; 
@@ -75,6 +82,7 @@ public class GameManagerScript : MonoBehaviour {
 
     public GameObject swap;
     List<coord> swapCoords = new List<coord>();
+	List<coord> buttonCoords = new List<coord>();
 
 
     public Vector2 mapOrigin;
@@ -126,11 +134,17 @@ public class GameManagerScript : MonoBehaviour {
                     GameObject c = GameObject.Instantiate(goal);
                     c.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0);
                     goalCoords.Add(new coord(i, j));
-                } else if (boardState.board[i, j] >= 20 && boardState.board[i, j] < 30) {
-                    // swap
-                    GameObject c = GameObject.Instantiate(swap);
-                    c.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0);
-                    swapCoords.Add(new coord(i, j));
+                } else if (boardState.board[i, j] >= 20 && boardState.board[i, j] < 30)
+	            {
+		            // swap
+		            GameObject c = GameObject.Instantiate(swap);
+		            c.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0);
+		            swapCoords.Add(new coord(i, j));
+	            } else if (boardState.board[i,j] >= 30 && boardState.board[i,j] < 40) {
+	                //button
+	                ButtonToggleScript c = GameObject.Instantiate(button);
+	                c.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0);
+	                buttonCoords.Add(new coord(i,j));
                 } else {
                     GameObject g = GameObject.Instantiate(ground);
                     g.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0);
@@ -320,6 +334,8 @@ public class GameManagerScript : MonoBehaviour {
                         m.transform.position = new Vector3(c.col-dx + mapOrigin.x, c.row-dy + mapOrigin.y, 0);
                         moveables.Add(m);
                         m.ExecuteMove(dr, nextState, 1, true);
+                    } else if (nextState[c.row, c.col] > 30 && nextState[c.row, c.col] < 40) {
+	                    
                     }
                 }
 			}
