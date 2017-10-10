@@ -139,6 +139,7 @@ public class GameManagerScript : MonoBehaviour {
 	                ButtonToggleScript c = GameObject.Instantiate(button);
 	                c.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0);
 	                buttonCoords.Add(new coord(i,j));
+	                ButtonManagerScript.buttonCoords.Add(new coord(i,j), c);
                 } else {
                     GameObject g = GameObject.Instantiate(ground);
                     g.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0);
