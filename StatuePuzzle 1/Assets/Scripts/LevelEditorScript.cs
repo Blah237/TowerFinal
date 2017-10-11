@@ -294,7 +294,8 @@ public class LevelEditorScript : MonoBehaviour {
             level.board[row, col] -= 30;
         } else {
             level.board[row, col] = (level.board[row, col] % 10) + 30;
-	}
+	    }
+        displayGrid[row, col].sprite = getTileSprite(level.board[row, col]);
     }
 
     //places and removes portals
@@ -586,7 +587,7 @@ public class LevelEditorScript : MonoBehaviour {
                 break;
             case clickTileOptions.BUTTON:
                 clickTile = placeButton;
-		break;
+		        break;
             case clickTileOptions.PORTAL:
                 clickTile = placePortal;
                 break;

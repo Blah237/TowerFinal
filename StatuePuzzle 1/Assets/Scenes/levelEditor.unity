@@ -3650,6 +3650,8 @@ MonoBehaviour:
     cols: 7
     flatBoard: 
     lasers: []
+    buttons: 
+    portals: 
   padding: 10
   gridSquare: {fileID: 114604249758133132, guid: 82ce6dbeceee7234783aa0bfec718e3d,
     type: 2}
@@ -3689,6 +3691,12 @@ MonoBehaviour:
     value: 34
   - sprite: {fileID: 21300000, guid: 20fe13365a6ce7c4d963baca5a3b418c, type: 3}
     value: 50
+  - sprite: {fileID: 21300000, guid: abf59bb51956abe4abd7ab4d037aacc5, type: 3}
+    value: 52
+  - sprite: {fileID: 21300000, guid: 250d4e099b62b91488bf1e1e4e0b94ec, type: 3}
+    value: 53
+  - sprite: {fileID: 21300000, guid: 716a8a814a388764584c2690fb2f7b39, type: 3}
+    value: 54
   loadedLevel: 0
   levelName: 
   gridHolder: {fileID: 324320328}
