@@ -110,6 +110,7 @@ public class GameManagerScript : MonoBehaviour {
 
     // Use this for initialization
     void Start() {
+		Debug.Log ("STARTING");
         //load level using Melody's I/O
         boardState = IOScript.ParseLevel(levelName); 
 
@@ -187,22 +188,6 @@ public class GameManagerScript : MonoBehaviour {
                     m.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0);
                     moveables.Add(m);
                 } 
-            }
-        }
-
-        //instantiate lasers based on parsed lasers
-        if (boardState.lasers != null) {
-            foreach (Laser la in boardState.lasers) {
-                GameObject l = GameObject.Instantiate(laser);
-                l.transform.position = new Vector3(la.startCol + mapOrigin.x - 0.5f, la.startRow + mapOrigin.y + 0.5f, -0.1f);
-                l.transform.localScale = new Vector3(1, 1, la.length);
-                //TODO: implement button control of laser based on ID of laser
-                int rotateDir = la.direction == Direction.NORTH ? -90 : la.direction == Direction.SOUTH ? 90 : la.direction == Direction.EAST ? 0 : 180;
-                l.transform.Rotate(rotateDir, 90, 0, Space.World);
-                if (la.state == 0) {
-                    l.SetActive(false);
-                }
-                laserList.Add(la); 
             }
         }
 
