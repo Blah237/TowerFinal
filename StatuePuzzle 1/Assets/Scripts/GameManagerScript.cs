@@ -22,6 +22,11 @@ public enum BoardCodes:int {
     PLAYER_ON_SWAP = 22,
     MIMIC_ON_SWAP = 23,
     MIRROR_ON_SWAP = 24,
+	
+	BUTTON = 30,
+	PLAYER_ON_BUTTON = 32,
+	MIMIC_ON_BUTTON = 33,
+	MIRROR_ON_BUTTON = 34,
 }
 
 [System.Serializable]
@@ -64,6 +69,8 @@ public class GameManagerScript : MonoBehaviour {
 	
 	public WinScript winscript;
 	public DeathScript deathscript;
+
+	public ButtonToggleScript button;
 	
 	public GameObject ground;
 	public Camera mainCamera; 
@@ -76,6 +83,7 @@ public class GameManagerScript : MonoBehaviour {
 
     public GameObject swap;
     List<coord> swapCoords = new List<coord>();
+	List<coord> buttonCoords = new List<coord>();
 
 
     public Vector2 mapOrigin;
@@ -105,10 +113,28 @@ public class GameManagerScript : MonoBehaviour {
 
         mapOrigin = new Vector2(-boardState.cols / 2, -boardState.rows / 2);
         int dim = boardState.rows > boardState.cols ? boardState.rows : boardState.cols;
-        mainCamera.transform.position = new Vector3(0, 0, -(dim / 2) / Mathf.Tan(Mathf.PI / 6)); 
-        
+        mainCamera.transform.position = new Vector3(0, 0, -(dim / 2) / Mathf.Tan(Mathf.PI / 6));
+
+        int buttonCount = 0;
+
+        //instantiate lasers based on parsed lasers
+        if (boardState.lasers != null) {
+            foreach (Laser la in boardState.lasers) {
+                GameObject l = GameObject.Instantiate(laser);
+                l.transform.position = new Vector3(la.startCol + mapOrigin.x - 0.5f, la.startRow + mapOrigin.y + 0.5f, -0.1f);
+                l.transform.localScale = new Vector3(1, 1, la.length);
+                int rotateDir = la.direction == Direction.NORTH ? -90 : la.direction == Direction.SOUTH ? 90 : la.direction == Direction.EAST ? 0 : 180;
+                l.transform.Rotate(rotateDir, 90, 0, Space.World);
+                la.gameObject = l; 
+                if (la.state == 0) {
+                    l.SetActive(false);
+                }
+                laserList.Add(la);
+            }
+        }
+
         //instantiate items based on board
-        for(int i = 0; i < boardState.rows; i++) {
+        for (int i = 0; i < boardState.rows; i++) {
             for(int j = 0; j < boardState.cols; j++) {
                 if (boardState.board[i, j] == 1) {
                     GameObject w = GameObject.Instantiate(wall);
@@ -118,11 +144,21 @@ public class GameManagerScript : MonoBehaviour {
                     GameObject c = GameObject.Instantiate(goal);
                     c.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0);
                     goalCoords.Add(new coord(i, j));
-                } else if (boardState.board[i, j] >= 20 && boardState.board[i, j] < 30) {
-                    // swap
-                    GameObject c = GameObject.Instantiate(swap);
-                    c.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0);
-                    swapCoords.Add(new coord(i, j));
+                } else if (boardState.board[i, j] >= 20 && boardState.board[i, j] < 30)
+	            {
+		            // swap
+		            GameObject c = GameObject.Instantiate(swap);
+		            c.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0);
+		            swapCoords.Add(new coord(i, j));
+	            } else if (boardState.board[i,j] >= 30 && boardState.board[i,j] < 40) {
+	                //button
+	                ButtonToggleScript c = GameObject.Instantiate(button);
+	                c.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0);
+                    c.laser = laserList[boardState.buttons[buttonCount]];
+                    c.InitButton(); 
+	                buttonCoords.Add(new coord(i,j));
+	                ButtonManagerScript.buttonCoords.Add(new coord(i,j), c);
+                    buttonCount++; 
                 } else {
                     GameObject g = GameObject.Instantiate(ground);
                     g.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0);
@@ -147,9 +183,6 @@ public class GameManagerScript : MonoBehaviour {
             }
         }
 
-<<<<<<< HEAD
-		recordDynamicState ();
-=======
         //instantiate lasers based on parsed lasers
         if (boardState.lasers != null) {
             foreach (Laser la in boardState.lasers) {
@@ -165,7 +198,7 @@ public class GameManagerScript : MonoBehaviour {
                 laserList.Add(la); 
             }
         }
->>>>>>> 6f80c370e910c8af735aa445ad14f1afc2041515
+
 	}
 
 	// Update is called once per frame
@@ -191,28 +224,36 @@ public class GameManagerScript : MonoBehaviour {
     }
 
 	private void undo() {
-		DynamicState ds = dynamicStateStack.Pop();
-		int mimicIdx = 0;
-		int mirrorIdx = 0;
-		List<coord> mimicCoords = ds.mimicPositions.ToList ();
-		List<coord> mirrorCoords = ds.mirrorPositions.ToList ();
-		foreach (MoveableScript m in moveables) {
-			switch (m.type) {
-			case BoardCodes.PLAYER:
-				m.SetCoords (ds.playerPosition);
-				break;
-			case BoardCodes.MIMIC:
-				m.SetCoords (mimicCoords [mimicIdx]);
-				mimicIdx++;
-				break;
-			case BoardCodes.MIRROR:
-				m.SetCoords (mirrorCoords [mirrorIdx]);
-				mimicIdx++;
-				break;
-			default:
-				continue;
-			}
-		} 
+		// Record an undo with logging
+		try {
+			DynamicState ds = dynamicStateStack.Pop();
+			int mimicIdx = 0;
+			int mirrorIdx = 0;
+			List<coord> mimicCoords = ds.mimicPositions.ToList ();
+			List<coord> mirrorCoords = ds.mirrorPositions.ToList ();
+			foreach (MoveableScript m in moveables) {
+				switch (m.type) {
+				case BoardCodes.PLAYER:
+					m.SetCoords (ds.playerPosition);
+					break;
+				case BoardCodes.MIMIC:
+					m.SetCoords (mimicCoords [mimicIdx]);
+					mimicIdx++;
+					break;
+				case BoardCodes.MIRROR:
+					m.SetCoords (mirrorCoords [mirrorIdx]);
+					mimicIdx++;
+					break;
+				default:
+					break;
+				}
+
+				m.transform.position = new Vector3(m.GetCoords().col + mapOrigin.x, m.GetCoords().row + mapOrigin.y, 0);
+			} 
+		} catch (InvalidOperationException) {
+			//TODO: Actually display this to the user 
+			Debug.Log ("Empty stack, cannot undo.");
+		}
 	}
 
     Direction readInput() {
@@ -225,6 +266,7 @@ public class GameManagerScript : MonoBehaviour {
 		} else if (Input.GetAxis ("Vertical") <= -1f) {
 			return Direction.SOUTH;
 		} else if (Input.GetKeyDown (KeyCode.Z)) {
+			Debug.Log ("Undoing");
 			undo ();
 			return Direction.NONE;
 		} else {
@@ -234,12 +276,8 @@ public class GameManagerScript : MonoBehaviour {
 
     bool checkWin() {
         foreach (coord c in goalCoords) {
-<<<<<<< HEAD
 			DynamicState ds = dynamicStateStack.Peek ();
 			if (!(ds.mimicPositions.Contains(c) || ds.mirrorPositions.Contains(c))) {
-=======
-			if (boardStates.Peek()[c.row, c.col] !=  13 && boardStates.Peek()[c.row, c.col] != 14) { //FIVE IS CURRENT COMBO MAX
->>>>>>> 6f80c370e910c8af735aa445ad14f1afc2041515
                 return false;
             }
         }
@@ -257,25 +295,36 @@ public class GameManagerScript : MonoBehaviour {
 
     void move(Direction dir) {
 
-<<<<<<< HEAD
-		Dictionary<MoveableScript,coord> goalCoordMap = new Dictionary<MoveableScript, coord>();
-		Dictionary<MoveableScript,Direction> moveDirections = new Dictionary<MoveableScript, Direction>();
-
-		foreach(MoveableScript m in moveables) {
-			coord goal = m.GetAttemptedMoveCoords(dir, boardState.board, 1);
-            goalCoordMap.Add(m,goal);
-=======
-		int[,] boardState = boardStates.Peek();
-		int[,] nextState = new int[boardState.GetLength (0), boardState.GetLength (1)];
-		System.Array.Copy (boardState, nextState, boardState.Length);
+		recordDynamicState ();
 
 		Dictionary<MoveableScript,coord> desiredCoords = new Dictionary<MoveableScript, coord>(); //where pieces would move without collisions/walls
 		Dictionary<MoveableScript,Direction> moveDirections = new Dictionary<MoveableScript, Direction>(); //directions pieces will actually move
 
 		foreach(MoveableScript m in moveables) {
-			coord desired = m.GetAttemptedMoveCoords(dir, boardState, 1);
+			coord desired = m.GetAttemptedMoveCoords(dir, boardState.board, 1);
             desiredCoords.Add(m,desired);
->>>>>>> 6f80c370e910c8af735aa445ad14f1afc2041515
+			Direction direction = m.GetAttemptedMoveDirection(dir, boardState.board); 
+
+            //Check for collisions with lasers 
+            foreach (Laser laser in laserList) {
+                // if laser is active && laser can collide with this moveable 
+                if (laser.gameObject.activeInHierarchy && (laser.canCollide & m.collisionMask) > 0) {
+	                //if moveable is jumping through a horizontal laser
+                    if ((direction == Direction.NORTH && m.GetCoords().row == laser.startRow) ||
+		                       (direction == Direction.SOUTH && desired.row == laser.startRow)) {
+		                        if (laser.isBetweenCol(m.GetCoords().col)) {
+			                            moveDirections[m] = Direction.NONE;
+			                        }
+		                    }
+                    //if moveable is jumping through a vertical laser 
+                    if ((direction == Direction.EAST && desired.col == laser.startCol) ||
+	                        (direction == Direction.WEST && m.GetCoords().col == laser.startCol)) {
+	                        if (laser.isBetweenRow(m.GetCoords().row)) {
+		                            moveDirections[m] = Direction.NONE;
+		                    }
+	                    }
+	            }
+	        }
 
 			// Check for collisions moving into the same spot
 			foreach (MoveableScript other in moveables) {
@@ -359,7 +408,12 @@ public class GameManagerScript : MonoBehaviour {
                         m.ExecuteMove(dr, 1, true);
                     }
                 }
-			}
+                //check for button press 
+				if (boardState.board[c.row, c.col] >= 30 && boardState.board[c.row, c.col] < 40) {
+                    coord buttonCoord = new coord(c.row, c.col);
+                    ButtonManagerScript.buttonCoords[buttonCoord].TogglePressed();
+                }
+            }
 
             moveDirections.Clear();
             // destroy old objects
@@ -369,8 +423,7 @@ public class GameManagerScript : MonoBehaviour {
                 GameObject.Destroy(ms.gameObject);
             }
 		}
-
-		recordDynamicState ();
+			
 		checkWin ();
     }
 
@@ -392,6 +445,7 @@ public class GameManagerScript : MonoBehaviour {
 			}
 		} 
 		dynamicStateStack.Push (ds);
+		Debug.Log (ds.toJson ());
 		LoggingManager.instance.RecordEvent (LoggingManager.EventCodes.DYNAMIC_STATE, ds.toJson ());
 	}
 }

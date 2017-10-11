@@ -3649,6 +3649,7 @@ MonoBehaviour:
     rows: 7
     cols: 7
     flatBoard: 
+    lasers: []
   padding: 10
   gridSquare: {fileID: 114604249758133132, guid: 82ce6dbeceee7234783aa0bfec718e3d,
     type: 2}
@@ -3678,6 +3679,14 @@ MonoBehaviour:
     value: 23
   - sprite: {fileID: 21300000, guid: a92ea29e6060cc64e8b115c1f729f34a, type: 3}
     value: 24
+  - sprite: {fileID: 21300000, guid: fc79a521ba6e7af43afd793ebb3cbb46, type: 3}
+    value: 30
+  - sprite: {fileID: 21300000, guid: 3011f97a89141444887180f0360b27d1, type: 3}
+    value: 32
+  - sprite: {fileID: 21300000, guid: bdf289aa216b1f141b4ee0e88a3fa724, type: 3}
+    value: 33
+  - sprite: {fileID: 21300000, guid: 5fd844c93657caa48b1ac0a1d81e0f5b, type: 3}
+    value: 34
   loadedLevel: 0
   levelName: 
   gridHolder: {fileID: 324320328}
@@ -3699,6 +3708,8 @@ MonoBehaviour:
     value: 10
   - label: Swap
     value: 20
+  - label: Button
+    value: 30
   namePopUp: {fileID: 1528046617}
   sizePopUp: {fileID: 607537524}
   inputText: {fileID: 1226941972}
