@@ -38,6 +38,10 @@ public abstract class MoveableScript : MonoBehaviour {
 		coords.row = row;
 	}
 
+	public void SetCoords(coord c) {
+		coords = c;
+	}
+
 	private void Update() {
 		if(isMoving) {
 			float dt = Time.deltaTime; 
@@ -63,18 +67,7 @@ public abstract class MoveableScript : MonoBehaviour {
 
 	public abstract Direction GetAttemptedMoveDirection (Direction direction, int[,] boardState);
 
-	public void ExecuteMove(Direction direction, int[,] boardState, int numSpaces, bool animOnly = false) {
-
-		//TODO: Make this assert more robust so it doesn't just check every overlap possibility
-		//(currently the only overlap possibility is a goal)
-		//TODO: Actually going to comment this assert out entirely temporarily, another thing we need
-		//to add for robustness is that when one piece moves into a space that another piece was just in,
-		//the sum is temporarily off until it gets subtracted by the later moving piece, which triggers
-		//the assert. 
-
-//		Debug.Assert(boardState[coords.row,coords.col] == (int) type ||
-//			boardState[coords.row,coords.col] > 5,
-//			"Expected " + coords.ToString() + " to be " + (int) type + " but was " + boardState[coords.row,coords.col]);
+	public void ExecuteMove(Direction direction, int numSpaces, bool animOnly = false) {
 
 		//TODO: animate 
 
@@ -83,9 +76,6 @@ public abstract class MoveableScript : MonoBehaviour {
 		distanceToMove = numSpaces;
 		this.direction = direction;
 		//Debug.Log(this.name + " moving " + direction.ToString());
-
-		//update now empty space
-		coord oldCoords = coords;
 
 		//change statue position
 		switch (direction) {
@@ -104,15 +94,9 @@ public abstract class MoveableScript : MonoBehaviour {
 		}
 
         //update board
-        if (!animOnly) {
-            boardState[oldCoords.row, oldCoords.col] = boardState[oldCoords.row, oldCoords.col] - (int)type;
-            boardState[coords.row, coords.col] = (int)type + boardState[coords.row, coords.col];
-        }
     }
 
     public void EnterPortal(int[,] boardState, coord portalCoords) {
-        boardState[coords.row, coords.col] -= (int)type;
-        boardState[portalCoords.row, portalCoords.col] += (int)type;
         coords = portalCoords;
     }
 }
