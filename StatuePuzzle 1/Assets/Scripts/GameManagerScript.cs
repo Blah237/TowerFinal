@@ -229,6 +229,7 @@ public class GameManagerScript : MonoBehaviour {
 			List<coord> mimicCoords = ds.mimicPositions.ToList ();
 			List<coord> mirrorCoords = ds.mirrorPositions.ToList ();
 			foreach (MoveableScript m in moveables) {
+				coord prevCoord = m.GetCoords();
 				coord undoCoord;
 				switch (m.type) {
 				case BoardCodes.PLAYER:
@@ -252,6 +253,8 @@ public class GameManagerScript : MonoBehaviour {
 
 				if (ButtonManagerScript.buttonCoords.ContainsKey(undoCoord)) {
 					ButtonManagerScript.buttonCoords[undoCoord].TogglePressed();
+				} else if (ButtonManagerScript.buttonCoords.ContainsKey(prevCoord)) {
+					ButtonManagerScript.buttonCoords[prevCoord].TogglePressed();
 				}
 				m.transform.position = new Vector3(m.GetCoords().col + mapOrigin.x, m.GetCoords().row + mapOrigin.y, 0);
 			} 
@@ -281,11 +284,18 @@ public class GameManagerScript : MonoBehaviour {
     }
 
     bool checkWin() {
+
+		HashSet<coord> nppCoords = new HashSet<coord> ();
+		foreach (MoveableScript m in moveables) {
+			if (m.type != BoardCodes.PLAYER) {
+				nppCoords.Add (m.GetCoords());
+			}
+		}
+
         foreach (coord c in goalCoords) {
-			DynamicState ds = dynamicStateStack.Peek ();
-			if (!(ds.mimicPositions.Contains(c) || ds.mirrorPositions.Contains(c))) {
-                return false;
-            }
+			if (!nppCoords.Contains (c)) {
+				return false;
+			}
         }
         Debug.Log("VICTORY!");
 		LoggingManager.instance.RecordLevelEnd ();
