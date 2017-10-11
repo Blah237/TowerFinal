@@ -378,7 +378,7 @@ public class GameManagerScript : MonoBehaviour {
                 } else if (moveDirections[moveable] != Direction.NONE && portalCoords.Contains(c)) {
                     coord cp = portalMap[c];
                     // overrides any existing moves
-                    moveable.EnterPortal(moveDirections[moveable], nextState, 1, cp);
+                    moveable.EnterPortal(nextState, cp);
                 }
 
                 //check for button press 
