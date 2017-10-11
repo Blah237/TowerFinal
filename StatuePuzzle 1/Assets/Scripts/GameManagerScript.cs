@@ -261,18 +261,22 @@ public class GameManagerScript : MonoBehaviour {
                 if (laser.gameObject.activeInHierarchy && (laser.canCollide & m.collisionMask) > 0) {
 	                //if moveable is jumping through a horizontal laser
                     if ((direction == Direction.NORTH && m.GetCoords().row == laser.startRow) ||
-		                       (direction == Direction.SOUTH && desired.row == laser.startRow)) {
-		                        if (laser.isBetweenCol(m.GetCoords().col)) {
-			                            moveDirections[m] = Direction.NONE;
-			                        }
-		                    }
+		                (direction == Direction.SOUTH && desired.row == laser.startRow)) {
+		                if (laser.isBetweenCol(m.GetCoords().col)) {
+			                moveDirections[m] = Direction.NONE;
+                            desired = m.GetCoords();
+                            desiredCoords[m] = desired;
+                        }
+		            }
                     //if moveable is jumping through a vertical laser 
                     if ((direction == Direction.EAST && desired.col == laser.startCol) ||
-	                        (direction == Direction.WEST && m.GetCoords().col == laser.startCol)) {
-	                        if (laser.isBetweenRow(m.GetCoords().row)) {
-		                            moveDirections[m] = Direction.NONE;
-		                    }
-	                    }
+	                    (direction == Direction.WEST && m.GetCoords().col == laser.startCol)) {
+	                    if (laser.isBetweenRow(m.GetCoords().row)) {
+		                    moveDirections[m] = Direction.NONE;
+                            desired = m.GetCoords();
+                            desiredCoords[m] = desired;
+                        }
+	                }
 	            }
 	        }
 
