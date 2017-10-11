@@ -53,7 +53,10 @@ public abstract class MoveableScript : MonoBehaviour {
 			if (distanceToMove <= 0) {
 				isMoving = false;
 				distance += distanceToMove;
-				distanceToMove = 0; 
+				distanceToMove = 0;
+                //snap to correct place for portals
+                Vector3 endPos = new Vector3(coords.col + GameManagerScript.mapOrigin.x, coords.row + GameManagerScript.mapOrigin.y, this.transform.position.z);
+                this.transform.position = endPos;
 			}
 			transform.Translate(new Vector3(x * distance, y * distance, 0), Space.World);       
 		}
@@ -74,9 +77,6 @@ public abstract class MoveableScript : MonoBehaviour {
 		this.direction = direction;
 		//Debug.Log(this.name + " moving " + direction.ToString());
 
-		//update now empty space
-		coord oldCoords = coords;
-
 		//change statue position
 		switch (direction) {
 		case Direction.NORTH:
@@ -94,5 +94,11 @@ public abstract class MoveableScript : MonoBehaviour {
 		}
 
         //update board
+    }
+
+    public void EnterPortal(int[,] boardState, coord portalCoords) {
+        boardState[coords.row, coords.col] -= (int)type;
+        boardState[portalCoords.row, portalCoords.col] += (int)type;
+        coords = portalCoords;
     }
 }

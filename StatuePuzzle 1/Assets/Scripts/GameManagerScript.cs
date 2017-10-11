@@ -82,11 +82,14 @@ public class GameManagerScript : MonoBehaviour {
     List<Laser> laserList = new List<Laser>(); 
 
     public GameObject swap;
+    public GameObject portal;
+
     List<coord> swapCoords = new List<coord>();
 	List<coord> buttonCoords = new List<coord>();
+    List<coord> portalCoords = new List<coord>();
+    Dictionary<coord, coord> portalMap = new Dictionary<coord, coord>();
 
-
-    public Vector2 mapOrigin;
+    public static Vector2 mapOrigin;
 
     [SerializeField]
     public static bool inputReady = true;
@@ -97,7 +100,6 @@ public class GameManagerScript : MonoBehaviour {
     Level boardState; //Row, Column
     // East col+, North row+
 
-    int[] moveableTypes = new int[] {2,3,4}; 
     /* 0 = empty
      * 1 = wall
      * 2 = player
@@ -151,7 +153,7 @@ public class GameManagerScript : MonoBehaviour {
 		            c.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0);
 		            swapCoords.Add(new coord(i, j));
 	            } else if (boardState.board[i,j] >= 30 && boardState.board[i,j] < 40) {
-	                //button
+	                // button
 	                ButtonToggleScript c = GameObject.Instantiate(button);
 	                c.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0);
                     c.laser = laserList[boardState.buttons[buttonCount]];
@@ -159,6 +161,11 @@ public class GameManagerScript : MonoBehaviour {
 	                buttonCoords.Add(new coord(i,j));
 	                ButtonManagerScript.buttonCoords.Add(new coord(i,j), c);
                     buttonCount++; 
+                } else if (boardState.board[i, j] >= 50 && boardState.board[i, j] < 60) {
+                    // portal
+                    GameObject p = GameObject.Instantiate(portal);
+                    p.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0);
+                    portalCoords.Add(new coord(i, j));
                 } else {
                     GameObject g = GameObject.Instantiate(ground);
                     g.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0);
@@ -199,6 +206,11 @@ public class GameManagerScript : MonoBehaviour {
             }
         }
 
+        if (boardState.portals != null) {
+            for (int i = 0; i < boardState.portals.Length; i++) {
+                portalMap.Add(portalCoords[i], portalCoords[boardState.portals[i]]);
+            }
+        }
 	}
 
 	// Update is called once per frame
@@ -311,27 +323,34 @@ public class GameManagerScript : MonoBehaviour {
 
 		foreach(MoveableScript m in moveables) {
 			coord desired = m.GetAttemptedMoveCoords(dir, boardState.board, 1);
+			if (boardState.board[desired.row, desired.col] / 10 == 5) {
+                desired = portalMap[desired];
+            }
             desiredCoords.Add(m,desired);
+            
 			Direction direction = m.GetAttemptedMoveDirection(dir, boardState.board); 
-
             //Check for collisions with lasers 
             foreach (Laser laser in laserList) {
                 // if laser is active && laser can collide with this moveable 
                 if (laser.gameObject.activeInHierarchy && (laser.canCollide & m.collisionMask) > 0) {
 	                //if moveable is jumping through a horizontal laser
                     if ((direction == Direction.NORTH && m.GetCoords().row == laser.startRow) ||
-		                       (direction == Direction.SOUTH && desired.row == laser.startRow)) {
-		                        if (laser.isBetweenCol(m.GetCoords().col)) {
-			                            moveDirections[m] = Direction.NONE;
-			                        }
-		                    }
+		                (direction == Direction.SOUTH && desired.row == laser.startRow)) {
+		                if (laser.isBetweenCol(m.GetCoords().col)) {
+			                moveDirections[m] = Direction.NONE;
+                            desired = m.GetCoords();
+                            desiredCoords[m] = desired;
+                        }
+		            }
                     //if moveable is jumping through a vertical laser 
                     if ((direction == Direction.EAST && desired.col == laser.startCol) ||
-	                        (direction == Direction.WEST && m.GetCoords().col == laser.startCol)) {
-	                        if (laser.isBetweenRow(m.GetCoords().row)) {
-		                            moveDirections[m] = Direction.NONE;
-		                    }
-	                    }
+	                    (direction == Direction.WEST && m.GetCoords().col == laser.startCol)) {
+	                    if (laser.isBetweenRow(m.GetCoords().row)) {
+		                    moveDirections[m] = Direction.NONE;
+                            desired = m.GetCoords();
+                            desiredCoords[m] = desired;
+                        }
+	                }
 	            }
 	        }
 
@@ -416,7 +435,12 @@ public class GameManagerScript : MonoBehaviour {
                         moveables.Add(m);
                         m.ExecuteMove(dr, 1, true);
                     }
+                } else if (moveDirections[moveable] != Direction.NONE && portalCoords.Contains(c)) {
+                    coord cp = portalMap[c];
+                    // overrides any existing moves
+					moveable.EnterPortal(boardState.board, cp);
                 }
+
                 //check for button press 
 				if (boardState.board[c.row, c.col] >= 30 && boardState.board[c.row, c.col] < 40) {
                     coord buttonCoord = new coord(c.row, c.col);

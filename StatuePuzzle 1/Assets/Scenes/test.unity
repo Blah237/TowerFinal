@@ -576,7 +576,7 @@ MonoBehaviour:
   win: 0
   dead: 0
   swap: {fileID: 1489777977322046, guid: 8840d96f49251704bb39ec1725e419bc, type: 2}
-  mapOrigin: {x: 0, y: 0}
+  portal: {fileID: 1460910959781724, guid: 4c74f76354da52847ae5db270f11eb3a, type: 2}
 --- !u!4 &1271382224
 Transform:
   m_ObjectHideFlags: 0

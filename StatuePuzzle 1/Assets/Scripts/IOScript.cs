@@ -13,7 +13,8 @@ public class Level
     public int[] flatBoard;
     public int[,] board;
     public Laser[] lasers;
-    public int[] buttons; 
+    public int[] buttons;
+    public int[] portals;
 
     public void MakeFlatBoard() {
         flatBoard = new int[rows * cols]; 
