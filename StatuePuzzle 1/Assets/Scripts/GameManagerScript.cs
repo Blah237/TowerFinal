@@ -224,7 +224,7 @@ public class GameManagerScript : MonoBehaviour {
     }
 
 	private void undo() {
-		// Record an undo with logging
+		// TODO: Record an undo with logging as an event
 		try {
 			DynamicState ds = dynamicStateStack.Pop();
 			int mimicIdx = 0;
@@ -232,24 +232,33 @@ public class GameManagerScript : MonoBehaviour {
 			List<coord> mimicCoords = ds.mimicPositions.ToList ();
 			List<coord> mirrorCoords = ds.mirrorPositions.ToList ();
 			foreach (MoveableScript m in moveables) {
+				coord undoCoord;
 				switch (m.type) {
 				case BoardCodes.PLAYER:
-					m.SetCoords (ds.playerPosition);
+					undoCoord = ds.playerPosition;
+					m.SetCoords (undoCoord);
 					break;
 				case BoardCodes.MIMIC:
-					m.SetCoords (mimicCoords [mimicIdx]);
+					undoCoord = mimicCoords [mimicIdx];
+					m.SetCoords (undoCoord);
 					mimicIdx++;
 					break;
 				case BoardCodes.MIRROR:
-					m.SetCoords (mirrorCoords [mirrorIdx]);
-					mimicIdx++;
+					undoCoord = mirrorCoords [mirrorIdx];
+					m.SetCoords (undoCoord);
+					mirrorIdx++;
 					break;
 				default:
+					undoCoord = new coord(0,0);
 					break;
 				}
 
+				if (ButtonManagerScript.buttonCoords.ContainsKey(undoCoord)) {
+					ButtonManagerScript.buttonCoords[undoCoord].TogglePressed();
+				}
 				m.transform.position = new Vector3(m.GetCoords().col + mapOrigin.x, m.GetCoords().row + mapOrigin.y, 0);
 			} 
+
 		} catch (InvalidOperationException) {
 			//TODO: Actually display this to the user 
 			Debug.Log ("Empty stack, no previous move to undo.");
@@ -443,7 +452,13 @@ public class GameManagerScript : MonoBehaviour {
 			default:
 				continue;
 			}
-		} 
+		}
+
+		foreach (KeyValuePair<coord,ButtonToggleScript> b in ButtonManagerScript.buttonCoords) {
+			//TODO: Would really like if laser.state was a bool
+			ds.buttonStates.Add (b.Key, b.Value.laser.state);
+		}
+
 		dynamicStateStack.Push (ds);
 		Debug.Log (ds.toJson ());
 		LoggingManager.instance.RecordEvent (LoggingManager.EventCodes.DYNAMIC_STATE, ds.toJson ());

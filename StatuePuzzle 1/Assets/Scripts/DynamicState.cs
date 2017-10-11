@@ -11,12 +11,12 @@ public class DynamicState
 	public coord playerPosition;
 	public HashSet<coord> mimicPositions;
 	public HashSet<coord> mirrorPositions;
-	public Dictionary<coord,bool> buttonStates;
+	public Dictionary<coord,int> buttonStates;
 
 	public DynamicState() {
 		mimicPositions = new HashSet<coord> ();
 		mirrorPositions = new HashSet<coord> ();
-		buttonStates = new Dictionary<coord,bool> ();
+		buttonStates = new Dictionary<coord,int> ();
 	}
 
 	public string toJson() {
