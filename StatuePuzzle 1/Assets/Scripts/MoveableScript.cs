@@ -49,7 +49,10 @@ public abstract class MoveableScript : MonoBehaviour {
 			if (distanceToMove <= 0) {
 				isMoving = false;
 				distance += distanceToMove;
-				distanceToMove = 0; 
+				distanceToMove = 0;
+                //snap to correct place for portals
+                Vector3 endPos = new Vector3(coords.col + GameManagerScript.mapOrigin.x, coords.row + GameManagerScript.mapOrigin.y, this.transform.position.z);
+                this.transform.position = endPos;
 			}
 			transform.Translate(new Vector3(x * distance, y * distance, 0), Space.World);       
 		}
@@ -105,5 +108,11 @@ public abstract class MoveableScript : MonoBehaviour {
             boardState[oldCoords.row, oldCoords.col] = boardState[oldCoords.row, oldCoords.col] - (int)type;
             boardState[coords.row, coords.col] = (int)type + boardState[coords.row, coords.col];
         }
+    }
+
+    public void EnterPortal(int[,] boardState, coord portalCoords) {
+        boardState[coords.row, coords.col] -= (int)type;
+        boardState[portalCoords.row, portalCoords.col] += (int)type;
+        coords = portalCoords;
     }
 }
