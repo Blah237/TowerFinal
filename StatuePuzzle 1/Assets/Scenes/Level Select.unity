@@ -233,7 +233,7 @@ MonoBehaviour:
   height: 0.75
   padding: 10
   canvas: {fileID: 790765220}
-  cols: 3
+  cols: 4
   rows: 3
 --- !u!1 &884679899
 GameObject:

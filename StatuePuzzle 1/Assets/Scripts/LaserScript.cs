@@ -6,13 +6,13 @@ using UnityEngine;
 
 [Serializable]
 public class Laser {
-    public int id; //The id of this laser. To be used for buttons
     public int startRow; //The top of the box where the laser starts from. 
     public int startCol; //The left side of the box where the laser starts from. 
     public Direction direction; //Can be NORTH, SOUTH, EAST, or WEST, mimics Direction enum 
     public int length; //How many squares the laser covers
     public int state; //0 is off, 1 is on 
     public int canCollide; //Can range from 0-7. A 1 in each binary digit signifies that it can collide with player, mimic, and mirror respectively 
+    public GameObject gameObject; 
 
     public bool isBetweenRow(int coord) {
         if (direction == Direction.NORTH) {

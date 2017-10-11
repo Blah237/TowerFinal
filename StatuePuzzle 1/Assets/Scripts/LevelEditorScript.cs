@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class LevelEditorScript : MonoBehaviour {
 
-    public enum clickTileOptions { WALL = 1, PLAYER = 2, MIMIC = 3, MIRROR = 4, GOAL = 10, SWAP = 20 }
+    public enum clickTileOptions { WALL = 1, PLAYER = 2, MIMIC = 3, MIRROR = 4, GOAL = 10, SWAP = 20, BUTTON = 30, PORTAL = 50 }
 
     [System.Serializable]
     public struct clickSetter
@@ -121,8 +121,8 @@ public class LevelEditorScript : MonoBehaviour {
 
     void positionSidebarPiece(RawImage button, clickSetter setter, int index, int count, float topBarHeight, float bottomBarHeight) {
         float t = index / (float)count;
-        button.rectTransform.anchoredPosition = new Vector2(width + sidebarWidth / 2f, topBarHeight * (1f - t) + bottomBarHeight * t - sidebarWidth/4f + padding);
         button.rectTransform.sizeDelta = new Vector2(sidebarWidth, (topBarHeight - bottomBarHeight)/count);
+        button.rectTransform.anchoredPosition = new Vector2(width + sidebarWidth / 2f, topBarHeight * (1f - t) + bottomBarHeight * t - button.rectTransform.sizeDelta.y/2);
         button.rectTransform.localScale = Vector2.one;
         button.GetComponentInChildren<Text>().text = setter.label;
     }
@@ -283,6 +283,28 @@ public class LevelEditorScript : MonoBehaviour {
             level.board[row, col] -= 20;
         } else {
             level.board[row, col] = (level.board[row, col] % 10) + 20;
+        }
+        displayGrid[row, col].sprite = getTileSprite(level.board[row, col]);
+    }
+
+    //places and removes Butons
+    void placeButton(int row, int col) {
+        // check if there's a goal
+        if (level.board[row, col] >= 30 && level.board[row, col] < 40) {
+            level.board[row, col] -= 30;
+        } else {
+            level.board[row, col] = (level.board[row, col] % 10) + 30;
+	    }
+        displayGrid[row, col].sprite = getTileSprite(level.board[row, col]);
+    }
+
+    //places and removes portals
+    void placePortal(int row, int col) {
+        // check if there's a goal
+        if (level.board[row, col] >= 50 && level.board[row, col] < 60) {
+            level.board[row, col] -= 50;
+        } else {
+            level.board[row, col] = (level.board[row, col] % 10) + 50;
         }
         displayGrid[row, col].sprite = getTileSprite(level.board[row, col]);
     }
@@ -563,6 +585,14 @@ public class LevelEditorScript : MonoBehaviour {
             case clickTileOptions.SWAP:
                 clickTile = placeSwap;
                 break;
+            case clickTileOptions.BUTTON:
+                clickTile = placeButton;
+		        break;
+            case clickTileOptions.PORTAL:
+                clickTile = placePortal;
+                break;
+            default:
+                throw new System.NotImplementedException();
         }
     }
     #endregion
