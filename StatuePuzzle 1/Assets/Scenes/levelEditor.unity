@@ -3687,6 +3687,8 @@ MonoBehaviour:
     value: 33
   - sprite: {fileID: 21300000, guid: 5fd844c93657caa48b1ac0a1d81e0f5b, type: 3}
     value: 34
+  - sprite: {fileID: 21300000, guid: 20fe13365a6ce7c4d963baca5a3b418c, type: 3}
+    value: 50
   loadedLevel: 0
   levelName: 
   gridHolder: {fileID: 324320328}
@@ -3710,6 +3712,8 @@ MonoBehaviour:
     value: 20
   - label: Button
     value: 30
+  - label: Portal
+    value: 50
   namePopUp: {fileID: 1528046617}
   sizePopUp: {fileID: 607537524}
   inputText: {fileID: 1226941972}
