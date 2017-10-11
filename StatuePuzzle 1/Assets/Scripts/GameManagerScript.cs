@@ -252,7 +252,7 @@ public class GameManagerScript : MonoBehaviour {
 			} 
 		} catch (InvalidOperationException) {
 			//TODO: Actually display this to the user 
-			Debug.Log ("Empty stack, cannot undo.");
+			Debug.Log ("Empty stack, no previous move to undo.");
 		}
 	}
 
