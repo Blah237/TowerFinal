@@ -64,6 +64,7 @@ public class GameManagerScript : MonoBehaviour {
     public MimicScript mimic;
     public MirrorScript mirror;
     public GameObject wall;
+    public GameObject frontWall; 
     public GameObject goal;
     public GameObject laser; 
 	
@@ -140,7 +141,12 @@ public class GameManagerScript : MonoBehaviour {
         for (int i = 0; i < boardState.rows; i++) {
             for(int j = 0; j < boardState.cols; j++) {
                 if (boardState.board[i, j] == 1) {
-                    GameObject w = GameObject.Instantiate(wall);
+                    GameObject w; 
+                    if(i == 0 || boardState.board[i-1,j] != 1) {
+                        w = GameObject.Instantiate(frontWall); 
+                    } else {
+                        w = GameObject.Instantiate(wall); 
+                    }
                     w.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0);
                 } else if (boardState.board[i, j] >= 10 && boardState.board[i, j] < 20) {
                     // goal
