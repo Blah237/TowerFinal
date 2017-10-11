@@ -97,8 +97,6 @@ public abstract class MoveableScript : MonoBehaviour {
     }
 
     public void EnterPortal(int[,] boardState, coord portalCoords) {
-        boardState[coords.row, coords.col] -= (int)type;
-        boardState[portalCoords.row, portalCoords.col] += (int)type;
         coords = portalCoords;
     }
 }
