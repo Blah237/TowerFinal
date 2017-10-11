@@ -83,10 +83,9 @@ public class GameManagerScript : MonoBehaviour {
     public GameObject portal;
 
     List<coord> swapCoords = new List<coord>();
-    List<coord> buttonCoords = new List<coord>();
+	List<coord> buttonCoords = new List<coord>();
     List<coord> portalCoords = new List<coord>();
     Dictionary<coord, coord> portalMap = new Dictionary<coord, coord>();
-
 
     public static Vector2 mapOrigin;
 
