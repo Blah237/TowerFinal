@@ -53,8 +53,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5398b02c11bc48048ba4ef1e1c8cdf4f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
 --- !u!114 &114147981952515356
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -64,8 +64,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dd2fa6a37a128bb478b394915755a501, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   animationName: mimic_right
   startIn: 0
   speed: 0.01
@@ -123,8 +123,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e4ac3ff80a4ce154ea3b1adc075c3bc7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   isMoving: 0
   speed: 3
   direction: 0
@@ -179,7 +179,7 @@ SpriteRenderer:
   m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 1a0adb700fea4df4da8139a692157616, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.8088235, g: 0.81477076, b: 0.81477076, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0

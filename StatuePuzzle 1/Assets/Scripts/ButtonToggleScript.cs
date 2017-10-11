@@ -6,23 +6,37 @@ using UnityEngine;
 public class ButtonToggleScript : MonoBehaviour
 {
 
-	public bool pressed;
 	[SerializeField]
-	private Material onMaterial;
+	private Sprite onSprite;
 	[SerializeField]
-	private Material offMaterial;
-	
+	private Sprite offSprite;
+
+    //a reference to the laser that this button controls
+	public Laser laser;
+
 	// Use this for initialization
 	void Start () {
-		
+
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		if (pressed){
-			GetComponent<MeshRenderer>().material = offMaterial;
+
+	public void TogglePressed () {
+        laser.gameObject.SetActive(!laser.gameObject.activeInHierarchy);
+        if (laser.gameObject.activeInHierarchy){
+			GetComponent<SpriteRenderer>().sprite = onSprite;
+
 		} else {
-			GetComponent<MeshRenderer>().material = onMaterial;
+			GetComponent<SpriteRenderer>().sprite = offSprite;
 		}
-	}
+    }
+
+    public void InitButton () {
+        if (laser.state == 1) {
+            GetComponent<SpriteRenderer>().sprite = onSprite;
+        }
+        else {
+            GetComponent<SpriteRenderer>().sprite = offSprite;
+        }
+    }
+
+
 }

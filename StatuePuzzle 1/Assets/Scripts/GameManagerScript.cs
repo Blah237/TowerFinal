@@ -81,11 +81,14 @@ public class GameManagerScript : MonoBehaviour {
     List<Laser> laserList = new List<Laser>(); 
 
     public GameObject swap;
+    public GameObject portal;
+
     List<coord> swapCoords = new List<coord>();
 	List<coord> buttonCoords = new List<coord>();
+    List<coord> portalCoords = new List<coord>();
+    Dictionary<coord, coord> portalMap = new Dictionary<coord, coord>();
 
-
-    public Vector2 mapOrigin;
+    public static Vector2 mapOrigin;
 
     [SerializeField]
     public static bool inputReady = true;
@@ -116,10 +119,28 @@ public class GameManagerScript : MonoBehaviour {
 
         mapOrigin = new Vector2(-boardState.cols / 2, -boardState.rows / 2);
         int dim = boardState.rows > boardState.cols ? boardState.rows : boardState.cols;
-        mainCamera.transform.position = new Vector3(0, 0, -(dim / 2) / Mathf.Tan(Mathf.PI / 6)); 
-        
+        mainCamera.transform.position = new Vector3(0, 0, -(dim / 2) / Mathf.Tan(Mathf.PI / 6));
+
+        int buttonCount = 0;
+
+        //instantiate lasers based on parsed lasers
+        if (boardState.lasers != null) {
+            foreach (Laser la in boardState.lasers) {
+                GameObject l = GameObject.Instantiate(laser);
+                l.transform.position = new Vector3(la.startCol + mapOrigin.x - 0.5f, la.startRow + mapOrigin.y + 0.5f, -0.1f);
+                l.transform.localScale = new Vector3(1, 1, la.length);
+                int rotateDir = la.direction == Direction.NORTH ? -90 : la.direction == Direction.SOUTH ? 90 : la.direction == Direction.EAST ? 0 : 180;
+                l.transform.Rotate(rotateDir, 90, 0, Space.World);
+                la.gameObject = l; 
+                if (la.state == 0) {
+                    l.SetActive(false);
+                }
+                laserList.Add(la);
+            }
+        }
+
         //instantiate items based on board
-        for(int i = 0; i < boardState.rows; i++) {
+        for (int i = 0; i < boardState.rows; i++) {
             for(int j = 0; j < boardState.cols; j++) {
                 if (boardState.board[i, j] == 1) {
                     GameObject w; 
@@ -141,10 +162,19 @@ public class GameManagerScript : MonoBehaviour {
 		            c.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0);
 		            swapCoords.Add(new coord(i, j));
 	            } else if (boardState.board[i,j] >= 30 && boardState.board[i,j] < 40) {
-	                //button
+	                // button
 	                ButtonToggleScript c = GameObject.Instantiate(button);
 	                c.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0);
+                    c.laser = laserList[boardState.buttons[buttonCount]];
+                    c.InitButton(); 
 	                buttonCoords.Add(new coord(i,j));
+	                ButtonManagerScript.buttonCoords.Add(new coord(i,j), c);
+                    buttonCount++; 
+                } else if (boardState.board[i, j] >= 50 && boardState.board[i, j] < 60) {
+                    // portal
+                    GameObject p = GameObject.Instantiate(portal);
+                    p.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0);
+                    portalCoords.Add(new coord(i, j));
                 } else {
                     GameObject g = GameObject.Instantiate(ground);
                     g.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0);
@@ -169,19 +199,9 @@ public class GameManagerScript : MonoBehaviour {
             }
         }
 
-        //instantiate lasers based on parsed lasers
-        if (boardState.lasers != null) {
-            foreach (Laser la in boardState.lasers) {
-                GameObject l = GameObject.Instantiate(laser);
-                l.transform.position = new Vector3(la.startCol + mapOrigin.x - 0.5f, la.startRow + mapOrigin.y + 0.5f, -0.1f);
-                l.transform.localScale = new Vector3(1, 1, la.length);
-                //TODO: implement button control of laser based on ID of laser
-                int rotateDir = la.direction == Direction.NORTH ? -90 : la.direction == Direction.SOUTH ? 90 : la.direction == Direction.EAST ? 0 : 180;
-                l.transform.Rotate(rotateDir, 90, 0, Space.World);
-                if (la.state == 0) {
-                    l.SetActive(false);
-                }
-                laserList.Add(la); 
+        if (boardState.portals != null) {
+            for (int i = 0; i < boardState.portals.Length; i++) {
+                portalMap.Add(portalCoords[i], portalCoords[boardState.portals[i]]);
             }
         }
 	}
@@ -252,27 +272,35 @@ public class GameManagerScript : MonoBehaviour {
 
 		foreach(MoveableScript m in moveables) {
 			coord desired = m.GetAttemptedMoveCoords(dir, boardState, 1);
+            if (boardState[desired.row, desired.col] / 10 == 5) {
+                desired = portalMap[desired];
+            }
             desiredCoords.Add(m,desired);
+            
 			Direction direction = m.GetAttemptedMoveDirection(dir, boardState); 
 
             //Check for collisions with lasers 
             foreach (Laser laser in laserList) {
                 // if laser is active && laser can collide with this moveable 
-                if (laser.state == 1 && (laser.canCollide & m.collisionMask) > 0) {
+                if (laser.gameObject.activeInHierarchy && (laser.canCollide & m.collisionMask) > 0) {
 	                //if moveable is jumping through a horizontal laser
                     if ((direction == Direction.NORTH && m.GetCoords().row == laser.startRow) ||
-		                       (direction == Direction.SOUTH && desired.row == laser.startRow)) {
-		                        if (laser.isBetweenCol(m.GetCoords().col)) {
-			                            moveDirections[m] = Direction.NONE;
-			                        }
-		                    }
+		                (direction == Direction.SOUTH && desired.row == laser.startRow)) {
+		                if (laser.isBetweenCol(m.GetCoords().col)) {
+			                moveDirections[m] = Direction.NONE;
+                            desired = m.GetCoords();
+                            desiredCoords[m] = desired;
+                        }
+		            }
                     //if moveable is jumping through a vertical laser 
                     if ((direction == Direction.EAST && desired.col == laser.startCol) ||
-	                        (direction == Direction.WEST && m.GetCoords().col == laser.startCol)) {
-	                        if (laser.isBetweenRow(m.GetCoords().row)) {
-		                            moveDirections[m] = Direction.NONE;
-		                    }
-	                    }
+	                    (direction == Direction.WEST && m.GetCoords().col == laser.startCol)) {
+	                    if (laser.isBetweenRow(m.GetCoords().row)) {
+		                    moveDirections[m] = Direction.NONE;
+                            desired = m.GetCoords();
+                            desiredCoords[m] = desired;
+                        }
+	                }
 	            }
 	        }
 
@@ -356,11 +384,19 @@ public class GameManagerScript : MonoBehaviour {
                         m.transform.position = new Vector3(c.col-dx + mapOrigin.x, c.row-dy + mapOrigin.y, 0);
                         moveables.Add(m);
                         m.ExecuteMove(dr, nextState, 1, true);
-                    } else if (nextState[c.row, c.col] > 30 && nextState[c.row, c.col] < 40) {
-	                    
-                    }
+                    } 
+                } else if (moveDirections[moveable] != Direction.NONE && portalCoords.Contains(c)) {
+                    coord cp = portalMap[c];
+                    // overrides any existing moves
+                    moveable.EnterPortal(nextState, cp);
                 }
-			}
+
+                //check for button press 
+                if (nextState[c.row, c.col] >= 30 && nextState[c.row, c.col] < 40) {
+                    coord buttonCoord = new coord(c.row, c.col);
+                    ButtonManagerScript.buttonCoords[buttonCoord].TogglePressed();
+                }
+            }
 
             moveDirections.Clear();
             // destroy old objects
