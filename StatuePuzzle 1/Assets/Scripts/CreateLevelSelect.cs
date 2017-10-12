@@ -43,6 +43,7 @@ public class CreateLevelSelect : MonoBehaviour
 				button.GetComponent<LoadOnClick>().levelName = levelList[i];
 				Text text = button.GetComponentInChildren<Text>();
 				text.text = levelList[i];
+				text.fontSize = 20;
 				Image bImage = button.GetComponent<Image>();
 				bImage.transform.SetParent(canvas.transform);
 				positionSquare(bImage, i / 4, i % 4);
