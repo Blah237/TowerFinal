@@ -286,7 +286,8 @@ MonoBehaviour:
   automaticallyStart: 0
   autoStartLoop: 0
   autoStartReverse: 0
-  frames: []
+  frames:
+  - {fileID: 21300000, guid: 58fa07077b74f854c9a1a92f6e317531, type: 3}
   isPlaying: 0
 --- !u!114 &114238487950777296
 MonoBehaviour:
@@ -305,7 +306,8 @@ MonoBehaviour:
   automaticallyStart: 0
   autoStartLoop: 0
   autoStartReverse: 0
-  frames: []
+  frames:
+  - {fileID: 21300000, guid: bfdb8e99d19351f43b5d4009c335690d, type: 3}
   isPlaying: 0
 --- !u!114 &114620006253818938
 MonoBehaviour:

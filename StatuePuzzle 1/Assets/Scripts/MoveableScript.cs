@@ -77,18 +77,15 @@ public abstract class MoveableScript : MonoBehaviour {
 		}
         if(isColliding) {
             float dt = Time.deltaTime;
-            Debug.Log(dt); 
             int y = direction == Direction.NORTH ? 1 : (direction == Direction.SOUTH ? -1 : 0);
             int x = direction == Direction.EAST ? 1 : (direction == Direction.WEST ? -1 : 0);
-            Debug.Log(direction); 
-
+            
             float distance = dt * cSpeed;
             distanceToMove -= distance;
             if(distanceToMove < 0.5 * totalDistance) {
                 y *= -1;
                 x *= -1; 
             }
-            Debug.Log(distanceToMove); 
             if (distanceToMove <= 0) {
                 isColliding = false;
                 SetAnimationState(direction);
@@ -146,11 +143,13 @@ public abstract class MoveableScript : MonoBehaviour {
     }
 
     public void SetAnimationState(Direction direction) {
-        int animateDir = (int)this.direction; 
+        int animateDir = (int)this.direction;
         if (isColliding) {
             animateDir += 4;  //direction + 4 will give you the index of the colliding animation 
         }
-        animator.StopAllAnimations();
-        animator.Play(animateDir, loop: true);
+        if (animator != null) { 
+            animator.StopAllAnimations();
+            animator.Play(animateDir, loop: true);
+        }
     }
 }
