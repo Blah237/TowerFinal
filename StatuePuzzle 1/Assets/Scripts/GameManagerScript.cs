@@ -93,6 +93,8 @@ public class GameManagerScript : MonoBehaviour {
 
     public static Vector2 mapOrigin;
 
+	bool firstStart;
+
     [SerializeField]
     public static bool inputReady = true;
 	public static bool pauseReady = true;
@@ -113,7 +115,7 @@ public class GameManagerScript : MonoBehaviour {
 
     // Use this for initialization
     void Start() {
-		Debug.Log ("STARTING");
+		Debug.Log ("Awake");
         //load level using Melody's I/O
         boardState = IOScript.ParseLevel(levelName); 
 
@@ -208,6 +210,12 @@ public class GameManagerScript : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
+
+		if (!firstStart) {
+			recordDynamicState ();
+			firstStart = true;
+		}
+
 		if (inputReady) {
 			Direction dir = readInput();
 			if (dir != Direction.NONE)
@@ -236,7 +244,9 @@ public class GameManagerScript : MonoBehaviour {
 	private void undo() {
 		// TODO: Record an undo with logging as an event
 		try {
-			DynamicState ds = dynamicStateStack.Pop();
+			dynamicStateStack.Pop();
+			DynamicState ds = dynamicStateStack.Peek();
+			LoggingManager.instance.RecordEvent(LoggingManager.EventCodes.UNDO,ds.toJson());
 			int mimicIdx = 0;
 			int mirrorIdx = 0;
 			List<coord> mimicCoords = ds.mimicPositions.ToList ();
@@ -250,6 +260,7 @@ public class GameManagerScript : MonoBehaviour {
 					m.SetCoords (undoCoord);
 					break;
 				case BoardCodes.MIMIC:
+					Debug.Log(mimicIdx);
 					undoCoord = mimicCoords [mimicIdx];
 					m.SetCoords (undoCoord);
 					mimicIdx++;
@@ -320,16 +331,12 @@ public class GameManagerScript : MonoBehaviour {
 	{
 		return Input.GetKeyDown(KeyCode.P);
 	}
-
-
-
+		
 	public static void setLevelName(string level) {
 		levelName = level;
 	}
 
     void move(Direction dir) {
-
-		recordDynamicState ();
 
 		Dictionary<MoveableScript,coord> desiredCoords = new Dictionary<MoveableScript, coord>(); //where pieces would move without collisions/walls
 		Dictionary<MoveableScript,Direction> moveDirections = new Dictionary<MoveableScript, Direction>(); //directions pieces will actually move
@@ -469,13 +476,15 @@ public class GameManagerScript : MonoBehaviour {
                 GameObject.Destroy(ms.gameObject);
             }
 		}
-			
+
+		recordDynamicState ();	
 		checkWin ();
     }
 
 	private void recordDynamicState() {
 		DynamicState ds = new DynamicState ();
 		foreach (MoveableScript m in moveables) {
+			Debug.Log (m.type);
 			switch (m.type) {
 			case BoardCodes.PLAYER:
 				ds.playerPosition = m.GetCoords ();
@@ -486,8 +495,6 @@ public class GameManagerScript : MonoBehaviour {
 			case BoardCodes.MIRROR:
 				ds.mirrorPositions.Add (m.GetCoords ());
 				break;
-			default:
-				continue;
 			}
 		}
 
