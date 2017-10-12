@@ -115,9 +115,18 @@ public class GameManagerScript : MonoBehaviour {
 
     // Use this for initialization
     void Start() {
-		Debug.Log ("Awake");
+
+		firstStart = false;
+
         //load level using Melody's I/O
-        boardState = IOScript.ParseLevel(levelName); 
+		boardState = IOScript.ParseLevel(levelName);
+		int levelNum = -1;
+		for (int i = 0; i < levelName.Length; i++) {
+			if (Int32.TryParse (levelName.Substring (i, 1), out levelNum)) {
+				break;
+			}
+		}
+		LoggingManager.instance.RecordLevelStart (levelNum, levelName);
 
         mapOrigin = new Vector2(-boardState.cols / 2, -boardState.rows / 2);
         int dim = boardState.rows > boardState.cols ? boardState.rows : boardState.cols;
@@ -211,6 +220,7 @@ public class GameManagerScript : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
+		// TODO: Hacky, but neccessary if we want accurate recording and not a real loading screen
 		if (!firstStart) {
 			recordDynamicState ();
 			firstStart = true;
@@ -260,7 +270,6 @@ public class GameManagerScript : MonoBehaviour {
 					m.SetCoords (undoCoord);
 					break;
 				case BoardCodes.MIMIC:
-					Debug.Log(mimicIdx);
 					undoCoord = mimicCoords [mimicIdx];
 					m.SetCoords (undoCoord);
 					mimicIdx++;
@@ -322,6 +331,7 @@ public class GameManagerScript : MonoBehaviour {
 			}
         }
         Debug.Log("VICTORY!");
+		LoggingManager.instance.RecordEvent (LoggingManager.EventCodes.LEVEL_COMPLETE);
 		LoggingManager.instance.RecordLevelEnd ();
 	    winscript.playerWin = true;
         return true;
@@ -484,7 +494,6 @@ public class GameManagerScript : MonoBehaviour {
 	private void recordDynamicState() {
 		DynamicState ds = new DynamicState ();
 		foreach (MoveableScript m in moveables) {
-			Debug.Log (m.type);
 			switch (m.type) {
 			case BoardCodes.PLAYER:
 				ds.playerPosition = m.GetCoords ();

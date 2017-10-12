@@ -10,6 +10,7 @@ public class LoggingManager : MonoBehaviour
 		UNDO = 1,
 		RESTART = 2,
 		EXIT_TO_LEVEL_SELECT = 3,
+		LEVEL_COMPLETE = 4
 	}
 
     public static LoggingManager instance;

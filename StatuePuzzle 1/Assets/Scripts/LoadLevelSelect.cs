@@ -11,6 +11,8 @@ public class LoadLevelSelect : MonoBehaviour {
 
 	public void LoadScene(int level)
 	{
+		LoggingManager.instance.RecordEvent (LoggingManager.EventCodes.EXIT_TO_LEVEL_SELECT);
+		LoggingManager.instance.RecordLevelEnd ();
 		SceneManager.LoadScene(0);
 	}
 }
