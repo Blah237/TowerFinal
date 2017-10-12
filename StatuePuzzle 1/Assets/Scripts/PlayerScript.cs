@@ -51,7 +51,9 @@ public class PlayerScript : MoveableScript {
 
 	public override Direction GetAttemptedMoveDirection (Direction direction, int[,] boardState)
 	{
-		switch (direction) {
+        this.direction = direction;
+        SetAnimationState(direction);
+        switch (direction) {
 		case Direction.NORTH:
 			if (coords.row >= boardState.GetLength (0) || boardState [coords.row + 1, coords.col] == 1) {
 				return Direction.NONE;

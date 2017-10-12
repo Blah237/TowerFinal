@@ -23,6 +23,18 @@ public class Animation2DManager : MonoBehaviour {
         }
     }
 
+    public void Play(int animationID, bool reverse = false, bool loop = false, bool restart = true) {
+        if (0 <= animationID && animationID < animations.Length) {
+            animations[animationID].Play(reverse, loop, restart);
+        }
+    }
+
+    public void Pause(int animationID) {
+        if (0 <= animationID && animationID < animations.Length) {
+            animations[animationID].Pause();
+        }
+    }
+
     public void Pause(string animationName)
     {
         foreach (Animation2D anim in animations)
@@ -55,5 +67,11 @@ public class Animation2DManager : MonoBehaviour {
             }
         }
         return false;
+    }
+
+    public void StopAllAnimations() {
+        foreach (Animation2D anim in animations) {
+            anim.Pause(); 
+        }
     }
 }

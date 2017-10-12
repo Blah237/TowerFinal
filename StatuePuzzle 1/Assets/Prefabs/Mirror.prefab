@@ -22,6 +22,8 @@ GameObject:
   - component: {fileID: 136982075822844898}
   - component: {fileID: 114105712951858634}
   - component: {fileID: 212374164880418250}
+  - component: {fileID: 114879561478314368}
+  - component: {fileID: 114937963811877420}
   m_Layer: 0
   m_Name: Mirror
   m_TagString: Untagged
@@ -54,6 +56,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isMoving: 0
+  isColliding: 0
   speed: 3
   direction: 0
   distanceToMove: 0
@@ -61,6 +64,37 @@ MonoBehaviour:
     row: 5
     col: 3
   collisionMask: 0
+--- !u!114 &114879561478314368
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1892092808917540}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5398b02c11bc48048ba4ef1e1c8cdf4f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &114937963811877420
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1892092808917540}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd2fa6a37a128bb478b394915755a501, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animationName: idle_north
+  startIn: 0
+  speed: 0.0675
+  automaticallyStart: 0
+  autoStartLoop: 0
+  autoStartReverse: 0
+  frames:
+  - {fileID: 21300000, guid: 33cb8712aed41bb4bba3d8180a0d8047, type: 3}
+  isPlaying: 0
 --- !u!136 &136982075822844898
 CapsuleCollider:
   m_ObjectHideFlags: 1
