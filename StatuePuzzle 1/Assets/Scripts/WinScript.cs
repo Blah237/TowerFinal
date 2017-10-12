@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class WinScript : MonoBehaviour
 {
@@ -23,6 +24,8 @@ public class WinScript : MonoBehaviour
 	{
 		if (playerWin) {
 			anim.SetTrigger("Win");
+			CreateLevelSelect.buttonMap[GameManagerScript.levelName] = true;
+			//b.GetComponent<Image>().color = Color.green;
 			GameManagerScript.inputReady = false;
 			//restartTimer += Time.deltaTime;
 

@@ -1,4 +1,5 @@
-﻿using System.CodeDom;
+﻿using System;
+using System.CodeDom;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -23,6 +24,7 @@ public class CreateLevelSelect : MonoBehaviour
 	private static int CANVAS_WIDTH_OFFSET = 130;
 
 	public static string[] levelList;
+	public static Dictionary<string, bool> buttonMap = null;
 
 	// Use this for initialization
 	void Start()
@@ -34,15 +36,29 @@ public class CreateLevelSelect : MonoBehaviour
 		//levelList[3] = "level4";
 		//levelList[4] = "level5";
 		getFiles();
+		if (buttonMap == null)
+		{
+			buttonMap = new Dictionary<string, bool>();
+			for (int i = 0; i < levelList.Length; i++)
+			{
+				buttonMap.Add(levelList[i], false);
+			}
+		}
+		
 		width *= canvas.pixelRect.width - CANVAS_WIDTH_OFFSET;
 		height *= canvas.pixelRect.height;
 		for (int i = 0; i < levelList.Length; i++)
 		{
 			{
 				LoadOnClick button = GameObject.Instantiate(load);
+				if (buttonMap[levelList[i]])
+				{
+					button.GetComponent<Image>().color = Color.green;
+				}
 				button.GetComponent<LoadOnClick>().levelName = levelList[i];
 				Text text = button.GetComponentInChildren<Text>();
 				text.text = levelList[i];
+				text.fontSize = 20;
 				Image bImage = button.GetComponent<Image>();
 				bImage.transform.SetParent(canvas.transform);
 				positionSquare(bImage, i / 4, i % 4);

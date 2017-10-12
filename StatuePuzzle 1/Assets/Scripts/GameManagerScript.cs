@@ -70,6 +70,7 @@ public class GameManagerScript : MonoBehaviour {
 	
 	public WinScript winscript;
 	public DeathScript deathscript;
+	public PauseScript pausescript;
 
 	public ButtonToggleScript button;
 	
@@ -94,6 +95,7 @@ public class GameManagerScript : MonoBehaviour {
 
     [SerializeField]
     public static bool inputReady = true;
+	public static bool pauseReady = true;
     Direction? inputDir;
     
     [SerializeField]
@@ -227,12 +229,17 @@ public class GameManagerScript : MonoBehaviour {
 	void Update () {
 		if (inputReady) {
 			Direction dir = readInput();
-			if(dir != Direction.NONE) {
+			if (dir != Direction.NONE)
+			{
 				inputReady = false;
 				move(dir);
 			}
 		} else {
 			inputReady = getAllDone();
+		}
+		if (pauseReady && checkPause())
+		{
+			pausescript.TogglePause();
 		}
 	}
 
@@ -327,6 +334,11 @@ public class GameManagerScript : MonoBehaviour {
 	    winscript.playerWin = true;
         return true;
     }
+
+	bool checkPause()
+	{
+		return Input.GetKeyDown(KeyCode.P);
+	}
 
 
 
