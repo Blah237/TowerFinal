@@ -281,7 +281,7 @@ public class GameManagerScript : MonoBehaviour {
 				} else if (ButtonManagerScript.buttonCoords.ContainsKey(prevCoord)) {
 					ButtonManagerScript.buttonCoords[prevCoord].TogglePressed();
 				}
-				m.transform.position = new Vector3(m.GetCoords().col + mapOrigin.x, m.GetCoords().row + mapOrigin.y, 0);
+				m.transform.position = new Vector3(m.GetCoords().col + mapOrigin.x, m.GetCoords().row + mapOrigin.y + m.yOffset, 0);
 			} 
 
 		} catch (InvalidOperationException) {

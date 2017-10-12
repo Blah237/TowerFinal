@@ -9,6 +9,8 @@ public abstract class MoveableScript : MonoBehaviour {
     [SerializeField]
     private bool isColliding;
     public float speed = 1f;
+    public float cSpeed = 0.7f;
+    public float collideFactor; 
     [SerializeField]
     protected Direction direction;
     [SerializeField]
@@ -75,24 +77,27 @@ public abstract class MoveableScript : MonoBehaviour {
 		}
         if(isColliding) {
             float dt = Time.deltaTime;
+            Debug.Log(dt); 
             int y = direction == Direction.NORTH ? 1 : (direction == Direction.SOUTH ? -1 : 0);
             int x = direction == Direction.EAST ? 1 : (direction == Direction.WEST ? -1 : 0);
+            Debug.Log(direction); 
 
-            float distance = dt * speed;
+            float distance = dt * cSpeed;
             distanceToMove -= distance;
             if(distanceToMove < 0.5 * totalDistance) {
                 y *= -1;
                 x *= -1; 
             }
+            Debug.Log(distanceToMove); 
             if (distanceToMove <= 0) {
                 isColliding = false;
-                distance += distanceToMove;
-                distanceToMove = 0;
                 SetAnimationState(direction);
                 Vector3 endPos = new Vector3(coords.col + GameManagerScript.mapOrigin.x, coords.row + GameManagerScript.mapOrigin.y + yOffset, this.transform.position.z);
                 this.transform.position = endPos;
             }
-            transform.Translate(new Vector3(x * distance, y * distance, 0), Space.World);
+            else {
+                transform.Translate(new Vector3(x * distance, y * distance, 0), Space.World);
+            }
         }
 	}
 
@@ -103,16 +108,17 @@ public abstract class MoveableScript : MonoBehaviour {
 
 	public void ExecuteMove(Direction direction, int numSpaces, bool animOnly = false) {
 
+        distanceToMove = numSpaces;
+        //TODO if your first direction is NONE, things get weird 
         if (direction == Direction.NONE) {
-            isColliding = true; 
+            isColliding = true;
+            distanceToMove /= collideFactor;
+            totalDistance = distanceToMove; 
         } else {
             isMoving = true;
             this.direction = direction;
         }
 
-		//translate according to directions 
-		distanceToMove = numSpaces;
-        totalDistance = numSpaces; 
         SetAnimationState(direction);
         //Debug.Log(this.name + " moving " + direction.ToString());
 
@@ -142,10 +148,8 @@ public abstract class MoveableScript : MonoBehaviour {
     public void SetAnimationState(Direction direction) {
         int animateDir = (int)this.direction; 
         if (isColliding) {
-            Debug.Log(type + ": Set animation to isColliding"); 
             animateDir += 4;  //direction + 4 will give you the index of the colliding animation 
         }
-        Debug.Log(type + ": Setting animation to " + direction); 
         animator.StopAllAnimations();
         animator.Play(animateDir, loop: true);
     }
