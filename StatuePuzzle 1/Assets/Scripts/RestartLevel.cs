@@ -12,6 +12,7 @@ public class RestartLevel : MonoBehaviour {
 	
 	public void LoadScene()
 	{
+		LoggingManager.instance.RecordEvent (LoggingManager.EventCodes.RESTART);
 		SceneManager.LoadScene(1);
 	}
 }

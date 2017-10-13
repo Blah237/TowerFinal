@@ -93,6 +93,8 @@ public class GameManagerScript : MonoBehaviour {
 
     public static Vector2 mapOrigin;
 
+	bool firstStart;
+
     [SerializeField]
     public static bool inputReady = true;
 	public static bool pauseReady = true;
@@ -113,9 +115,18 @@ public class GameManagerScript : MonoBehaviour {
 
     // Use this for initialization
     void Start() {
-		Debug.Log ("STARTING");
+
+		firstStart = false;
+
         //load level using Melody's I/O
-        boardState = IOScript.ParseLevel(levelName); 
+		boardState = IOScript.ParseLevel(levelName);
+		int levelNum = -1;
+		for (int i = 0; i < levelName.Length; i++) {
+			if (Int32.TryParse (levelName.Substring (i, 1), out levelNum)) {
+				break;
+			}
+		}
+		LoggingManager.instance.RecordLevelStart (levelNum, levelName);
 
         mapOrigin = new Vector2(-boardState.cols / 2, -boardState.rows / 2);
         int dim = boardState.rows > boardState.cols ? boardState.rows : boardState.cols;
@@ -208,6 +219,13 @@ public class GameManagerScript : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
+
+		// TODO: Hacky, but neccessary if we want accurate recording and not a real loading screen
+		if (!firstStart) {
+			recordDynamicState ();
+			firstStart = true;
+		}
+
 		if (inputReady) {
 			Direction dir = readInput();
 			if (dir != Direction.NONE)
@@ -236,7 +254,9 @@ public class GameManagerScript : MonoBehaviour {
 	private void undo() {
 		// TODO: Record an undo with logging as an event
 		try {
-			DynamicState ds = dynamicStateStack.Pop();
+			dynamicStateStack.Pop();
+			DynamicState ds = dynamicStateStack.Peek();
+			LoggingManager.instance.RecordEvent(LoggingManager.EventCodes.UNDO,ds.toJson());
 			int mimicIdx = 0;
 			int mirrorIdx = 0;
 			List<coord> mimicCoords = ds.mimicPositions.ToList ();
@@ -311,6 +331,7 @@ public class GameManagerScript : MonoBehaviour {
 			}
         }
         Debug.Log("VICTORY!");
+		LoggingManager.instance.RecordEvent (LoggingManager.EventCodes.LEVEL_COMPLETE);
 		LoggingManager.instance.RecordLevelEnd ();
 	    winscript.playerWin = true;
         return true;
@@ -320,16 +341,12 @@ public class GameManagerScript : MonoBehaviour {
 	{
 		return Input.GetKeyDown(KeyCode.P);
 	}
-
-
-
+		
 	public static void setLevelName(string level) {
 		levelName = level;
 	}
 
     void move(Direction dir) {
-
-		recordDynamicState ();
 
 		Dictionary<MoveableScript,coord> desiredCoords = new Dictionary<MoveableScript, coord>(); //where pieces would move without collisions/walls
 		Dictionary<MoveableScript,Direction> moveDirections = new Dictionary<MoveableScript, Direction>(); //directions pieces will actually move
@@ -469,7 +486,8 @@ public class GameManagerScript : MonoBehaviour {
                 GameObject.Destroy(ms.gameObject);
             }
 		}
-			
+
+		recordDynamicState ();	
 		checkWin ();
     }
 
@@ -486,8 +504,6 @@ public class GameManagerScript : MonoBehaviour {
 			case BoardCodes.MIRROR:
 				ds.mirrorPositions.Add (m.GetCoords ());
 				break;
-			default:
-				continue;
 			}
 		}
 
