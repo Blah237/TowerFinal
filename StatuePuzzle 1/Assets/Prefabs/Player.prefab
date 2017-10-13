@@ -40,6 +40,17 @@ GameObject:
   - component: {fileID: 212349122429256206}
   - component: {fileID: 114359830009933534}
   - component: {fileID: 114839176544532120}
+  - component: {fileID: 114801176703642918}
+  - component: {fileID: 114747275626682298}
+  - component: {fileID: 114208527697702230}
+  - component: {fileID: 114254861091552842}
+  - component: {fileID: 114498927497351668}
+  - component: {fileID: 114035828399881902}
+  - component: {fileID: 114530724361265174}
+  - component: {fileID: 114801930385052482}
+  - component: {fileID: 114534986836938396}
+  - component: {fileID: 114747516969172386}
+  - component: {fileID: 114199235770445360}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -54,8 +65,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1871538575685162}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -1.4976, z: -0.20000005}
-  m_LocalScale: {x: 1.3999999, y: 1.3999999, z: 1}
+  m_LocalPosition: {x: 0, y: -0.8, z: -0.20000005}
+  m_LocalScale: {x: 0.77, y: 0.77, z: 1}
   m_Children: []
   m_Father: {fileID: 4891600000498544}
   m_RootOrder: 0
@@ -68,12 +79,92 @@ Transform:
   m_GameObject: {fileID: 1916598891731138}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.25, y: 0.25, z: 1}
+  m_LocalScale: {x: 0.45, y: 0.45, z: 1}
   m_Children:
   - {fileID: 4759048598231036}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &114035828399881902
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1916598891731138}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd2fa6a37a128bb478b394915755a501, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animationName: idle_north
+  startIn: 0
+  speed: 0.0675
+  automaticallyStart: 0
+  autoStartLoop: 0
+  autoStartReverse: 0
+  frames:
+  - {fileID: 21300000, guid: ccf5fa1f1fb3d134882eb0760615b061, type: 3}
+  isPlaying: 0
+--- !u!114 &114199235770445360
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1916598891731138}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd2fa6a37a128bb478b394915755a501, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animationName: idle_north
+  startIn: 0
+  speed: 0.0675
+  automaticallyStart: 0
+  autoStartLoop: 0
+  autoStartReverse: 0
+  frames:
+  - {fileID: 21300000, guid: ccf5fa1f1fb3d134882eb0760615b061, type: 3}
+  isPlaying: 0
+--- !u!114 &114208527697702230
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1916598891731138}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd2fa6a37a128bb478b394915755a501, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animationName: idle_north
+  startIn: 0
+  speed: 0.0675
+  automaticallyStart: 0
+  autoStartLoop: 0
+  autoStartReverse: 0
+  frames:
+  - {fileID: 21300000, guid: ccf5fa1f1fb3d134882eb0760615b061, type: 3}
+  isPlaying: 0
+--- !u!114 &114254861091552842
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1916598891731138}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd2fa6a37a128bb478b394915755a501, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animationName: idle_north
+  startIn: 0
+  speed: 0.0675
+  automaticallyStart: 0
+  autoStartLoop: 0
+  autoStartReverse: 0
+  frames:
+  - {fileID: 21300000, guid: ccf5fa1f1fb3d134882eb0760615b061, type: 3}
+  isPlaying: 0
 --- !u!114 &114359830009933534
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -85,6 +176,92 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5398b02c11bc48048ba4ef1e1c8cdf4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &114498927497351668
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1916598891731138}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd2fa6a37a128bb478b394915755a501, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animationName: idle_north
+  startIn: 0
+  speed: 0.0675
+  automaticallyStart: 0
+  autoStartLoop: 0
+  autoStartReverse: 0
+  frames:
+  - {fileID: 21300000, guid: ccf5fa1f1fb3d134882eb0760615b061, type: 3}
+  isPlaying: 0
+--- !u!114 &114530724361265174
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1916598891731138}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd2fa6a37a128bb478b394915755a501, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animationName: idle_north
+  startIn: 0
+  speed: 0.0675
+  automaticallyStart: 0
+  autoStartLoop: 0
+  autoStartReverse: 0
+  frames:
+  - {fileID: 21300000, guid: ccf5fa1f1fb3d134882eb0760615b061, type: 3}
+  isPlaying: 0
+--- !u!114 &114534986836938396
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1916598891731138}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd2fa6a37a128bb478b394915755a501, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animationName: walk_south
+  startIn: 0
+  speed: 0.0407
+  automaticallyStart: 0
+  autoStartLoop: 0
+  autoStartReverse: 0
+  frames:
+  - {fileID: 21300000, guid: ccf5fa1f1fb3d134882eb0760615b061, type: 3}
+  - {fileID: 21300002, guid: ccf5fa1f1fb3d134882eb0760615b061, type: 3}
+  - {fileID: 21300004, guid: ccf5fa1f1fb3d134882eb0760615b061, type: 3}
+  - {fileID: 21300006, guid: ccf5fa1f1fb3d134882eb0760615b061, type: 3}
+  - {fileID: 21300008, guid: ccf5fa1f1fb3d134882eb0760615b061, type: 3}
+  - {fileID: 21300010, guid: ccf5fa1f1fb3d134882eb0760615b061, type: 3}
+  - {fileID: 21300012, guid: ccf5fa1f1fb3d134882eb0760615b061, type: 3}
+  - {fileID: 21300014, guid: ccf5fa1f1fb3d134882eb0760615b061, type: 3}
+  - {fileID: 21300016, guid: ccf5fa1f1fb3d134882eb0760615b061, type: 3}
+  - {fileID: 21300018, guid: ccf5fa1f1fb3d134882eb0760615b061, type: 3}
+  - {fileID: 21300020, guid: ccf5fa1f1fb3d134882eb0760615b061, type: 3}
+  - {fileID: 21300022, guid: ccf5fa1f1fb3d134882eb0760615b061, type: 3}
+  - {fileID: 21300024, guid: ccf5fa1f1fb3d134882eb0760615b061, type: 3}
+  - {fileID: 21300026, guid: ccf5fa1f1fb3d134882eb0760615b061, type: 3}
+  - {fileID: 21300028, guid: ccf5fa1f1fb3d134882eb0760615b061, type: 3}
+  - {fileID: 21300030, guid: ccf5fa1f1fb3d134882eb0760615b061, type: 3}
+  - {fileID: 21300032, guid: ccf5fa1f1fb3d134882eb0760615b061, type: 3}
+  - {fileID: 21300034, guid: ccf5fa1f1fb3d134882eb0760615b061, type: 3}
+  - {fileID: 21300036, guid: ccf5fa1f1fb3d134882eb0760615b061, type: 3}
+  - {fileID: 21300038, guid: ccf5fa1f1fb3d134882eb0760615b061, type: 3}
+  - {fileID: 21300040, guid: ccf5fa1f1fb3d134882eb0760615b061, type: 3}
+  - {fileID: 21300042, guid: ccf5fa1f1fb3d134882eb0760615b061, type: 3}
+  - {fileID: 21300044, guid: ccf5fa1f1fb3d134882eb0760615b061, type: 3}
+  - {fileID: 21300046, guid: ccf5fa1f1fb3d134882eb0760615b061, type: 3}
+  - {fileID: 21300048, guid: ccf5fa1f1fb3d134882eb0760615b061, type: 3}
+  - {fileID: 21300050, guid: ccf5fa1f1fb3d134882eb0760615b061, type: 3}
+  - {fileID: 21300052, guid: ccf5fa1f1fb3d134882eb0760615b061, type: 3}
+  isPlaying: 0
 --- !u!114 &114573445270241496
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -98,7 +275,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isMoving: 0
   isColliding: 0
-  speed: 3
+  speed: 2
   cSpeed: 2
   collideFactor: 1.9
   direction: 0
@@ -106,8 +283,88 @@ MonoBehaviour:
   coords:
     row: 3
     col: 3
-  yOffset: 0.39
+  yOffset: 0.35
   collisionMask: 0
+--- !u!114 &114747275626682298
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1916598891731138}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd2fa6a37a128bb478b394915755a501, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animationName: idle_north
+  startIn: 0
+  speed: 0.0675
+  automaticallyStart: 0
+  autoStartLoop: 0
+  autoStartReverse: 0
+  frames:
+  - {fileID: 21300000, guid: ccf5fa1f1fb3d134882eb0760615b061, type: 3}
+  isPlaying: 0
+--- !u!114 &114747516969172386
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1916598891731138}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd2fa6a37a128bb478b394915755a501, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animationName: idle_north
+  startIn: 0
+  speed: 0.0675
+  automaticallyStart: 0
+  autoStartLoop: 0
+  autoStartReverse: 0
+  frames:
+  - {fileID: 21300000, guid: ccf5fa1f1fb3d134882eb0760615b061, type: 3}
+  isPlaying: 0
+--- !u!114 &114801176703642918
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1916598891731138}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd2fa6a37a128bb478b394915755a501, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animationName: idle_north
+  startIn: 0
+  speed: 0.0675
+  automaticallyStart: 0
+  autoStartLoop: 0
+  autoStartReverse: 0
+  frames:
+  - {fileID: 21300000, guid: ccf5fa1f1fb3d134882eb0760615b061, type: 3}
+  isPlaying: 0
+--- !u!114 &114801930385052482
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1916598891731138}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd2fa6a37a128bb478b394915755a501, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animationName: idle_north
+  startIn: 0
+  speed: 0.0675
+  automaticallyStart: 0
+  autoStartLoop: 0
+  autoStartReverse: 0
+  frames:
+  - {fileID: 21300000, guid: ccf5fa1f1fb3d134882eb0760615b061, type: 3}
+  isPlaying: 0
 --- !u!114 &114839176544532120
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -126,7 +383,7 @@ MonoBehaviour:
   autoStartLoop: 0
   autoStartReverse: 0
   frames:
-  - {fileID: 21300000, guid: 8d1a04e7e43a7bb4e8ded0e8ccebbd4b, type: 3}
+  - {fileID: 21300000, guid: ccf5fa1f1fb3d134882eb0760615b061, type: 3}
   isPlaying: 0
 --- !u!136 &136224511383800454
 CapsuleCollider:
@@ -173,7 +430,7 @@ SpriteRenderer:
   m_SortingLayerID: 838182337
   m_SortingLayer: 3
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 8d1a04e7e43a7bb4e8ded0e8ccebbd4b, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ccf5fa1f1fb3d134882eb0760615b061, type: 3}
   m_Color: {r: 0.88235295, g: 0.88235295, b: 0.88235295, a: 1}
   m_FlipX: 0
   m_FlipY: 0

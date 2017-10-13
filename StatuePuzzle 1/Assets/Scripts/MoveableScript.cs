@@ -149,6 +149,9 @@ public abstract class MoveableScript : MonoBehaviour {
         if (isColliding) {
             animateDir += 4;  //direction + 4 will give you the index of the colliding animation 
         }
+        if (isMoving) {
+            animateDir += 8; 
+        }
         if (animator != null) { 
             animator.StopAllAnimations();
             animator.Play(animateDir, loop: true);
