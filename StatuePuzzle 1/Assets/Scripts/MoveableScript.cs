@@ -63,17 +63,19 @@ public abstract class MoveableScript : MonoBehaviour {
 			int x = direction == Direction.EAST ? 1 : (direction == Direction.WEST ? -1 : 0);
 
 			float distance = dt * speed;
-			distanceToMove -= distance; 
-			if (distanceToMove <= 0) {
-				isMoving = false;
-				distance += distanceToMove;
-				distanceToMove = 0;
-                SetAnimationState(direction); 
+			distanceToMove -= distance;
+            if (distanceToMove <= 0) {
+                isMoving = false;
+                distance += distanceToMove;
+                distanceToMove = 0;
+                SetAnimationState(direction);
                 //snap to correct place for portals
                 Vector3 endPos = new Vector3(coords.col + GameManagerScript.mapOrigin.x, coords.row + GameManagerScript.mapOrigin.y + yOffset, this.transform.position.z);
                 this.transform.position = endPos;
-			}
-			transform.Translate(new Vector3(x * distance, y * distance, 0), Space.World);       
+            }
+            else {
+                transform.Translate(new Vector3(x * distance, y * distance, 0), Space.World);
+            }
 		}
         if(isColliding) {
             float dt = Time.deltaTime;
