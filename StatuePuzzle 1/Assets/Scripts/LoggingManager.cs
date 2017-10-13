@@ -6,7 +6,11 @@ using UnityEngine.Networking;
 public class LoggingManager : MonoBehaviour
 {
 	public enum EventCodes:int {
-		DYNAMIC_STATE = 0
+		DYNAMIC_STATE = 0,
+		UNDO = 1,
+		RESTART = 2,
+		EXIT_TO_LEVEL_SELECT = 3,
+		LEVEL_COMPLETE = 4
 	}
 
     public static LoggingManager instance;
