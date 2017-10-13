@@ -131,6 +131,7 @@ public class GameManagerScript : MonoBehaviour {
         mapOrigin = new Vector2(-boardState.cols / 2, -boardState.rows / 2);
         int dim = boardState.rows > boardState.cols ? boardState.rows : boardState.cols;
         mainCamera.transform.position = new Vector3(0, 0, -(dim / 2) / Mathf.Tan(Mathf.PI / 6));
+        mainCamera.orthographicSize = boardState.rows / 2 + 1;
 
         int buttonCount = 0;
 
