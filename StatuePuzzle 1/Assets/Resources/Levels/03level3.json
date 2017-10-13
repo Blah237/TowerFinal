@@ -1,1 +1,3 @@
-{"rows":7,"cols":7,"flatBoard":[1,1,1,1,1,1,1,1,0,0,0,0,0,1,1,10,2,0,4,0,1,1,0,0,0,0,0,1,1,1,1,1,1,1,1,1,0,3,0,0,10,1,1,1,1,1,1,1,1]}
+{"rows":7,"cols":7,
+  "flatBoard":[1,1,1,1,1,1,1,1,0,0,0,0,0,1,1,10,2,0,4,0,1,1,0,0,0,0,0,1,1,1,1,1,1,1,1,1,0,3,0,0,10,1,1,1,1,1,1,1,1],
+"tutorial": "For your own safety, you cannot occupy the same space as a tune.\n\nPress P to pause or restart. Press Z to undo a move."}
