@@ -200,19 +200,19 @@ public class GameManagerScript : MonoBehaviour {
                     // player
                     player = GameObject.Instantiate(player);
                     player.SetCoords(j, i); 
-                    player.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y + player.yOffset, 0);
+                    player.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y + player.yOffset, -0.2f);
                     moveables.Add(player); 
                 } else if (boardState.board[i,j] % 10 == 3) {
                     // mimic
                     MimicScript m = GameObject.Instantiate(mimic);
                     m.SetCoords(j, i);
-                    m.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y + m.yOffset, 0);
+                    m.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y + m.yOffset, -0.2f);
                     moveables.Add(m); 
                 } else if (boardState.board[i,j] % 10 == 4) {
                     // mirror
                     MirrorScript m = GameObject.Instantiate(mirror);
                     m.SetCoords(j, i);
-                    m.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y + m.yOffset, 0);
+                    m.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y + m.yOffset, -0.2f);
                     moveables.Add(m);
                 } 
             }
