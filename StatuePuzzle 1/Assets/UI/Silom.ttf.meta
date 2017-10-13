@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: ff97ef5d51117364e9330605386ab01d
-timeCreated: 1507859226
+guid: af65aaf8a4a63a84a9df4ab7f057b635
+timeCreated: 1507862748
 licenseType: Free
 TrueTypeFontImporter:
   serializedVersion: 4
@@ -9,9 +9,9 @@ TrueTypeFontImporter:
   characterSpacing: 0
   characterPadding: 1
   includeFontData: 1
-  fontName: Ubuntu
+  fontName: Silom
   fontNames:
-  - Ubuntu
+  - Silom
   fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0
