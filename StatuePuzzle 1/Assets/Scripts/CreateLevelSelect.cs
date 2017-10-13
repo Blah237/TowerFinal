@@ -21,7 +21,7 @@ public class CreateLevelSelect : MonoBehaviour
 	public int cols;
 	public int rows;
 
-	private static int CANVAS_WIDTH_OFFSET = 130;
+	private static int CANVAS_WIDTH_OFFSET = 0;
 
 	public static string[] levelList;
 	public static Dictionary<string, bool> buttonMap = null;
@@ -58,7 +58,7 @@ public class CreateLevelSelect : MonoBehaviour
 				button.GetComponent<LoadOnClick>().levelName = levelList[i];
 				Text text = button.GetComponentInChildren<Text>();
 				text.text = levelList[i];
-				text.fontSize = 20;
+				text.fontSize = 16;
 				Image bImage = button.GetComponent<Image>();
 				bImage.transform.SetParent(canvas.transform);
 				positionSquare(bImage, i / 4, i % 4);
