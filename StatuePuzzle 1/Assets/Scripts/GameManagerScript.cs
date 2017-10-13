@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.Linq;
+using UnityEngine.UI;
 
 public enum Direction { NORTH, SOUTH, EAST, WEST, NONE }
 
@@ -75,7 +76,9 @@ public class GameManagerScript : MonoBehaviour {
 	public ButtonToggleScript button;
 	
 	public GameObject ground;
-	public Camera mainCamera; 
+	public Camera mainCamera;
+
+    public Text tutorial; 
 
 	public bool win;
 	public bool dead;
@@ -117,9 +120,10 @@ public class GameManagerScript : MonoBehaviour {
         //load level using Melody's I/O
         boardState = IOScript.ParseLevel(levelName); 
 
-        mapOrigin = new Vector2(-boardState.cols / 2, -boardState.rows / 2);
-        int dim = boardState.rows > boardState.cols ? boardState.rows : boardState.cols;
-        mainCamera.transform.position = new Vector3(0, 0, -(dim / 2) / Mathf.Tan(Mathf.PI / 6));
+        mapOrigin = new Vector2(-boardState.cols / 2.0f, -boardState.rows / 2.0f);
+        mainCamera.orthographicSize = boardState.rows / 2.0f + 1;
+        tutorial.text = boardState.tutorial;
+        tutorial.enabled = true; 
 
         int buttonCount = 0;
 
@@ -221,6 +225,7 @@ public class GameManagerScript : MonoBehaviour {
 		if (pauseReady && checkPause())
 		{
 			pausescript.TogglePause();
+            tutorial.enabled = !tutorial.enabled; 
 		}
 	}
 
@@ -313,6 +318,7 @@ public class GameManagerScript : MonoBehaviour {
         Debug.Log("VICTORY!");
 		LoggingManager.instance.RecordLevelEnd ();
 	    winscript.playerWin = true;
+        tutorial.enabled = false; 
         return true;
     }
 

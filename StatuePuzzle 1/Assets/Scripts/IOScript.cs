@@ -15,6 +15,7 @@ public class Level
     public Laser[] lasers;
     public int[] buttons;
     public int[] portals;
+    public string tutorial; 
 
     public void MakeFlatBoard() {
         flatBoard = new int[rows * cols]; 
