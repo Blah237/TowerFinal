@@ -44,33 +44,47 @@ public class MirrorScript : MoveableScript {
 
 	public override Direction GetAttemptedMoveDirection (Direction direction, int[,] boardState)
 	{
-        this.direction = GameManagerScript.GetOpposite(direction);
-        SetAnimationState(this.direction);
         switch (direction) {
-		case Direction.NORTH:
-			if (coords.row >= boardState.GetLength (0) || boardState [coords.row - 1, coords.col] == 1) {
-				return Direction.NONE;
-			} else {
-				return Direction.SOUTH; 
-			}
-		case Direction.SOUTH:
-			if (coords.row <= 0 || boardState [coords.row + 1, coords.col] == 1) {
-				return Direction.NONE;
-			} else {
-				return Direction.NORTH;
-			}
-		case Direction.EAST:
-			if (coords.col >= boardState.GetLength (1) || boardState [coords.row, coords.col - 1] == 1) {
-				return Direction.NONE;
-			} else {
-				return Direction.WEST;
-			}
-		case Direction.WEST:
-			if (coords.col <= 0 || boardState [coords.row, coords.col + 1] == 1) {
-				return Direction.NONE;
-			} else {
-				return Direction.EAST;
-			}
+		case Direction.NORTH: {
+                    this.direction = Direction.SOUTH;
+                    SetAnimationState(this.direction); 
+                    if (coords.row >= boardState.GetLength(0) || boardState[coords.row - 1, coords.col] == 1) {
+                        return Direction.NONE;
+                    }
+                    else {
+                        return Direction.SOUTH;
+                    }
+                }
+		case Direction.SOUTH: {
+                    this.direction = Direction.NORTH;
+                    SetAnimationState(this.direction); 
+                    if (coords.row <= 0 || boardState[coords.row + 1, coords.col] == 1) {
+                        return Direction.NONE;
+                    }
+                    else {
+                        return Direction.NORTH;
+                    }
+                }
+		case Direction.EAST: {
+                    this.direction = Direction.WEST;
+                    SetAnimationState(this.direction); 
+                    if (coords.col >= boardState.GetLength(1) || boardState[coords.row, coords.col - 1] == 1) {
+                        return Direction.NONE;
+                    }
+                    else {
+                        return Direction.WEST;
+                    }
+                }
+		case Direction.WEST: {
+                    this.direction = Direction.EAST;
+                    SetAnimationState(this.direction); 
+                    if (coords.col <= 0 || boardState[coords.row, coords.col + 1] == 1) {
+                        return Direction.NONE;
+                    }
+                    else {
+                        return Direction.EAST;
+                    }
+                }
 		}
 
 		return Direction.NONE;

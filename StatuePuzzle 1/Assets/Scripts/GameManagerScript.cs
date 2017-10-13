@@ -111,20 +111,6 @@ public class GameManagerScript : MonoBehaviour {
      * 10 = goal
      */
 
-    public static Direction GetOpposite(Direction dir) {
-        switch (dir) {
-            case (Direction.NORTH):
-                return Direction.SOUTH;
-            case (Direction.SOUTH):
-                return Direction.NORTH;
-            case (Direction.EAST):
-                return Direction.WEST;
-            case (Direction.WEST):
-                return Direction.EAST;
-        }
-        return Direction.NONE;
-    }
-
     // Use this for initialization
     void Start() {
 		Debug.Log ("STARTING");
