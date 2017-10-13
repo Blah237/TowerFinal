@@ -103,7 +103,7 @@ public class GameManagerScript : MonoBehaviour {
     [SerializeField]
     public static string levelName; 
     Level boardState; //Row, Column
-    // East col+, North row+
+                      // East col+, North row+
 
     /* 0 = empty
      * 1 = wall
@@ -155,6 +155,7 @@ public class GameManagerScript : MonoBehaviour {
         for (int i = 0; i < boardState.rows; i++) {
             for(int j = 0; j < boardState.cols; j++) {
                 if (boardState.board[i, j] == 1) {
+                    //wall
                     GameObject w; 
                     if(i == 0 || boardState.board[i-1,j] != 1) {
                         w = GameObject.Instantiate(frontWall); 
@@ -188,24 +189,28 @@ public class GameManagerScript : MonoBehaviour {
                     p.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0);
                     portalCoords.Add(new coord(i, j));
                 } else {
+                    // ground 
                     GameObject g = GameObject.Instantiate(ground);
                     g.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0);
                 }
 
                 if (boardState.board[i, j] % 10 == 2) {
+                    // player
                     player = GameObject.Instantiate(player);
                     player.SetCoords(j, i); 
-                    player.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0);
+                    player.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y + player.yOffset, -0.2f);
                     moveables.Add(player); 
                 } else if (boardState.board[i,j] % 10 == 3) {
+                    // mimic
                     MimicScript m = GameObject.Instantiate(mimic);
                     m.SetCoords(j, i);
-                    m.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0);
+                    m.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y + m.yOffset, -0.2f);
                     moveables.Add(m); 
                 } else if (boardState.board[i,j] % 10 == 4) {
+                    // mirror
                     MirrorScript m = GameObject.Instantiate(mirror);
                     m.SetCoords(j, i);
-                    m.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0);
+                    m.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y + m.yOffset, -0.2f);
                     moveables.Add(m);
                 } 
             }
@@ -245,7 +250,7 @@ public class GameManagerScript : MonoBehaviour {
 
     bool getAllDone() {
         foreach (MoveableScript m in moveables) {
-            if (m.GetIsMoving()) {
+            if (m.GetIsMoving() || m.GetIsColliding()) {
                 return false;
             }
         }
@@ -290,7 +295,7 @@ public class GameManagerScript : MonoBehaviour {
 				} else if (ButtonManagerScript.buttonCoords.ContainsKey(prevCoord)) {
 					ButtonManagerScript.buttonCoords[prevCoord].TogglePressed();
 				}
-				m.transform.position = new Vector3(m.GetCoords().col + mapOrigin.x, m.GetCoords().row + mapOrigin.y, 0);
+				m.transform.position = new Vector3(m.GetCoords().col + mapOrigin.x, m.GetCoords().row + mapOrigin.y + m.yOffset, 0);
 			} 
 
 		} catch (InvalidOperationException) {
@@ -449,7 +454,7 @@ public class GameManagerScript : MonoBehaviour {
                         // Instantiate a Mirror
                         MirrorScript m = GameObject.Instantiate(mirror);
                         m.SetCoords(c.col-dx, c.row-dy);
-                        m.transform.position = new Vector3(c.col-dx + mapOrigin.x, c.row-dy + mapOrigin.y, 0);
+                        m.transform.position = new Vector3(c.col-dx + mapOrigin.x, c.row-dy + mapOrigin.y + m.yOffset, 0);
                         moveables.Add(m);
                         m.ExecuteMove(dr, 1, true);
 					} else if (moveable.type == BoardCodes.MIRROR) {
@@ -462,7 +467,7 @@ public class GameManagerScript : MonoBehaviour {
                         // Instantiate a Mimic
                         MimicScript m = GameObject.Instantiate(mimic);
                         m.SetCoords(c.col-dx, c.row-dy);
-                        m.transform.position = new Vector3(c.col-dx + mapOrigin.x, c.row-dy + mapOrigin.y, 0);
+                        m.transform.position = new Vector3(c.col-dx + mapOrigin.x, c.row-dy + mapOrigin.y + m.yOffset, 0);
                         moveables.Add(m);
                         m.ExecuteMove(dr, 1, true);
                     }
@@ -486,8 +491,10 @@ public class GameManagerScript : MonoBehaviour {
                 MoveableScript ms = toDestroy.Pop();
                 GameObject.Destroy(ms.gameObject);
             }
-		}
-
+		} else {
+            player.ExecuteMove(Direction.NONE, 1, false); 
+        }
+			
 		recordDynamicState ();	
 		checkWin ();
     }
@@ -514,7 +521,7 @@ public class GameManagerScript : MonoBehaviour {
 		}
 
 		dynamicStateStack.Push (ds);
-		Debug.Log (ds.toJson ());
+		//Debug.Log (ds.toJson ());
 		LoggingManager.instance.RecordEvent (LoggingManager.EventCodes.DYNAMIC_STATE, ds.toJson ());
 	}
 }

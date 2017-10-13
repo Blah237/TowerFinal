@@ -4,30 +4,44 @@ using UnityEngine;
 
 public abstract class MoveableScript : MonoBehaviour {
 
-	[SerializeField]
-	private bool isMoving; 
-	public float speed = 1f; 
-	[SerializeField]
-	private Direction direction;
-	[SerializeField]
-	private float distanceToMove; 
-	//current statue position
-	[SerializeField]
-	protected coord coords;
+    [SerializeField]
+    private bool isMoving;
+    [SerializeField]
+    private bool isColliding;
+    public float speed = 1f;
+    public float cSpeed = 0.7f;
+    public float collideFactor; 
+    [SerializeField]
+    protected Direction direction;
+    [SerializeField]
+    private float distanceToMove;
+    private float totalDistance;
+    //current statue position
+    [SerializeField]
+    protected coord coords;
+    [SerializeField]
+    public float yOffset; 
 
-    public int collisionMask; 
-	public BoardCodes type { get; protected set;}
+    protected Animation2DManager animator;
 
-	// Use this for initialization
-	void Start () {
-		InitializeType ();
-	}
+    public int collisionMask;
+    public BoardCodes type { get; protected set; }
 
-	protected abstract void InitializeType ();
+    // Use this for initialization
+    void Start() {
+        InitializeType();
+        animator = GetComponent<Animation2DManager>();
+    }
 
-	public bool GetIsMoving() {
-		return isMoving; 
-	}
+    protected abstract void InitializeType();
+
+    public bool GetIsMoving() {
+        return isMoving;
+    }
+
+    public bool GetIsColliding() {
+        return isColliding; 
+    }
 
 	public coord GetCoords() {
 		return coords;
@@ -54,12 +68,34 @@ public abstract class MoveableScript : MonoBehaviour {
 				isMoving = false;
 				distance += distanceToMove;
 				distanceToMove = 0;
+                SetAnimationState(direction); 
                 //snap to correct place for portals
-                Vector3 endPos = new Vector3(coords.col + GameManagerScript.mapOrigin.x, coords.row + GameManagerScript.mapOrigin.y, this.transform.position.z);
+                Vector3 endPos = new Vector3(coords.col + GameManagerScript.mapOrigin.x, coords.row + GameManagerScript.mapOrigin.y + yOffset, this.transform.position.z);
                 this.transform.position = endPos;
 			}
 			transform.Translate(new Vector3(x * distance, y * distance, 0), Space.World);       
 		}
+        if(isColliding) {
+            float dt = Time.deltaTime;
+            int y = direction == Direction.NORTH ? 1 : (direction == Direction.SOUTH ? -1 : 0);
+            int x = direction == Direction.EAST ? 1 : (direction == Direction.WEST ? -1 : 0);
+            
+            float distance = dt * cSpeed;
+            distanceToMove -= distance;
+            if(distanceToMove < 0.5 * totalDistance) {
+                y *= -1;
+                x *= -1; 
+            }
+            if (distanceToMove <= 0) {
+                isColliding = false;
+                SetAnimationState(direction);
+                Vector3 endPos = new Vector3(coords.col + GameManagerScript.mapOrigin.x, coords.row + GameManagerScript.mapOrigin.y + yOffset, this.transform.position.z);
+                this.transform.position = endPos;
+            }
+            else {
+                transform.Translate(new Vector3(x * distance, y * distance, 0), Space.World);
+            }
+        }
 	}
 
 	//TODO: I think Unity is encouraging bad design here, but models should NOT be getting boardsate
@@ -69,16 +105,22 @@ public abstract class MoveableScript : MonoBehaviour {
 
 	public void ExecuteMove(Direction direction, int numSpaces, bool animOnly = false) {
 
-		//TODO: animate 
+        distanceToMove = numSpaces;
+        //TODO if your first direction is NONE, things get weird 
+        if (direction == Direction.NONE) {
+            isColliding = true;
+            distanceToMove /= collideFactor;
+            totalDistance = distanceToMove; 
+        } else {
+            isMoving = true;
+            this.direction = direction;
+        }
 
-		//translate according to directions 
-		isMoving = true;
-		distanceToMove = numSpaces;
-		this.direction = direction;
-		//Debug.Log(this.name + " moving " + direction.ToString());
+        SetAnimationState(direction);
+        //Debug.Log(this.name + " moving " + direction.ToString());
 
-		//change statue position
-		switch (direction) {
+        //change statue position
+        switch (direction) {
 		case Direction.NORTH:
 			coords.row += numSpaces;
 			break;
@@ -98,5 +140,16 @@ public abstract class MoveableScript : MonoBehaviour {
 
     public void EnterPortal(int[,] boardState, coord portalCoords) {
         coords = portalCoords;
+    }
+
+    public void SetAnimationState(Direction direction) {
+        int animateDir = (int)this.direction;
+        if (isColliding) {
+            animateDir += 4;  //direction + 4 will give you the index of the colliding animation 
+        }
+        if (animator != null) { 
+            animator.StopAllAnimations();
+            animator.Play(animateDir, loop: true);
+        }
     }
 }
