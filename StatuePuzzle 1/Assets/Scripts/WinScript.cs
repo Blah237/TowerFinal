@@ -8,7 +8,7 @@ public class WinScript : MonoBehaviour
 {
 
 	public bool playerWin;
-	public float restartDelay = 5f;
+	//public float restartDelay = 5f;
 	private GameObject NextLevel;
 	private GameObject LevelSelectWin;
 
@@ -31,6 +31,7 @@ public class WinScript : MonoBehaviour
 			CreateLevelSelect.buttonMap[GameManagerScript.levelName] = true;
 			NextLevel.GetComponent<Button>().interactable = true;
 			LevelSelectWin.GetComponent<Button>().interactable = true;
+			playerWin = false;
 			//b.GetComponent<Image>().color = Color.green;
 			GameManagerScript.inputReady = false;
 			//restartTimer += Time.deltaTime;

@@ -4,7 +4,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Security.Policy;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -69,7 +68,7 @@ public class CreateLevelSelect : MonoBehaviour
 
 	void getFiles()
 	{
-		DirectoryInfo levelDirectoryPath = new DirectoryInfo("../StatuePuzzle 1/Assets/Resources/Levels");
+		DirectoryInfo levelDirectoryPath = new DirectoryInfo("Assets/Resources/Levels");
 		FileInfo[] fileInfo = levelDirectoryPath.GetFiles("*.*", SearchOption.AllDirectories);
 		int incrementer = 0;
 			foreach (FileInfo file in fileInfo)
