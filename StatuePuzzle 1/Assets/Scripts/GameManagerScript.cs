@@ -90,7 +90,7 @@ public class GameManagerScript : MonoBehaviour {
     public GameObject portal;
 
     List<coord> swapCoords = new List<coord>();
-	List<coord> buttonCoords = new List<coord>();
+    Dictionary<coord, ButtonToggleScript> buttonCoords = new Dictionary<coord, ButtonToggleScript>();
     List<coord> portalCoords = new List<coord>();
     Dictionary<coord, coord> portalMap = new Dictionary<coord, coord>();
 
@@ -182,9 +182,8 @@ public class GameManagerScript : MonoBehaviour {
 	                ButtonToggleScript c = GameObject.Instantiate(button);
 	                c.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0);
                     c.laser = laserList[boardState.buttons[buttonCount]];
-                    c.InitButton(); 
-	                buttonCoords.Add(new coord(i,j));
-	                ButtonManagerScript.buttonCoords.Add(new coord(i,j), c);
+                    c.InitButton();
+                    buttonCoords.Add(new coord(i,j), c);
                     buttonCount++; 
                 } else if (boardState.board[i, j] >= 50 && boardState.board[i, j] < 60) {
                     // portal
@@ -294,10 +293,10 @@ public class GameManagerScript : MonoBehaviour {
 					break;
 				}
 
-				if (ButtonManagerScript.buttonCoords.ContainsKey(undoCoord)) {
-					ButtonManagerScript.buttonCoords[undoCoord].TogglePressed();
-				} else if (ButtonManagerScript.buttonCoords.ContainsKey(prevCoord)) {
-					ButtonManagerScript.buttonCoords[prevCoord].TogglePressed();
+				if (buttonCoords.ContainsKey(undoCoord)) {
+					buttonCoords[undoCoord].TogglePressed();
+				} else if (buttonCoords.ContainsKey(prevCoord)) {
+					buttonCoords[prevCoord].TogglePressed();
 				}
 				m.transform.position = new Vector3(m.GetCoords().col + mapOrigin.x, m.GetCoords().row + mapOrigin.y + m.yOffset, 0);
 			} 
@@ -374,7 +373,7 @@ public class GameManagerScript : MonoBehaviour {
             //Check for collisions with lasers 
             foreach (Laser laser in laserList) {
                 // if laser is active && laser can collide with this moveable 
-                if (laser.gameObject.activeInHierarchy && (laser.canCollide & m.collisionMask) > 0) {
+                if (laser.gameObject.activeInHierarchy && laser.type != m.type) {
 	                //if moveable is jumping through a horizontal laser
                     if ((direction == Direction.NORTH && m.GetCoords().row == laser.startRow) ||
 		                (direction == Direction.SOUTH && desired.row == laser.startRow)) {
@@ -382,6 +381,7 @@ public class GameManagerScript : MonoBehaviour {
 			                moveDirections[m] = Direction.NONE;
                             desired = m.GetCoords();
                             desiredCoords[m] = desired;
+                            collided.Add(m); 
                         }
 		            }
                     //if moveable is jumping through a vertical laser 
@@ -391,6 +391,7 @@ public class GameManagerScript : MonoBehaviour {
 		                    moveDirections[m] = Direction.NONE;
                             desired = m.GetCoords();
                             desiredCoords[m] = desired;
+                            collided.Add(m); 
                         }
 	                }
 	            }
@@ -490,7 +491,7 @@ public class GameManagerScript : MonoBehaviour {
                 //check for button press 
 				if (boardState.board[c.row, c.col] >= 30 && boardState.board[c.row, c.col] < 40) {
                     coord buttonCoord = new coord(c.row, c.col);
-                    ButtonManagerScript.buttonCoords[buttonCoord].TogglePressed();
+                    buttonCoords[buttonCoord].TogglePressed();
                 }
             }
 
@@ -503,8 +504,9 @@ public class GameManagerScript : MonoBehaviour {
             }
 		} 
 
-		foreach (MoveableScript m in collided) {
-			m.ExecuteMove (Direction.NONE, 1, false);
+		foreach (MoveableScript m in moveDirections.Keys) {
+            if(moveDirections[m] == Direction.NONE)
+    			m.ExecuteMove (Direction.NONE, 1, false);
 		}
 			
 		recordDynamicState ();	
@@ -527,7 +529,7 @@ public class GameManagerScript : MonoBehaviour {
 			}
 		}
 
-		foreach (KeyValuePair<coord,ButtonToggleScript> b in ButtonManagerScript.buttonCoords) {
+		foreach (KeyValuePair<coord,ButtonToggleScript> b in buttonCoords) {
 			//TODO: Would really like if laser.state was a bool
 			ds.buttonStates.Add (b.Key, b.Value.laser.state);
 		}
