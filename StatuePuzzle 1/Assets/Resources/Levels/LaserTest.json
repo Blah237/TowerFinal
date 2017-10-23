@@ -1,0 +1,10 @@
+{"rows":7,"cols":7,"flatBoard":[1,1,1,1,1,1,1,1,0,0,2,0,0,1,1,0,0,30,0,0,1,1,10,0,0,4,0,1,1,0,0,0,0,0,1,1,0,0,3,0,10,1,1,1,1,1,1,1,1],
+
+  "lasers":
+
+  [{"startRow":0,"startCol":3,"direction":0,"length":5,"state":1,"type":0,"gameObject":{"instanceID":0}},
+    {"startRow":5,"startCol":2,"direction":1,"length":4,"state":1,"type": 4,"gameObject":{"instanceID":1}},
+  {"startRow":5,"startCol":5,"direction":1,"length":4,"state":1,"type":3,"gameObject":{"instanceID":2}}],
+
+
+  "buttons":[0],"portals":[],"tutorial":""}
