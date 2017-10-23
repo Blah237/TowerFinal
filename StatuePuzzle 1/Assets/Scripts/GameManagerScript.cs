@@ -94,6 +94,7 @@ public class GameManagerScript : MonoBehaviour {
     List<coord> portalCoords = new List<coord>();
     Dictionary<coord, coord> portalMap = new Dictionary<coord, coord>();
     HashSet<ButtonToggleScript> buttonsPressed = new HashSet<ButtonToggleScript>();
+    HashSet<MoveableScript> needsSwap = new HashSet<MoveableScript>(); 
 
     public static Vector2 mapOrigin;
 
@@ -240,6 +241,10 @@ public class GameManagerScript : MonoBehaviour {
                 button.TogglePressed();
             }
             buttonsPressed.Clear(); 
+            foreach (MoveableScript m in needsSwap) {
+                PerformSwap(m); 
+            }
+            needsSwap.Clear(); 
             Direction dir = readInput();
 			if (dir != Direction.NONE)
 			{
@@ -457,33 +462,7 @@ public class GameManagerScript : MonoBehaviour {
                 // check for a swap
                 coord c = moveable.GetCoords();
                 if (moveDirections[moveable] != Direction.NONE && swapCoords.Contains(c)) {
-					if (moveable.type == BoardCodes.MIMIC) {
-                        Direction dr = moveDirections[moveable];
-                        int dx = dr == Direction.EAST ? 1 : dr == Direction.WEST ? -1 : 0;
-                        int dy = dr == Direction.NORTH ? 1 : dr == Direction.SOUTH ? -1 : 0;
-                        boardState.board[c.row, c.col] = 24;
-                        this.moveables.Remove(moveable);
-                        toDestroy.Push(moveable);
-                        // Instantiate a Mirror
-                        MirrorScript m = GameObject.Instantiate(mirror);
-                        m.SetCoords(c.col-dx, c.row-dy);
-                        m.transform.position = new Vector3(c.col-dx + mapOrigin.x, c.row-dy + mapOrigin.y + m.yOffset, 0);
-                        moveables.Add(m);
-                        m.ExecuteMove(dr, 1, true);
-					} else if (moveable.type == BoardCodes.MIRROR) {
-                        Direction dr = moveDirections[moveable];
-                        int dx = dr == Direction.EAST ? 1 : dr == Direction.WEST ? -1 : 0;
-                        int dy = dr == Direction.NORTH ? 1 : dr == Direction.SOUTH ? -1 : 0;
-                        boardState.board[c.row, c.col] = 23;
-                        this.moveables.Remove(moveable);
-                        toDestroy.Push(moveable);
-                        // Instantiate a Mimic
-                        MimicScript m = GameObject.Instantiate(mimic);
-                        m.SetCoords(c.col-dx, c.row-dy);
-                        m.transform.position = new Vector3(c.col-dx + mapOrigin.x, c.row-dy + mapOrigin.y + m.yOffset, 0);
-                        moveables.Add(m);
-                        m.ExecuteMove(dr, 1, true);
-                    }
+                    needsSwap.Add(moveable); 
                 } else if (moveDirections[moveable] != Direction.NONE && portalCoords.Contains(c)) {
                     coord cp = portalMap[c];
                     // overrides any existing moves
@@ -514,6 +493,33 @@ public class GameManagerScript : MonoBehaviour {
 			
 		recordDynamicState ();	
 		checkWin ();
+    }
+
+    private void PerformSwap(MoveableScript moveable) {
+        Direction dr = moveable.direction;
+        int row = moveable.GetCoords().row;
+        int col = moveable.GetCoords().col; 
+
+        if (moveable.type == BoardCodes.MIMIC) {
+            boardState.board[row, col] = 24;
+            // Instantiate a Mirror
+            MirrorScript m = GameObject.Instantiate(mirror);
+            m.SetCoords(col, row);
+            m.transform.position = new Vector3(col + mapOrigin.x, row + mapOrigin.y + m.yOffset, 0);
+            moveables.Add(m);
+            m.ExecuteMove(dr, 0); 
+        }
+        else if (moveable.type == BoardCodes.MIRROR) {
+            boardState.board[row, col] = 23;
+            // Instantiate a Mimic
+            MimicScript m = GameObject.Instantiate(mimic);
+            m.SetCoords(col, row);
+            m.transform.position = new Vector3(col + mapOrigin.x, row + mapOrigin.y + m.yOffset, 0);
+            moveables.Add(m);
+            m.ExecuteMove(dr, 0); 
+        }
+        this.moveables.Remove(moveable); 
+        GameObject.Destroy(moveable.gameObject); 
     }
 
 	private void recordDynamicState() {
