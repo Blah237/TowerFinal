@@ -23,8 +23,7 @@ public abstract class MoveableScript : MonoBehaviour {
     public float yOffset; 
 
     protected Animation2DManager animator;
-
-    public int collisionMask;
+    
     public BoardCodes type { get; protected set; }
 
     // Use this for initialization

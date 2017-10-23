@@ -526,7 +526,7 @@ public class LevelEditorScript : MonoBehaviour {
         editLaser.direction = (Direction)System.Enum.Parse(typeof(Direction), interior.Find("dir").Find("dirEditField").GetComponent<Text>().text);
         editLaser.length = System.Int32.Parse(interior.Find("len").Find("lenEditField").GetComponent<Text>().text);
         editLaser.state = interior.Find("enableToggle").GetComponent<Toggle>().enabled ? 1 : 0;
-        editLaser.canCollide = -1;
+        editLaser.type = BoardCodes.EMPTY;
         lasers[lastConnect] = editLaser;
         editLaser = null;
         lastConnect = new coord(-1, -1);
