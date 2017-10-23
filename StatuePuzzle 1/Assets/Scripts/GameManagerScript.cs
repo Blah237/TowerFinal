@@ -361,6 +361,7 @@ public class GameManagerScript : MonoBehaviour {
 
 		Dictionary<MoveableScript,coord> desiredCoords = new Dictionary<MoveableScript, coord>(); //where pieces would move without collisions/walls
 		Dictionary<MoveableScript,Direction> moveDirections = new Dictionary<MoveableScript, Direction>(); //directions pieces will actually move
+		HashSet<MoveableScript> collided = new HashSet<MoveableScript>();
 
 		foreach(MoveableScript m in moveables) {
 			coord desired = m.GetAttemptedMoveCoords(dir, boardState.board, 1);
@@ -406,6 +407,8 @@ public class GameManagerScript : MonoBehaviour {
 					moveDirections[m] = Direction.NONE;
 					dead = true;
 					deathscript.playerDeath = true;
+					collided.Add (m);
+					collided.Add (other);
 				}
 			}
 
@@ -435,6 +438,8 @@ public class GameManagerScript : MonoBehaviour {
 				} else if (moveDirections[other] == Direction.NONE
 					&& other.GetCoords().Equals(desiredCoords[m])) {
 					moveDirections [m] = Direction.NONE;
+					collided.Add (m);
+					collided.Add (other); 
 				}
 			}
 		}
@@ -496,9 +501,11 @@ public class GameManagerScript : MonoBehaviour {
                 MoveableScript ms = toDestroy.Pop();
                 GameObject.Destroy(ms.gameObject);
             }
-		} else {
-            player.ExecuteMove(Direction.NONE, 1, false); 
-        }
+		} 
+
+		foreach (MoveableScript m in collided) {
+			m.ExecuteMove (Direction.NONE, 1, false);
+		}
 			
 		recordDynamicState ();	
 		checkWin ();
