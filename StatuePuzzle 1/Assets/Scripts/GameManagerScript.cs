@@ -93,6 +93,7 @@ public class GameManagerScript : MonoBehaviour {
     Dictionary<coord, ButtonToggleScript> buttonCoords = new Dictionary<coord, ButtonToggleScript>();
     List<coord> portalCoords = new List<coord>();
     Dictionary<coord, coord> portalMap = new Dictionary<coord, coord>();
+    HashSet<ButtonToggleScript> buttonsPressed = new HashSet<ButtonToggleScript>();
 
     public static Vector2 mapOrigin;
 
@@ -235,7 +236,11 @@ public class GameManagerScript : MonoBehaviour {
 		}
 
 		if (inputReady) {
-			Direction dir = readInput();
+            foreach (ButtonToggleScript button in buttonsPressed) {
+                button.TogglePressed();
+            }
+            buttonsPressed.Clear(); 
+            Direction dir = readInput();
 			if (dir != Direction.NONE)
 			{
 				inputReady = false;
@@ -387,7 +392,7 @@ public class GameManagerScript : MonoBehaviour {
                     if ((direction == Direction.EAST && desired.col == laser.startCol) ||
 	                    (direction == Direction.WEST && m.GetCoords().col == laser.startCol)) {
 	                    if (laser.isBetweenRow(m.GetCoords().row)) {
-		                    moveDirections[m] = Direction.NONE;
+                            moveDirections[m] = Direction.NONE;
                             desired = m.GetCoords();
                             desiredCoords[m] = desired;
                         }
@@ -447,7 +452,6 @@ public class GameManagerScript : MonoBehaviour {
 		if (moveDirections [player] != Direction.NONE) {
             Stack<MoveableScript> toDestroy = new Stack<MoveableScript>();
             foreach (MoveableScript moveable in moveDirections.Keys) {
-				//Debug.Log (moveable.name + " " + moveDirections[moveable].ToString() + " after " + moveable.GetAttemptedMoveDirection(dir, boardState));
 				moveable.ExecuteMove (moveDirections[moveable], 1, false);
 
                 // check for a swap
@@ -489,7 +493,7 @@ public class GameManagerScript : MonoBehaviour {
                 //check for button press 
 				if (boardState.board[c.row, c.col] >= 30 && boardState.board[c.row, c.col] < 40) {
                     coord buttonCoord = new coord(c.row, c.col);
-                    buttonCoords[buttonCoord].TogglePressed();
+                    buttonsPressed.Add(buttonCoords[buttonCoord]);
                 }
             }
 
