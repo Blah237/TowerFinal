@@ -4,7 +4,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Security.Policy;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -29,13 +28,23 @@ public class CreateLevelSelect : MonoBehaviour
 	// Use this for initialization
 	void Start()
 	{
-		//levelList = new string[5];
-		//levelList[0] = "level1";
-		//levelList[1] = "level2";
-		//levelList[2] = "level3";
-		//levelList[3] = "level4";
-		//levelList[4] = "level5";
-		getFiles();
+		levelList = new string[14];
+		levelList[0] = "01level1";
+		levelList[1] = "02level2";
+		levelList[2] = "03level3";
+		levelList[3] = "04blockLevel";
+		levelList[4] = "08level4";
+        levelList[5] = "09level5";
+        levelList[6] = "21smallSwap";
+        levelList[7] = "22SwapMaze";
+        levelList[8] = "23SwapTest";
+        levelList[9] = "31dumbPortalTutorial";
+        levelList[10] = "32portal2";
+        levelList[11] = "33portalSwap";
+        levelList[12] = "34CircleWithPortals";
+        levelList[13] = "PortalLinkTest";
+        
+        //getFiles();
 		if (buttonMap == null)
 		{
 			buttonMap = new Dictionary<string, bool>();
@@ -69,8 +78,8 @@ public class CreateLevelSelect : MonoBehaviour
 
 	void getFiles()
 	{
-		DirectoryInfo levelDirectoryPath = new DirectoryInfo("../StatuePuzzle 1/Assets/Resources/Levels");
-		FileInfo[] fileInfo = levelDirectoryPath.GetFiles("*.*", SearchOption.AllDirectories);
+        DirectoryInfo levelDirectoryPath = new DirectoryInfo(Application.dataPath + "/Resources/Levels");
+        FileInfo[] fileInfo = levelDirectoryPath.GetFiles("*.*", SearchOption.AllDirectories);
 		int incrementer = 0;
 			foreach (FileInfo file in fileInfo)
 			{
