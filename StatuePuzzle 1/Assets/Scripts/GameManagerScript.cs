@@ -381,7 +381,6 @@ public class GameManagerScript : MonoBehaviour {
 			                moveDirections[m] = Direction.NONE;
                             desired = m.GetCoords();
                             desiredCoords[m] = desired;
-                            collided.Add(m); 
                         }
 		            }
                     //if moveable is jumping through a vertical laser 
@@ -391,7 +390,6 @@ public class GameManagerScript : MonoBehaviour {
 		                    moveDirections[m] = Direction.NONE;
                             desired = m.GetCoords();
                             desiredCoords[m] = desired;
-                            collided.Add(m); 
                         }
 	                }
 	            }
@@ -502,11 +500,12 @@ public class GameManagerScript : MonoBehaviour {
                 MoveableScript ms = toDestroy.Pop();
                 GameObject.Destroy(ms.gameObject);
             }
-		} 
+		} else {
+            collided.Add(player); 
+        }
 
-		foreach (MoveableScript m in moveDirections.Keys) {
-            if(moveDirections[m] == Direction.NONE)
-    			m.ExecuteMove (Direction.NONE, 1, false);
+		foreach (MoveableScript m in collided) {
+            m.ExecuteMove (Direction.NONE, 1, false);
 		}
 			
 		recordDynamicState ();	
