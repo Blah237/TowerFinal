@@ -952,7 +952,7 @@ MonoBehaviour:
   wall: {fileID: 1784765721464430, guid: b9ab2db89b3ea7740901f43e7eb60526, type: 2}
   frontWall: {fileID: 1128486389162076, guid: 53768ab1dc5f8de4c864d01727cb1e08, type: 2}
   goal: {fileID: 1070575984611532, guid: c83ab70655bd8a14e82dc9f920175f50, type: 2}
-  laser: {fileID: 1441265804993748, guid: 6533f532150bcdd4d9bc409cbee8708d, type: 2}
+  laser: {fileID: 114063543840357474, guid: aad1a95ba1d89fc419645f12940941ea, type: 2}
   winscript: {fileID: 1910557009}
   deathscript: {fileID: 1910557008}
   pausescript: {fileID: 1910557011}

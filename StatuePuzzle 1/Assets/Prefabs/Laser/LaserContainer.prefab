@@ -1,0 +1,68 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &100100000
+Prefab:
+  m_ObjectHideFlags: 1
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications: []
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 0}
+  m_RootGameObject: {fileID: 1902597485456076}
+  m_IsPrefabParent: 1
+--- !u!1 &1902597485456076
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4110330202724136}
+  - component: {fileID: 114063543840357474}
+  m_Layer: 0
+  m_Name: LaserContainer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4110330202724136
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1902597485456076}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &114063543840357474
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1902597485456076}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca36824d393e90540a8e7019267bb4d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  data:
+    startRow: 0
+    startCol: 0
+    direction: 0
+    length: 0
+    state: 0
+    type: 0
+  horizontalLaser: {fileID: 1695717452504382, guid: 9464177c8c77774419723dd9e61410fc,
+    type: 2}
+  verticalLaser: {fileID: 0}
+  mask: {fileID: 331759399170896940, guid: fc3a32841749d4141b718801faba7bbd, type: 2}
+  start: {fileID: 21300000, guid: e3a4e56f9c3f36a408b6272382a6428a, type: 3}
+  middle: {fileID: 21300000, guid: b512858bba495cb4e899fe3f800eeeb9, type: 3}
+  end: {fileID: 21300000, guid: abf383147b9cf904cb69c697b48bb06c, type: 3}
+  gameObjects: []

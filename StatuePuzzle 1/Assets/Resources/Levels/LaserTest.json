@@ -2,9 +2,9 @@
 
   "lasers":
 
-  [{"startRow":0,"startCol":3,"direction":0,"length":5,"state":1,"type":0,"gameObject":{"instanceID":0}},
-    {"startRow":5,"startCol":2,"direction":1,"length":4,"state":1,"type": 4,"gameObject":{"instanceID":1}},
-  {"startRow":5,"startCol":5,"direction":1,"length":4,"state":1,"type":3,"gameObject":{"instanceID":2}}],
+  [{"startRow":0,"startCol":3,"isHorizontal":false,"length":5,"state":true,"type":0,"gameObject":{"instanceID":0}},
+    {"startRow":5,"startCol":2,"isHorizontal":false,"length":4,"state":true,"type": 4,"gameObject":{"instanceID":1}},
+  {"startRow":5,"startCol":5,"isHorizontal":false,"length":4,"state":true,"type":3,"gameObject":{"instanceID":2}}],
 
 
   "buttons":[0],"portals":[],"tutorial":""}
