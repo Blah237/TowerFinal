@@ -60,7 +60,8 @@ MonoBehaviour:
     type: 0
   horizontalLaser: {fileID: 1695717452504382, guid: 9464177c8c77774419723dd9e61410fc,
     type: 2}
-  verticalLaser: {fileID: 0}
+  verticalLaser: {fileID: 1406619886578006, guid: edf64e27fe34db74db4dfbe1e91e0f32,
+    type: 2}
   mask: {fileID: 331759399170896940, guid: fc3a32841749d4141b718801faba7bbd, type: 2}
   start: {fileID: 21300000, guid: e3a4e56f9c3f36a408b6272382a6428a, type: 3}
   middle: {fileID: 21300000, guid: b512858bba495cb4e899fe3f800eeeb9, type: 3}
