@@ -381,7 +381,9 @@ public class GameManagerScript : MonoBehaviour {
                     //if moveable is jumping through a horizontal laser
                     if ((direction == Direction.NORTH && m.GetCoords().row == laser.data.startRow) ||
                         (direction == Direction.SOUTH && desired.row == laser.data.startRow)) {
+                        Debug.Log("Jumping through laser"); 
                         if (laser.data.isBetweenCol(m.GetCoords().col)) {
+                            Debug.Log("Is between Col"); 
                             moveDirections[m] = Direction.NONE;
                             desired = m.GetCoords();
                             desiredCoords[m] = desired;

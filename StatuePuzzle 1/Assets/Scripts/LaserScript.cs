@@ -16,14 +16,14 @@ public class Laser {
     public BoardCodes type; 
 
     public bool isBetweenRow(int coord) {
-        if (isHorizontal) {
+        if (!isHorizontal) {
             return (startRow < coord && coord <= startRow + length);
         }
         return false;
     }
 
     public bool isBetweenCol(int coord) {
-        if (!isHorizontal) {
+        if (isHorizontal) {
             return (startCol <= coord && coord < startCol + length);
         }
         return false;
@@ -44,7 +44,9 @@ public class LaserScript : MonoBehaviour {
     public GameObject[] gameObjects;
 
     private float spriteWidth = 2;
-    private float spriteHeight = 2; 
+    private float spriteHeight = 2;
+    [SerializeField]
+    private float maskOffset; 
 
 
     public void makeLaser(Laser la, Vector2 mapOrigin) {
@@ -59,10 +61,32 @@ public class LaserScript : MonoBehaviour {
             int num1Objects = data.length % 2;
             gameObjects = new GameObject[num2Objects + num1Objects];
 
+            this.gameObject.transform.position = new Vector3(1 + data.startCol + mapOrigin.x - 0.5f, data.startRow + mapOrigin.y + 0.63f, -0.1f);
+
             //instantiate them with position, rotation, size, etc. 
             for (int i = 0; i < num2Objects; i++) {
                 GameObject g = GameObject.Instantiate(lasertype);
-                g.transform.position = new Vector3(data.startCol + (i * spriteWidth) + mapOrigin.x - 0.5f, data.startRow + mapOrigin.y + 0.5f, -0.1f);
+                g.transform.parent = this.gameObject.transform;
+                g.transform.localScale = new Vector3(1, 1, 1);
+                g.transform.localPosition = new Vector3(0, 0, 0);
+                g.transform.Translate(i * spriteWidth, 0, 0, Space.World);
+
+                SpriteMask m = GameObject.Instantiate(mask);
+                if (i == 0) {
+                    m.sprite = start;
+                }
+                SpriteMask m2 = GameObject.Instantiate(mask);
+                if (i == num2Objects - 1 && num1Objects == 0) {
+                    m2.sprite = end; 
+                }
+                m.transform.parent = g.transform;
+                m2.transform.parent = g.transform;
+
+                m.transform.localPosition = new Vector3(-maskOffset, 0, 0); 
+                m.transform.localScale = new Vector3(1, 1, 1);
+                m2.transform.localPosition = new Vector3(maskOffset, 0, 0); 
+                m2.transform.localScale = new Vector3(1, 1, 1);
+
                 if (!data.isActive) {
                     g.SetActive(false);
                 }
@@ -70,9 +94,19 @@ public class LaserScript : MonoBehaviour {
 
             }
 
-            for (int i = 0; i < num1Objects; i++) {
+            if (num1Objects == 1) {
                 GameObject g = GameObject.Instantiate(lasertype);
-                g.transform.position = new Vector3(data.startCol + ((i + num2Objects) * spriteWidth) + mapOrigin.x - 0.5f, data.startRow + mapOrigin.y + 0.5f, -0.1f);
+                g.transform.parent = this.gameObject.transform;
+                g.transform.localScale = new Vector3(1, 1, 1);
+                g.transform.localPosition = new Vector3(0, 0, 0);
+                g.transform.Translate(num2Objects * spriteWidth, 0, 0, Space.World);
+
+                SpriteMask m = GameObject.Instantiate(mask);
+                m.sprite = end; 
+                m.transform.parent = g.transform;
+                
+                m.transform.localPosition = new Vector3(-maskOffset, 0, 0);
+                m.transform.localScale = new Vector3(1, 1, 1);
                 if (!data.isActive) {
                     g.SetActive(false);
                 }

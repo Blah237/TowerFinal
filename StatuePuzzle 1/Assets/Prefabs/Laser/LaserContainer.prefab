@@ -35,7 +35,7 @@ Transform:
   m_GameObject: {fileID: 1902597485456076}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.4, y: 0.4, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -54,9 +54,9 @@ MonoBehaviour:
   data:
     startRow: 0
     startCol: 0
-    direction: 0
+    isHorizontal: 0
     length: 0
-    state: 0
+    isActive: 0
     type: 0
   horizontalLaser: {fileID: 1695717452504382, guid: 9464177c8c77774419723dd9e61410fc,
     type: 2}
@@ -66,3 +66,4 @@ MonoBehaviour:
   middle: {fileID: 21300000, guid: b512858bba495cb4e899fe3f800eeeb9, type: 3}
   end: {fileID: 21300000, guid: abf383147b9cf904cb69c697b48bb06c, type: 3}
   gameObjects: []
+  maskOffset: 1.25
