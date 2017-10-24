@@ -4,4 +4,4 @@
 
   "lasers":[
     {"startRow":1,"startCol":2,"isHorizontal":false,"length":5,"isActive":true,"type":0},
-    {"startRow":1,"startCol":1,"isHorizontal":true,"length":5,"isActive":true,"type":0}],"buttons":[0,1],"portals":[],"tutorial":""}
+    {"startRow":0,"startCol":1,"isHorizontal":true,"length":5,"isActive":true,"type":0}],"buttons":[0,1],"portals":[],"tutorial":""}

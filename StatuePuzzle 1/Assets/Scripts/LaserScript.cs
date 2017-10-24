@@ -117,7 +117,7 @@ public class LaserScript : MonoBehaviour {
         else {
             //vertical laser
             lasertype = verticalLaser;
-            this.gameObject.transform.position = new Vector3(data.startCol + mapOrigin.x - 0.5f, data.startRow + mapOrigin.y + 0.63f, -0.1f);
+            this.gameObject.transform.position = new Vector3(data.startCol + mapOrigin.x - 0.5f, 1 + data.startRow + mapOrigin.y + 0.63f, -0.1f);
 
             for (int i = 0; i < num2Objects; i++) {
                 GameObject g = GameObject.Instantiate(lasertype);
