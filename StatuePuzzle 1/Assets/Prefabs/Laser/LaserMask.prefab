@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4041256557452142}
   - component: {fileID: 331759399170896940}
   m_Layer: 0
-  m_Name: New Sprite Mask
+  m_Name: LaserMask
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
