@@ -28,7 +28,7 @@ public class CreateLevelSelect : MonoBehaviour
 	// Use this for initialization
 	void Start()
 	{
-		levelList = new string[15];
+		levelList = new string[16];
 		levelList[0] = "01level1";
 		levelList[1] = "02level2";
 		levelList[2] = "03level3";
@@ -43,7 +43,8 @@ public class CreateLevelSelect : MonoBehaviour
         levelList[11] = "33portalSwap";
         levelList[12] = "34CircleWithPortals";
         levelList[13] = "PortalLinkTest";
-        levelList[14] = "LaserTest"; 
+        levelList[14] = "LaserTest";
+        levelList[15] = "lasertest2"; 
         
         //getFiles();
 		if (buttonMap == null)

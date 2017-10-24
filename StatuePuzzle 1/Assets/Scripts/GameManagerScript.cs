@@ -370,43 +370,44 @@ public class GameManagerScript : MonoBehaviour {
 
 		Dictionary<MoveableScript,coord> desiredCoords = new Dictionary<MoveableScript, coord>(); //where pieces would move without collisions/walls
 		Dictionary<MoveableScript,Direction> moveDirections = new Dictionary<MoveableScript, Direction>(); //directions pieces will actually move
-		HashSet<MoveableScript> collided = new HashSet<MoveableScript>();
+		Dictionary<MoveableScript, int> collided = new Dictionary<MoveableScript, int>(); 
 
 		foreach(MoveableScript m in moveables) {
-			coord desired = m.GetAttemptedMoveCoords(dir, boardState.board, 1);
-			if (boardState.board[desired.row, desired.col] / 10 == 5) {
+            Direction direction = m.GetAttemptedMoveDirection(dir, boardState.board);
+
+            coord desired = m.GetAttemptedMoveCoords(dir, boardState.board, 1);
+            if (boardState.board[desired.row, desired.col] / 10 == 5) {
                 desired = portalMap[desired];
             }
-            desiredCoords.Add(m,desired);
-            
-			Direction direction = m.GetAttemptedMoveDirection(dir, boardState.board); 
+            desiredCoords.Add(m, desired);
+
             //Check for collisions with lasers 
             foreach (Laser laser in laserList) {
                 // if laser is active && laser can collide with this moveable 
                 if (laser.gameObject.activeInHierarchy && laser.type != m.type) {
-	                //if moveable is jumping through a horizontal laser
+                    //if moveable is jumping through a horizontal laser
                     if ((direction == Direction.NORTH && m.GetCoords().row == laser.startRow) ||
-		                (direction == Direction.SOUTH && desired.row == laser.startRow)) {
-		                if (laser.isBetweenCol(m.GetCoords().col)) {
-			                moveDirections[m] = Direction.NONE;
-                            desired = m.GetCoords();
-                            desiredCoords[m] = desired;
-                        }
-		            }
-                    //if moveable is jumping through a vertical laser 
-                    if ((direction == Direction.EAST && desired.col == laser.startCol) ||
-	                    (direction == Direction.WEST && m.GetCoords().col == laser.startCol)) {
-	                    if (laser.isBetweenRow(m.GetCoords().row)) {
+                        (direction == Direction.SOUTH && desired.row == laser.startRow)) {
+                        if (laser.isBetweenCol(m.GetCoords().col)) {
                             moveDirections[m] = Direction.NONE;
                             desired = m.GetCoords();
                             desiredCoords[m] = desired;
                         }
-	                }
-	            }
-	        }
+                    }
+                    //if moveable is jumping through a vertical laser 
+                    if ((direction == Direction.EAST && desired.col == laser.startCol) ||
+                        (direction == Direction.WEST && m.GetCoords().col == laser.startCol)) {
+                        if (laser.isBetweenRow(m.GetCoords().row)) {
+                            moveDirections[m] = Direction.NONE;
+                            desired = m.GetCoords();
+                            desiredCoords[m] = desired;
+                        }
+                    }
+                }
+            }
 
-			// Check for collisions moving into the same spot
-			foreach (MoveableScript other in moveables) {
+            // Check for collisions moving into the same spot
+            foreach (MoveableScript other in moveables) {
 				if (other == m || other == null) {
 					continue;
 
@@ -416,8 +417,10 @@ public class GameManagerScript : MonoBehaviour {
 					moveDirections[m] = Direction.NONE;
 					dead = true;
 					deathscript.playerDeath = true;
-					collided.Add (m);
-					collided.Add (other);
+                    if (!desiredCoords[player].Equals(player.GetCoords()) || m.type == BoardCodes.PLAYER || other.type == BoardCodes.PLAYER) {
+                        collided.Add(m, 2);
+                        collided.Add(other, 2);
+                    }
 				}
 			}
 
@@ -447,9 +450,9 @@ public class GameManagerScript : MonoBehaviour {
 				} else if (moveDirections[other] == Direction.NONE
 					&& other.GetCoords().Equals(desiredCoords[m])) {
 					moveDirections [m] = Direction.NONE;
-					collided.Add (m);
-					collided.Add (other); 
-				}
+					collided[m] = 1;
+					collided[other] = 1;
+				} 
 			}
 		}
 
@@ -484,11 +487,13 @@ public class GameManagerScript : MonoBehaviour {
                 GameObject.Destroy(ms.gameObject);
             }
 		} else {
-            collided.Add(player); 
+            if (!collided.ContainsKey(player)) {
+                collided.Add(player, 1);
+            }
         }
 
-		foreach (MoveableScript m in collided) {
-            m.ExecuteMove (Direction.NONE, 1, false);
+		foreach (MoveableScript m in collided.Keys) {
+            m.ExecuteMove(Direction.NONE, collided[m], false);
 		}
 			
 		recordDynamicState ();	
@@ -507,7 +512,9 @@ public class GameManagerScript : MonoBehaviour {
             m.SetCoords(col, row);
             m.transform.position = new Vector3(col + mapOrigin.x, row + mapOrigin.y + m.yOffset, 0);
             moveables.Add(m);
-            m.ExecuteMove(dr, 0); 
+            m.ExecuteMove(dr, 0);
+            this.moveables.Remove(moveable);
+            GameObject.Destroy(moveable.gameObject);
         }
         else if (moveable.type == BoardCodes.MIRROR) {
             boardState.board[row, col] = 23;
@@ -516,10 +523,10 @@ public class GameManagerScript : MonoBehaviour {
             m.SetCoords(col, row);
             m.transform.position = new Vector3(col + mapOrigin.x, row + mapOrigin.y + m.yOffset, 0);
             moveables.Add(m);
-            m.ExecuteMove(dr, 0); 
+            m.ExecuteMove(dr, 0);
+            this.moveables.Remove(moveable);
+            GameObject.Destroy(moveable.gameObject);
         }
-        this.moveables.Remove(moveable); 
-        GameObject.Destroy(moveable.gameObject); 
     }
 
 	private void recordDynamicState() {

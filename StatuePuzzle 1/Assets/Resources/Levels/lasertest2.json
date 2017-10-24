@@ -1,0 +1,1 @@
+{"rows":7,"cols":7,"flatBoard":[1,1,10,1,1,1,1,1,30,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,2,0,3,0,4,1,1,0,0,0,0,0,1,1,1,1,1,1,1,1],"lasers":[{"startRow":0,"startCol":5,"direction":0,"length":5,"state":0,"type":0,"gameObject":{"instanceID":0}}],"buttons":[0],"tutorial":""}
