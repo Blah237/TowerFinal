@@ -83,6 +83,7 @@ public class GameManagerScript : MonoBehaviour {
 	public bool win;
 	public bool dead;
 
+	public AudioClip music;
 	public AudioSource audio;
     
     List<coord> goalCoords = new List<coord>();
@@ -122,6 +123,8 @@ public class GameManagerScript : MonoBehaviour {
     void Start() {
 
 		audio = this.GetComponent (typeof(AudioSource)) as AudioSource;
+		audio.clip = music;
+		audio.Play ();
 		firstStart = false;
 
         //load level using Melody's I/O
