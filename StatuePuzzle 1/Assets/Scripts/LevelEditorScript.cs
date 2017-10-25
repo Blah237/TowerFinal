@@ -514,8 +514,10 @@ public class LevelEditorScript : MonoBehaviour {
         interior.Find("row").Find("RowEditField").GetComponent<Text>().text = editLaser.startRow.ToString();
         interior.Find("col").Find("ColEditField").GetComponent<Text>().text = editLaser.startCol.ToString();
         interior.Find("len").Find("lenEditField").GetComponent<Text>().text = editLaser.length.ToString();
-        interior.Find("isHorizontal").GetComponent<Toggle>().enabled = editLaser.isHorizontal;
-        interior.Find("enableToggle").GetComponent<Toggle>().enabled = editLaser.isActive;
+        interior.Find("isHorizontal").GetComponent<Toggle>().enabled = true;
+        interior.Find("isHorizontal").GetComponent<Toggle>().isOn = editLaser.isHorizontal;
+        interior.Find("enableToggle").GetComponent<Toggle>().enabled = true;
+        interior.Find("enableToggle").GetComponent<Toggle>().isOn = editLaser.isActive;
         this.setLaserPopUpVisible(true);
     }
 
@@ -524,8 +526,8 @@ public class LevelEditorScript : MonoBehaviour {
         editLaser.startRow = System.Int32.Parse(interior.Find("row").Find("RowEditField").GetComponent<Text>().text);
         editLaser.startCol = System.Int32.Parse(interior.Find("col").Find("ColEditField").GetComponent<Text>().text);
         editLaser.length = System.Int32.Parse(interior.Find("len").Find("lenEditField").GetComponent<Text>().text);
-        editLaser.isActive = interior.Find("enableToggle").GetComponent<Toggle>().enabled;
-        editLaser.isHorizontal = interior.Find("isHorizontal").GetComponent<Toggle>().enabled;
+        editLaser.isActive = interior.Find("enableToggle").GetComponent<Toggle>().isOn;
+        editLaser.isHorizontal = interior.Find("isHorizontal").GetComponent<Toggle>().isOn;
         editLaser.type = BoardCodes.EMPTY;
         lasers[lastConnect] = editLaser;
         editLaser = null;
