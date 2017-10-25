@@ -11,7 +11,9 @@ public class Laser {
     public Direction direction; //Can be NORTH, SOUTH, EAST, or WEST, mimics Direction enum 
     public int length; //How many squares the laser covers
     public int state; //0 is off, 1 is on 
-    public int canCollide; //Can range from 0-7. A 1 in each binary digit signifies that it can collide with player, mimic, and mirror respectively 
+    /**If type is a BoardCode of a moveable, then that character can go through the laser
+        Otherwise, no characters can go through the laser**/ 
+    public BoardCodes type; 
     public GameObject gameObject; 
 
     public bool isBetweenRow(int coord) {

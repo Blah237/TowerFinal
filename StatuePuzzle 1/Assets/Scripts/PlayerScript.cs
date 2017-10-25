@@ -14,7 +14,6 @@ public class PlayerScript : MoveableScript {
 	protected override void InitializeType ()
 	{
 		this.type = BoardCodes.PLAYER;
-        this.collisionMask = 4; 
 	}
 
 	public override coord GetAttemptedMoveCoords (Direction direction, int[,] boardState, int numSpaces)

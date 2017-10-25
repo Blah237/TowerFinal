@@ -12,7 +12,7 @@ public abstract class MoveableScript : MonoBehaviour {
     public float cSpeed = 0.7f;
     public float collideFactor; 
     [SerializeField]
-    protected Direction direction;
+    public Direction direction;
     [SerializeField]
     private float distanceToMove;
     private float totalDistance;
@@ -20,11 +20,10 @@ public abstract class MoveableScript : MonoBehaviour {
     [SerializeField]
     protected coord coords;
     [SerializeField]
-    public float yOffset; 
+    public float yOffset;
 
-    protected Animation2DManager animator;
-
-    public int collisionMask;
+    protected Animation2DManager animator; 
+    
     public BoardCodes type { get; protected set; }
 
     // Use this for initialization

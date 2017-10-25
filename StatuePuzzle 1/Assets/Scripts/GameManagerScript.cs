@@ -90,9 +90,11 @@ public class GameManagerScript : MonoBehaviour {
     public GameObject portal;
 
     List<coord> swapCoords = new List<coord>();
-	List<coord> buttonCoords = new List<coord>();
+    Dictionary<coord, ButtonToggleScript> buttonCoords = new Dictionary<coord, ButtonToggleScript>();
     List<coord> portalCoords = new List<coord>();
     Dictionary<coord, coord> portalMap = new Dictionary<coord, coord>();
+    HashSet<ButtonToggleScript> buttonsPressed = new HashSet<ButtonToggleScript>();
+    HashSet<MoveableScript> needsSwap = new HashSet<MoveableScript>(); 
 
     public static Vector2 mapOrigin;
 
@@ -182,9 +184,8 @@ public class GameManagerScript : MonoBehaviour {
 	                ButtonToggleScript c = GameObject.Instantiate(button);
 	                c.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0);
                     c.laser = laserList[boardState.buttons[buttonCount]];
-                    c.InitButton(); 
-	                buttonCoords.Add(new coord(i,j));
-	                ButtonManagerScript.buttonCoords.Add(new coord(i,j), c);
+                    c.InitButton();
+                    buttonCoords.Add(new coord(i,j), c);
                     buttonCount++; 
                 } else if (boardState.board[i, j] >= 50 && boardState.board[i, j] < 60) {
                     // portal
@@ -236,7 +237,15 @@ public class GameManagerScript : MonoBehaviour {
 		}
 
 		if (inputReady) {
-			Direction dir = readInput();
+            foreach (ButtonToggleScript button in buttonsPressed) {
+                button.TogglePressed();
+            }
+            buttonsPressed.Clear(); 
+            foreach (MoveableScript m in needsSwap) {
+                PerformSwap(m); 
+            }
+            needsSwap.Clear(); 
+            Direction dir = readInput();
 			if (dir != Direction.NONE)
 			{
 				inputReady = false;
@@ -294,10 +303,10 @@ public class GameManagerScript : MonoBehaviour {
 					break;
 				}
 
-				if (ButtonManagerScript.buttonCoords.ContainsKey(undoCoord)) {
-					ButtonManagerScript.buttonCoords[undoCoord].TogglePressed();
-				} else if (ButtonManagerScript.buttonCoords.ContainsKey(prevCoord)) {
-					ButtonManagerScript.buttonCoords[prevCoord].TogglePressed();
+				if (buttonCoords.ContainsKey(undoCoord)) {
+					buttonCoords[undoCoord].TogglePressed();
+				} else if (buttonCoords.ContainsKey(prevCoord)) {
+					buttonCoords[prevCoord].TogglePressed();
 				}
 				m.transform.position = new Vector3(m.GetCoords().col + mapOrigin.x, m.GetCoords().row + mapOrigin.y + m.yOffset, 0);
 			} 
@@ -374,7 +383,7 @@ public class GameManagerScript : MonoBehaviour {
             //Check for collisions with lasers 
             foreach (Laser laser in laserList) {
                 // if laser is active && laser can collide with this moveable 
-                if (laser.gameObject.activeInHierarchy && (laser.canCollide & m.collisionMask) > 0) {
+                if (laser.gameObject.activeInHierarchy && laser.type != m.type) {
 	                //if moveable is jumping through a horizontal laser
                     if ((direction == Direction.NORTH && m.GetCoords().row == laser.startRow) ||
 		                (direction == Direction.SOUTH && desired.row == laser.startRow)) {
@@ -388,7 +397,7 @@ public class GameManagerScript : MonoBehaviour {
                     if ((direction == Direction.EAST && desired.col == laser.startCol) ||
 	                    (direction == Direction.WEST && m.GetCoords().col == laser.startCol)) {
 	                    if (laser.isBetweenRow(m.GetCoords().row)) {
-		                    moveDirections[m] = Direction.NONE;
+                            moveDirections[m] = Direction.NONE;
                             desired = m.GetCoords();
                             desiredCoords[m] = desired;
                         }
@@ -448,39 +457,12 @@ public class GameManagerScript : MonoBehaviour {
 		if (moveDirections [player] != Direction.NONE) {
             Stack<MoveableScript> toDestroy = new Stack<MoveableScript>();
             foreach (MoveableScript moveable in moveDirections.Keys) {
-				//Debug.Log (moveable.name + " " + moveDirections[moveable].ToString() + " after " + moveable.GetAttemptedMoveDirection(dir, boardState));
 				moveable.ExecuteMove (moveDirections[moveable], 1, false);
 
                 // check for a swap
                 coord c = moveable.GetCoords();
                 if (moveDirections[moveable] != Direction.NONE && swapCoords.Contains(c)) {
-					if (moveable.type == BoardCodes.MIMIC) {
-                        Direction dr = moveDirections[moveable];
-                        int dx = dr == Direction.EAST ? 1 : dr == Direction.WEST ? -1 : 0;
-                        int dy = dr == Direction.NORTH ? 1 : dr == Direction.SOUTH ? -1 : 0;
-                        boardState.board[c.row, c.col] = 24;
-                        this.moveables.Remove(moveable);
-                        toDestroy.Push(moveable);
-                        // Instantiate a Mirror
-                        MirrorScript m = GameObject.Instantiate(mirror);
-                        m.SetCoords(c.col-dx, c.row-dy);
-                        m.transform.position = new Vector3(c.col-dx + mapOrigin.x, c.row-dy + mapOrigin.y + m.yOffset, 0);
-                        moveables.Add(m);
-                        m.ExecuteMove(dr, 1, true);
-					} else if (moveable.type == BoardCodes.MIRROR) {
-                        Direction dr = moveDirections[moveable];
-                        int dx = dr == Direction.EAST ? 1 : dr == Direction.WEST ? -1 : 0;
-                        int dy = dr == Direction.NORTH ? 1 : dr == Direction.SOUTH ? -1 : 0;
-                        boardState.board[c.row, c.col] = 23;
-                        this.moveables.Remove(moveable);
-                        toDestroy.Push(moveable);
-                        // Instantiate a Mimic
-                        MimicScript m = GameObject.Instantiate(mimic);
-                        m.SetCoords(c.col-dx, c.row-dy);
-                        m.transform.position = new Vector3(c.col-dx + mapOrigin.x, c.row-dy + mapOrigin.y + m.yOffset, 0);
-                        moveables.Add(m);
-                        m.ExecuteMove(dr, 1, true);
-                    }
+                    needsSwap.Add(moveable); 
                 } else if (moveDirections[moveable] != Direction.NONE && portalCoords.Contains(c)) {
                     coord cp = portalMap[c];
                     // overrides any existing moves
@@ -490,7 +472,7 @@ public class GameManagerScript : MonoBehaviour {
                 //check for button press 
 				if (boardState.board[c.row, c.col] >= 30 && boardState.board[c.row, c.col] < 40) {
                     coord buttonCoord = new coord(c.row, c.col);
-                    ButtonManagerScript.buttonCoords[buttonCoord].TogglePressed();
+                    buttonsPressed.Add(buttonCoords[buttonCoord]);
                 }
             }
 
@@ -501,14 +483,43 @@ public class GameManagerScript : MonoBehaviour {
                 MoveableScript ms = toDestroy.Pop();
                 GameObject.Destroy(ms.gameObject);
             }
-		} 
+		} else {
+            collided.Add(player); 
+        }
 
 		foreach (MoveableScript m in collided) {
-			m.ExecuteMove (Direction.NONE, 1, false);
+            m.ExecuteMove (Direction.NONE, 1, false);
 		}
 			
 		recordDynamicState ();	
 		checkWin ();
+    }
+
+    private void PerformSwap(MoveableScript moveable) {
+        Direction dr = moveable.direction;
+        int row = moveable.GetCoords().row;
+        int col = moveable.GetCoords().col; 
+
+        if (moveable.type == BoardCodes.MIMIC) {
+            boardState.board[row, col] = 24;
+            // Instantiate a Mirror
+            MirrorScript m = GameObject.Instantiate(mirror);
+            m.SetCoords(col, row);
+            m.transform.position = new Vector3(col + mapOrigin.x, row + mapOrigin.y + m.yOffset, 0);
+            moveables.Add(m);
+            m.ExecuteMove(dr, 0); 
+        }
+        else if (moveable.type == BoardCodes.MIRROR) {
+            boardState.board[row, col] = 23;
+            // Instantiate a Mimic
+            MimicScript m = GameObject.Instantiate(mimic);
+            m.SetCoords(col, row);
+            m.transform.position = new Vector3(col + mapOrigin.x, row + mapOrigin.y + m.yOffset, 0);
+            moveables.Add(m);
+            m.ExecuteMove(dr, 0); 
+        }
+        this.moveables.Remove(moveable); 
+        GameObject.Destroy(moveable.gameObject); 
     }
 
 	private void recordDynamicState() {
@@ -527,7 +538,7 @@ public class GameManagerScript : MonoBehaviour {
 			}
 		}
 
-		foreach (KeyValuePair<coord,ButtonToggleScript> b in ButtonManagerScript.buttonCoords) {
+		foreach (KeyValuePair<coord,ButtonToggleScript> b in buttonCoords) {
 			//TODO: Would really like if laser.state was a bool
 			ds.buttonStates.Add (b.Key, b.Value.laser.state);
 		}
