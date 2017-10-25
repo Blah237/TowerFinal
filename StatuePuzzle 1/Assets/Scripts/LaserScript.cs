@@ -38,8 +38,10 @@ public class LaserScript : MonoBehaviour {
 
     public SpriteMask mask;
     public Sprite start;
-    public Sprite middle;
-    public Sprite end; 
+    public Sprite end;
+
+    public Sprite mimicGradient;
+    public Sprite mirrorGradient; 
 
     public GameObject[] gameObjects;
 
@@ -66,6 +68,13 @@ public class LaserScript : MonoBehaviour {
             //instantiate them with position, rotation, size, etc. 
             for (int i = 0; i < num2Objects; i++) {
                 GameObject g = GameObject.Instantiate(lasertype);
+                if(data.type == BoardCodes.MIMIC) {
+                    g.GetComponent<SpriteRenderer>().sprite = mimicGradient; 
+                }
+                if(data.type == BoardCodes.MIRROR) {
+                    g.GetComponent<SpriteRenderer>().sprite = mirrorGradient; 
+                }
+
                 g.transform.parent = this.gameObject.transform;
                 g.transform.localScale = new Vector3(1, 1, 1);
                 g.transform.localPosition = new Vector3(0, 0, 0);
@@ -96,6 +105,13 @@ public class LaserScript : MonoBehaviour {
 
             if (num1Objects == 1) {
                 GameObject g = GameObject.Instantiate(lasertype);
+                if (data.type == BoardCodes.MIMIC) {
+                    g.GetComponent<SpriteRenderer>().sprite = mimicGradient;
+                }
+                if (data.type == BoardCodes.MIRROR) {
+                    g.GetComponent<SpriteRenderer>().sprite = mirrorGradient;
+                }
+
                 g.transform.parent = this.gameObject.transform;
                 g.transform.localScale = new Vector3(1, 1, 1);
                 g.transform.localPosition = new Vector3(0, 0, 0);
@@ -121,6 +137,13 @@ public class LaserScript : MonoBehaviour {
 
             for (int i = 0; i < num2Objects; i++) {
                 GameObject g = GameObject.Instantiate(lasertype);
+                if (data.type == BoardCodes.MIMIC) {
+                    g.GetComponent<SpriteRenderer>().sprite = mimicGradient;
+                }
+                if (data.type == BoardCodes.MIRROR) {
+                    g.GetComponent<SpriteRenderer>().sprite = mirrorGradient;
+                }
+
                 g.transform.parent = this.gameObject.transform;
                 g.transform.localScale = new Vector3(1, 0.1f, 1);
                 g.transform.localPosition = new Vector3(0, 0, 0);
@@ -134,6 +157,13 @@ public class LaserScript : MonoBehaviour {
 
             if (num1Objects == 1) {
                 GameObject g = GameObject.Instantiate(lasertype);
+                if (data.type == BoardCodes.MIMIC) {
+                    g.GetComponent<SpriteRenderer>().sprite = mimicGradient;
+                }
+                if (data.type == BoardCodes.MIRROR) {
+                    g.GetComponent<SpriteRenderer>().sprite = mirrorGradient;
+                }
+
                 g.transform.parent = this.gameObject.transform;
                 g.transform.localScale = new Vector3(1, 0.1f, 1);
                 g.transform.localPosition = new Vector3(0, -maskOffset, 0);
