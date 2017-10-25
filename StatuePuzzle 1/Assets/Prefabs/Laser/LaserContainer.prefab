@@ -64,7 +64,8 @@ MonoBehaviour:
     type: 2}
   mask: {fileID: 331759399170896940, guid: fc3a32841749d4141b718801faba7bbd, type: 2}
   start: {fileID: 21300000, guid: e3a4e56f9c3f36a408b6272382a6428a, type: 3}
-  middle: {fileID: 21300000, guid: b512858bba495cb4e899fe3f800eeeb9, type: 3}
   end: {fileID: 21300000, guid: abf383147b9cf904cb69c697b48bb06c, type: 3}
+  mimicGradient: {fileID: 21300000, guid: 5176055d5acf96d4ba63bda167b914b8, type: 3}
+  mirrorGradient: {fileID: 21300000, guid: 51cb2be8f76ec7d47b4c1d8351407ceb, type: 3}
   gameObjects: []
   maskOffset: 1.25

@@ -99,15 +99,14 @@ MonoBehaviour:
   isMoving: 0
   isColliding: 0
   speed: 3
-  cSpeed: 2
-  collideFactor: 1.9
+  cSpeed: 3
+  collideFactor: 1.5
   direction: 0
   distanceToMove: 0
   coords:
     row: 3
     col: 3
   yOffset: 0.39
-  collisionMask: 0
 --- !u!114 &114839176544532120
 MonoBehaviour:
   m_ObjectHideFlags: 1
