@@ -107,6 +107,8 @@ MonoBehaviour:
     row: 3
     col: 3
   yOffset: 0.39
+  collideSound: {fileID: 8300000, guid: 70844dcfe85c84567879dcfa68012c80, type: 3}
+  collisionMask: 0
 --- !u!114 &114839176544532120
 MonoBehaviour:
   m_ObjectHideFlags: 1
