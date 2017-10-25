@@ -371,10 +371,12 @@ public class GameManagerScript : MonoBehaviour {
 		Dictionary<MoveableScript,coord> desiredCoords = new Dictionary<MoveableScript, coord>(); //where pieces would move without collisions/walls
 		Dictionary<MoveableScript,Direction> moveDirections = new Dictionary<MoveableScript, Direction>(); //directions pieces will actually move
 		HashSet<MoveableScript> collided = new HashSet<MoveableScript>();
+        Dictionary<MoveableScript, coord> blockingCoords = new Dictionary<MoveableScript, coord>();
 
 		foreach(MoveableScript m in moveables) {
 			coord desired = m.GetAttemptedMoveCoords(dir, boardState.board, 1);
 			if (boardState.board[desired.row, desired.col] / 10 == 5) {
+                blockingCoords.Add(m, desired);
                 desired = portalMap[desired];
             }
             desiredCoords.Add(m,desired);
@@ -411,7 +413,10 @@ public class GameManagerScript : MonoBehaviour {
 					continue;
 
 				//Check for moving into same spot
-				} else if (desiredCoords.ContainsKey(other) && desiredCoords[other].Equals(desired)) {
+				} else if ((desiredCoords.ContainsKey(other) && desiredCoords[other].Equals(desired)) // classic move into blocked
+                    || (desiredCoords.ContainsKey(other) && blockingCoords.ContainsKey(m) && desiredCoords[other].Equals(blockingCoords[m])) // other is moving into my blocker
+                    || (blockingCoords.ContainsKey(other) && blockingCoords[other].Equals(desired)) // I am moving into other's blocker
+                    || (blockingCoords.ContainsKey(other) && blockingCoords.ContainsKey(m) && blockingCoords[m].Equals(blockingCoords[other]))) { //we share a blocker
 					moveDirections[other] = Direction.NONE;
 					moveDirections[m] = Direction.NONE;
 					dead = true;
@@ -427,7 +432,9 @@ public class GameManagerScript : MonoBehaviour {
                     throw new System.NullReferenceException("One Entity in moveables is null!");
                 } else if (other == m) {
 					continue;
-				} else if (desiredCoords.ContainsKey (other) && desiredCoords[other].Equals(m.GetCoords()) && desired.Equals(other.GetCoords())) {
+				} else if ((desiredCoords.ContainsKey (other) && desiredCoords[other].Equals(m.GetCoords()) && desired.Equals(other.GetCoords())) // classic close collision, other wants my space, I want other's space
+                    || (desiredCoords.ContainsKey(other) && desiredCoords[other].Equals(m.GetCoords()) && blockingCoords.ContainsKey(m) && blockingCoords[m].Equals(other.GetCoords())) // other wants my current space, other is in my blocker space
+                    || (blockingCoords.ContainsKey(other) && blockingCoords[other].Equals(m.GetCoords()) && desiredCoords[m].Equals(other.GetCoords()))) { // other is blocked by me, I want other's space
 					moveDirections [other] = Direction.NONE;
 					moveDirections [m] = Direction.NONE;
 				}
@@ -445,14 +452,14 @@ public class GameManagerScript : MonoBehaviour {
 				if (other == m || other == null) {
 					continue;
 				} else if (moveDirections[other] == Direction.NONE
-					&& other.GetCoords().Equals(desiredCoords[m])) {
+					&& (other.GetCoords().Equals(desiredCoords[m]) || (blockingCoords.ContainsKey(m) && other.GetCoords().Equals(blockingCoords[m])))) {
 					moveDirections [m] = Direction.NONE;
 					collided.Add (m);
 					collided.Add (other); 
 				}
 			}
 		}
-
+   
         // make the moves
 		if (moveDirections [player] != Direction.NONE) {
             Stack<MoveableScript> toDestroy = new Stack<MoveableScript>();
