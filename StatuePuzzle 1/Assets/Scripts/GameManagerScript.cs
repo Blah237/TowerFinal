@@ -82,6 +82,8 @@ public class GameManagerScript : MonoBehaviour {
 
 	public bool win;
 	public bool dead;
+
+	public AudioSource audio;
     
     List<coord> goalCoords = new List<coord>();
     List<Laser> laserList = new List<Laser>(); 
@@ -119,6 +121,7 @@ public class GameManagerScript : MonoBehaviour {
     // Use this for initialization
     void Start() {
 
+		audio = this.GetComponent (typeof(AudioSource)) as AudioSource;
 		firstStart = false;
 
         //load level using Melody's I/O
@@ -450,6 +453,9 @@ public class GameManagerScript : MonoBehaviour {
             foreach (MoveableScript moveable in moveDirections.Keys) {
 				//Debug.Log (moveable.name + " " + moveDirections[moveable].ToString() + " after " + moveable.GetAttemptedMoveDirection(dir, boardState));
 				moveable.ExecuteMove (moveDirections[moveable], 1, false);
+				if (moveDirections [moveable] == Direction.NONE) {
+					audio.PlayOneShot (moveable.collideSound);
+				}
 
                 // check for a swap
                 coord c = moveable.GetCoords();
@@ -492,7 +498,7 @@ public class GameManagerScript : MonoBehaviour {
                     coord buttonCoord = new coord(c.row, c.col);
                     ButtonManagerScript.buttonCoords[buttonCoord].TogglePressed();
                 }
-            }
+			} 
 
             moveDirections.Clear();
             // destroy old objects
@@ -501,10 +507,12 @@ public class GameManagerScript : MonoBehaviour {
                 MoveableScript ms = toDestroy.Pop();
                 GameObject.Destroy(ms.gameObject);
             }
-		} 
+		}
 
+		Debug.Log ("NUM COLLIDED " + collided.Count());
 		foreach (MoveableScript m in collided) {
 			m.ExecuteMove (Direction.NONE, 1, false);
+			audio.PlayOneShot (m.collideSound);
 		}
 			
 		recordDynamicState ();	

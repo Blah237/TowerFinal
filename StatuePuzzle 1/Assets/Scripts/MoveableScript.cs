@@ -22,6 +22,7 @@ public abstract class MoveableScript : MonoBehaviour {
     [SerializeField]
     public float yOffset; 
 
+	public AudioClip collideSound;
     protected Animation2DManager animator;
 
     public int collisionMask;
