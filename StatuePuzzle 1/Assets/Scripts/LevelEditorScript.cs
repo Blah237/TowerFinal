@@ -513,9 +513,9 @@ public class LevelEditorScript : MonoBehaviour {
         Transform interior = laserPopup.transform.Find("Popup interior");
         interior.Find("row").Find("RowEditField").GetComponent<Text>().text = editLaser.startRow.ToString();
         interior.Find("col").Find("ColEditField").GetComponent<Text>().text = editLaser.startCol.ToString();
-        interior.Find("dir").Find("dirEditField").GetComponent<Text>().text = System.Enum.GetName(typeof(Direction), editLaser.direction);
         interior.Find("len").Find("lenEditField").GetComponent<Text>().text = editLaser.length.ToString();
-        interior.Find("enableToggle").GetComponent<Toggle>().enabled = editLaser.state != 0;
+        interior.Find("isHorizontal").GetComponent<Toggle>().enabled = editLaser.isHorizontal;
+        interior.Find("enableToggle").GetComponent<Toggle>().enabled = editLaser.isActive;
         this.setLaserPopUpVisible(true);
     }
 
@@ -523,9 +523,9 @@ public class LevelEditorScript : MonoBehaviour {
         Transform interior = laserPopup.transform.Find("Popup interior");
         editLaser.startRow = System.Int32.Parse(interior.Find("row").Find("RowEditField").GetComponent<Text>().text);
         editLaser.startCol = System.Int32.Parse(interior.Find("col").Find("ColEditField").GetComponent<Text>().text);
-        editLaser.direction = (Direction)System.Enum.Parse(typeof(Direction), interior.Find("dir").Find("dirEditField").GetComponent<Text>().text);
         editLaser.length = System.Int32.Parse(interior.Find("len").Find("lenEditField").GetComponent<Text>().text);
-        editLaser.state = interior.Find("enableToggle").GetComponent<Toggle>().enabled ? 1 : 0;
+        editLaser.isActive = interior.Find("enableToggle").GetComponent<Toggle>().enabled;
+        editLaser.isHorizontal = interior.Find("isHorizontal").GetComponent<Toggle>().enabled;
         editLaser.type = BoardCodes.EMPTY;
         lasers[lastConnect] = editLaser;
         editLaser = null;
@@ -829,30 +829,14 @@ public class LevelEditorScript : MonoBehaviour {
             Laser l = lasers[buttonList[i]];
             Vector3 pos1 = new Vector3(l.startCol * (width / level.cols), l.startRow * (height / level.rows), 0f);
             Vector3 pos2 = new Vector3(pos1.x, pos1.y, pos1.z);
-            switch (l.direction) {
-                case Direction.EAST:
-                    pos2.x = pos1.x + l.length * (width / level.cols);
-                    lr.rectTransform.sizeDelta = new Vector2(l.length * (width / level.cols), padding);
-                    lr.rectTransform.anchoredPosition = new Vector2(l.startCol * (width / level.cols), l.startRow * (height / level.rows));
-                    break;
-                case Direction.WEST:
-                    pos2.x = pos1.x - l.length * (width / level.cols);
-                    lr.rectTransform.sizeDelta = new Vector2(l.length * (width / level.cols), padding);
-                    lr.rectTransform.anchoredPosition = new Vector2((l.startCol - l.length) * (width / level.cols), l.startRow * (height / level.rows));
-                    break;
-                case Direction.NORTH:
-                    pos2.y = pos1.y + l.length * (height / level.rows);
-                    lr.rectTransform.sizeDelta = new Vector2(padding, l.length * (height / level.rows));
-                    lr.rectTransform.anchoredPosition = new Vector2(l.startCol * (width / level.cols), l.startRow * (height / level.rows));
-                    break;
-                case Direction.SOUTH:
-                    pos2.y = pos1.y - l.length * (height / level.rows);
-                    lr.rectTransform.sizeDelta = new Vector2(padding, l.length * (height / level.rows));
-                    lr.rectTransform.anchoredPosition = new Vector2(l.startCol * (width / level.cols), (l.startRow - l.length) * (height / level.rows));
-                    break;
-                case Direction.NONE:
-                    pos2 = pos1;
-                    break;
+            if (l.isHorizontal) {
+                pos2.y = pos1.y + l.length * (height / level.rows);
+                lr.rectTransform.sizeDelta = new Vector2(padding, l.length * (height / level.rows));
+                lr.rectTransform.anchoredPosition = new Vector2(l.startCol * (width / level.cols), l.startRow * (height / level.rows));
+            } else {
+                pos2.x = pos1.x + l.length * (width / level.cols);
+                lr.rectTransform.sizeDelta = new Vector2(l.length * (width / level.cols), padding);
+                lr.rectTransform.anchoredPosition = new Vector2(l.startCol * (width / level.cols), l.startRow * (height / level.rows));
             }
         }
     }

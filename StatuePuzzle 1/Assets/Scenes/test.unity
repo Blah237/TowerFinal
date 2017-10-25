@@ -952,7 +952,7 @@ MonoBehaviour:
   wall: {fileID: 1784765721464430, guid: b9ab2db89b3ea7740901f43e7eb60526, type: 2}
   frontWall: {fileID: 1128486389162076, guid: 53768ab1dc5f8de4c864d01727cb1e08, type: 2}
   goal: {fileID: 1070575984611532, guid: c83ab70655bd8a14e82dc9f920175f50, type: 2}
-  laser: {fileID: 1441265804993748, guid: 6533f532150bcdd4d9bc409cbee8708d, type: 2}
+  laser: {fileID: 114063543840357474, guid: aad1a95ba1d89fc419645f12940941ea, type: 2}
   winscript: {fileID: 1910557009}
   deathscript: {fileID: 1910557008}
   pausescript: {fileID: 1910557011}
@@ -4668,7 +4668,6 @@ GameObject:
   - component: {fileID: 1768258436}
   - component: {fileID: 1768258435}
   - component: {fileID: 1768258434}
-  - component: {fileID: 1768258439}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -4747,18 +4746,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: -30, y: 0, z: 0}
---- !u!114 &1768258439
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1768258433}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ff26db721962cdf4a8edcdfa9a767d2a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  profile: {fileID: 11400000, guid: 8310a5872301d3a4384eacec7b9e1ef3, type: 2}
 --- !u!1 &1910557000
 GameObject:
   m_ObjectHideFlags: 0
