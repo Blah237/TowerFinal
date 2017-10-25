@@ -24,6 +24,9 @@ public abstract class MoveableScript : MonoBehaviour {
 
     protected Animation2DManager animator; 
     
+	public AudioClip collideSound;
+
+    public int collisionMask;
     public BoardCodes type { get; protected set; }
 
     // Use this for initialization
