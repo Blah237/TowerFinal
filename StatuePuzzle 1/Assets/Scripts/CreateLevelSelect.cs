@@ -7,14 +7,15 @@ using System.Security.Policy;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CreateLevelSelect : MonoBehaviour
-{
+public class CreateLevelSelect : MonoBehaviour {
 
 	public LoadOnClick load;
+
 	public float width;
 	public float height;
+    private float padX;
 
-	public float padding;
+    public float padding;
 	public Canvas canvas;
 
 	public int cols;
@@ -49,16 +50,16 @@ public class CreateLevelSelect : MonoBehaviour
 		};
         
         //getFiles();
-		if (buttonMap == null)
-		{
+		if (buttonMap == null) {
 			buttonMap = new Dictionary<string, bool>();
 			for (int i = 0; i < levelList.Count; i++)
 			{
 				buttonMap.Add(levelList[i], false);
 			}
 		}
-		
-		width *= canvas.pixelRect.width - CANVAS_WIDTH_OFFSET;
+
+        padX = (1f - width) / 2f * canvas.pixelRect.width;
+        width *= canvas.pixelRect.width;
 		height *= canvas.pixelRect.height;
 		for (int i = 0; i < levelList.Count; i++)
 		{
@@ -70,18 +71,17 @@ public class CreateLevelSelect : MonoBehaviour
 				}
 				button.GetComponent<LoadOnClick>().levelName = levelList[i];
 				Text text = button.GetComponentInChildren<Text>();
-				text.text = levelList[i];
+                text.text = ""+ (i + 1);//levelList[i];
 				text.fontSize = 16;
 				Image bImage = button.GetComponent<Image>();
 				bImage.transform.SetParent(canvas.transform);
-				positionSquare(bImage, i / 4, i % 4);
+				positionSquare(bImage, i / cols, i % cols);
 			}
 		}
 	}
 
 
-	void getFiles()
-	{
+	void getFiles() {
         DirectoryInfo levelDirectoryPath = new DirectoryInfo(Application.dataPath + "/Resources/Levels");
         FileInfo[] fileInfo = levelDirectoryPath.GetFiles("*.*", SearchOption.AllDirectories);
 		levelList = new List<string>();
@@ -94,8 +94,7 @@ public class CreateLevelSelect : MonoBehaviour
 		}
 	}
 
-public static long DirCount(DirectoryInfo d)
-	{
+    public static long DirCount(DirectoryInfo d) {
 		long i = 0;
 		// Add file sizes.
 		FileInfo[] fis = d.GetFiles();
@@ -108,7 +107,7 @@ public static long DirCount(DirectoryInfo d)
 	}
 	
 	void positionSquare(Image square, int r, int c) {
-		square.rectTransform.anchoredPosition = new Vector2(width / cols * (c + 0.5f), height - (height / rows * (r + 0.5f)));
+		square.rectTransform.anchoredPosition = new Vector2(width / cols * (c + 0.5f) + padX, height - (height / rows * (r + 0.5f)));
 		square.rectTransform.sizeDelta = new Vector2(width / (float)cols - padding / 2f, height / (float)rows - padding / 2f);
 		square.rectTransform.localScale = Vector2.one;
 	}
