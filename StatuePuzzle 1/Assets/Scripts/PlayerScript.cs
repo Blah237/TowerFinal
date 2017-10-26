@@ -16,6 +16,11 @@ public class PlayerScript : MoveableScript {
 		this.type = BoardCodes.PLAYER;
 	}
 
+    public void Celebrate() {
+        animator.StopAllAnimations();
+        animator.Play("pep", restart: true); 
+    }
+
 	public override coord GetAttemptedMoveCoords (Direction direction, int[,] boardState, int numSpaces)
 	{
 		switch (direction) {

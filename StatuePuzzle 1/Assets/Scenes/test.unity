@@ -684,7 +684,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0.95862055, b: 1, a: 0}
+  m_Color: {r: 0.032871973, g: 0.2692101, b: 0.2794118, a: 0}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -952,7 +952,7 @@ MonoBehaviour:
   mirror: {fileID: 114105712951858634, guid: 01b5ae09af0fc344ab32c9fe38ad4be1, type: 2}
   wall: {fileID: 1784765721464430, guid: b9ab2db89b3ea7740901f43e7eb60526, type: 2}
   frontWall: {fileID: 1128486389162076, guid: 53768ab1dc5f8de4c864d01727cb1e08, type: 2}
-  goal: {fileID: 1070575984611532, guid: c83ab70655bd8a14e82dc9f920175f50, type: 2}
+  goal: {fileID: 114095783370264170, guid: c83ab70655bd8a14e82dc9f920175f50, type: 2}
   laser: {fileID: 114063543840357474, guid: aad1a95ba1d89fc419645f12940941ea, type: 2}
   winscript: {fileID: 1910557009}
   deathscript: {fileID: 1910557008}

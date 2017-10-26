@@ -32,7 +32,7 @@ public class WinScript : MonoBehaviour
 			NextLevel.GetComponent<Button>().interactable = true;
 			LevelSelectWin.GetComponent<Button>().interactable = true;
 			//b.GetComponent<Image>().color = Color.green;
-			GameManagerScript.inputReady = false;
+			//GameManagerScript.inputReady = false;
             //restartTimer += Time.deltaTime;
 
             //if (restartTimer >= restartDelay) {

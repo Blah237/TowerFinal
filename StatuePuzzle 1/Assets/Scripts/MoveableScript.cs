@@ -151,11 +151,13 @@ public abstract class MoveableScript : MonoBehaviour {
         if (isColliding) {
             animateDir += 4;  //direction + 4 will give you the index of the colliding animation 
         } else if(isMoving && type == BoardCodes.PLAYER) {
-            animateDir += 8; 
+            animateDir += 8; //right now, only the bard has a walk cycle
         }
-        if (animator != null) { 
-            animator.StopAllAnimations();
-            animator.Play(animateDir, loop: true);
+        if (animator != null) {
+            if (!animator.isPlaying("pep")) {
+                animator.StopAllAnimations();
+                animator.Play(animateDir, loop: true);
+            }
         }
     }
 }

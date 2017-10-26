@@ -66,7 +66,7 @@ public class GameManagerScript : MonoBehaviour {
     public MirrorScript mirror;
     public GameObject wall;
     public GameObject frontWall; 
-    public GameObject goal;
+    public GoalScript goal;
     public LaserScript laser; 
 	
 	public WinScript winscript;
@@ -87,6 +87,7 @@ public class GameManagerScript : MonoBehaviour {
 	public AudioSource audio;
     
     List<coord> goalCoords = new List<coord>();
+    Dictionary<coord, GoalScript> goalAtCoords = new Dictionary<coord, GoalScript>(); 
     List<LaserScript> laserList = new List<LaserScript>(); 
 
     public GameObject swap;
@@ -169,8 +170,9 @@ public class GameManagerScript : MonoBehaviour {
                     w.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0);
                 } else if (boardState.board[i, j] >= 10 && boardState.board[i, j] < 20) {
                     // goal
-                    GameObject c = GameObject.Instantiate(goal);
+                    GoalScript c = GameObject.Instantiate(goal);
                     c.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0);
+                    goalAtCoords.Add(new coord(i, j), c); 
                     goalCoords.Add(new coord(i, j));
                 } else if (boardState.board[i, j] >= 20 && boardState.board[i, j] < 30)
 	            {
@@ -243,7 +245,10 @@ public class GameManagerScript : MonoBehaviour {
             foreach (MoveableScript m in needsSwap) {
                 PerformSwap(m); 
             }
-            needsSwap.Clear(); 
+            needsSwap.Clear();
+            if (!winscript.playerWin) {
+                checkWin();
+            }
             Direction dir = readInput();
 			if (dir != Direction.NONE)
 			{
@@ -342,15 +347,27 @@ public class GameManagerScript : MonoBehaviour {
 				nppCoords.Add (m.GetCoords());
 			}
 		}
-
+        bool didWin = true; 
+        foreach (GoalScript g in goalAtCoords.Values) {
+            g.isWin = false; 
+        }
         foreach (coord c in goalCoords) {
 			if (!nppCoords.Contains (c)) {
-				return false;
-			}
+				didWin = false;
+			} else {
+                goalAtCoords[c].isWin = true; 
+            }
+        }
+        foreach (GoalScript g in goalAtCoords.Values) {
+            g.ToggleParticles(); 
+        }
+        if (!didWin) {
+            return false; 
         }
         Debug.Log("VICTORY!");
 		LoggingManager.instance.RecordEvent (LoggingManager.EventCodes.LEVEL_COMPLETE);
 		LoggingManager.instance.RecordLevelEnd ();
+        player.Celebrate();
 	    winscript.playerWin = true;
         tutorial.enabled = false; 
         return true;
@@ -508,7 +525,6 @@ public class GameManagerScript : MonoBehaviour {
 		}
 			
 		recordDynamicState ();	
-		checkWin ();
     }
 
     private void PerformSwap(MoveableScript moveable) {
