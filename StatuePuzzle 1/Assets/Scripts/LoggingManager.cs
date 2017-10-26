@@ -75,6 +75,9 @@ public class LoggingManager : MonoBehaviour
 
 	public void RecordEvent(EventCodes actionId, string actionDetail = "")
     {
+
+		Debug.Log (actionDetail);
+
         if (isDebugging)
         {
             return;
@@ -102,12 +105,12 @@ public class LoggingManager : MonoBehaviour
 
         if (www.isNetworkError)
         {
-            Debug.Log(www.error);
+            //Debug.Log(www.error);
         }
         else
         {
             string logReturnedString = www.downloadHandler.text;
-            Debug.Log(logReturnedString);
+            //Debug.Log(logReturnedString);
         }
     }
 
@@ -135,12 +138,12 @@ public class LoggingManager : MonoBehaviour
 
         if (www.isNetworkError)
         {
-            Debug.Log(www.error);
+            //Debug.Log(www.error);
         }
         else
         {
             string logReturnedString = www.downloadHandler.text;
-            Debug.Log(logReturnedString);
+            //Debug.Log(logReturnedString);
         }
     }
 
@@ -172,12 +175,12 @@ public class LoggingManager : MonoBehaviour
 
         if (www.isNetworkError)
         {
-            Debug.Log(www.error);
+            //Debug.Log(www.error);
         }
         else
         {
             string logReturnedString = www.downloadHandler.text;
-            Debug.Log(logReturnedString);
+            //Debug.Log(logReturnedString);
             PlayerQuestData pageLoadData = JsonUtility.FromJson<PlayerQuestData>(logReturnedString);
             dynamicQuestId = pageLoadData.dynamic_quest_id;
             Debug.Log(dynamicQuestId);
@@ -209,7 +212,7 @@ public class LoggingManager : MonoBehaviour
 
         if (www.isNetworkError)
         {
-            Debug.Log(www.error);
+            //Debug.Log(www.error);
         }
         else
         {
