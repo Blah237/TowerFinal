@@ -131,12 +131,12 @@ public class GameManagerScript : MonoBehaviour {
 
         //load level using Melody's I/O
 		boardState = IOScript.ParseLevel(levelName);
-		int levelNum = -1;
-		for (int i = 0; i < levelName.Length; i++) {
+		int levelNum = CreateLevelSelect.levelList.IndexOf(levelName) + 1;
+		/*for (int i = 0; i < levelName.Length; i++) {
 			if (Int32.TryParse (levelName.Substring (i, 1), out levelNum)) {
 				break;
 			}
-		}
+		}*/
 		LoggingManager.instance.RecordLevelStart (levelNum, levelName);
 
         mapOrigin = new Vector2(-boardState.cols / 2.0f, -boardState.rows / 2.0f);
