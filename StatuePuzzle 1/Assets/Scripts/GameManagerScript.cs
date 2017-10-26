@@ -131,13 +131,9 @@ public class GameManagerScript : MonoBehaviour {
 
         //load level using Melody's I/O
 		boardState = IOScript.ParseLevel(levelName);
-		int levelNum = -1;
-		for (int i = 0; i < levelName.Length; i++) {
-			if (Int32.TryParse (levelName.Substring (i, 1), out levelNum)) {
-				break;
-			}
-		}
-		LoggingManager.instance.RecordLevelStart (levelNum, levelName);
+
+		// TODO: Below the way we get the index is DISGUSTING, this whole shitshow needs refactored
+		LoggingManager.instance.RecordLevelStart (CreateLevelSelect.levelList.IndexOf(levelName), levelName);
 
         mapOrigin = new Vector2(-boardState.cols / 2.0f, -boardState.rows / 2.0f);
         mainCamera.orthographicSize = boardState.rows / 2.0f + 1;
