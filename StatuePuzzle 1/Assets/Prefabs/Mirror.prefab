@@ -88,14 +88,15 @@ MonoBehaviour:
   isMoving: 0
   isColliding: 0
   speed: 3
-  cSpeed: 2
-  collideFactor: 1.9
+  cSpeed: 3
+  collideFactor: 1.5
   direction: 0
   distanceToMove: 0
   coords:
     row: 5
     col: 3
   yOffset: 0.55
+  collideSound: {fileID: 8300000, guid: 3af1a6139175f4e578ec95527eeab2b4, type: 3}
   collisionMask: 0
 --- !u!114 &114879561478314368
 MonoBehaviour:

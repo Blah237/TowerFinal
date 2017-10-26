@@ -275,15 +275,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isMoving: 0
   isColliding: 0
-  speed: 2
-  cSpeed: 2
-  collideFactor: 1.9
+  speed: 3
+  cSpeed: 3
+  collideFactor: 1.5
   direction: 0
   distanceToMove: 0
   coords:
     row: 3
     col: 3
-  yOffset: 0.35
+  yOffset: 0.39
+  collideSound: {fileID: 8300000, guid: 70844dcfe85c84567879dcfa68012c80, type: 3}
   collisionMask: 0
 --- !u!114 &114747275626682298
 MonoBehaviour:

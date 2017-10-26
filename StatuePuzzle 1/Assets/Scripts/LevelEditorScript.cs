@@ -39,6 +39,8 @@ public class LevelEditorScript : MonoBehaviour {
     private coord playerCoord = new coord(-1, -1);
 
     public Image gridSquare;
+    [SerializeField]
+    Image laserPrefab;
 
     public Canvas canvas;
 
@@ -67,13 +69,39 @@ public class LevelEditorScript : MonoBehaviour {
     [SerializeField]
     private RawImage sizePopUp;
     [SerializeField]
+    private RawImage laserPopup;
+    [SerializeField]
     private Text inputText;
 
-	// Use this for initialization
-	void Start () {
+    private List<coord> portalList = new List<coord>();
+    private Dictionary<coord, coord> portalMapping = new Dictionary<coord, coord>();
+    private coord lastConnect = new coord(-1, -1);
+    List<coord> buttonList = new List<coord>();
+    Dictionary<coord, Laser> lasers = new Dictionary<coord, Laser>();
+    List<Image> laserDisplay = new List<Image>();
+    Laser editLaser;
+
+    // Use this for initialization
+    void Start () {
         // initialize grid
         if (loadedLevel && levelName != null) {
             level = IOScript.ParseLevel(levelName);
+            int b = 0;
+            for(int r = 0; r < level.rows; r++) {
+                for(int c = 0; c < level.cols; c++) {
+                    if(level.board[r, c] / 10 == 3) {
+                        buttonList.Add(new coord(r, c));
+                        lasers.Add(new coord(r, c), level.lasers[level.buttons[b]]);
+                        b++;
+                    }
+                    if(level.board[r, c] / 10 == 5) {
+                        portalList.Add(new coord(r, c));
+                    }
+                }
+            }
+            for(int p = 0; p < level.portals.GetLength(0); p++) {
+                portalMapping.Add(portalList[p], portalList[level.portals[p]]);
+            }
         }
         else {
             level.board = new int[level.rows, level.cols];
@@ -172,7 +200,12 @@ public class LevelEditorScript : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
-        if (!namePopUp.isActiveAndEnabled && !sizePopUp.isActiveAndEnabled) {
+        if ((Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) && Input.GetMouseButtonDown(0)) {
+            Debug.Log("Shift Click");
+            connectClick(Input.mousePosition.x, Input.mousePosition.y);
+            //return;
+        }
+        else if (!namePopUp.isActiveAndEnabled && !sizePopUp.isActiveAndEnabled && !laserPopup.isActiveAndEnabled) {
             // escape or right click resets delegate
             if (Input.GetKeyDown(KeyCode.Escape) || Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Alpha0)
                 || Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Keypad0) || Input.GetKeyDown(KeyCode.Keypad1)) {
@@ -196,7 +229,9 @@ public class LevelEditorScript : MonoBehaviour {
             } else if (Input.GetMouseButtonDown(0)) {
                 click0(Input.mousePosition.x, Input.mousePosition.y);
             }
-        } 
+        }
+
+        renderLines();
 	}
 
     // return the grid column that should fall under mouseX
@@ -292,8 +327,12 @@ public class LevelEditorScript : MonoBehaviour {
         // check if there's a goal
         if (level.board[row, col] >= 30 && level.board[row, col] < 40) {
             level.board[row, col] -= 30;
+            lasers.Remove(new coord(row, col));
+            buttonList.Remove(new coord(row, col));
         } else {
             level.board[row, col] = (level.board[row, col] % 10) + 30;
+            buttonList.Add(new coord(row, col));
+            lasers.Add(new coord(row, col), new Laser());
 	    }
         displayGrid[row, col].sprite = getTileSprite(level.board[row, col]);
     }
@@ -303,8 +342,15 @@ public class LevelEditorScript : MonoBehaviour {
         // check if there's a goal
         if (level.board[row, col] >= 50 && level.board[row, col] < 60) {
             level.board[row, col] -= 50;
+            coord vec = new coord(row, col);
+            portalList.Remove(vec);
+            if (portalMapping.ContainsKey(vec)) {
+                portalMapping.Remove(portalMapping[vec]);
+                portalMapping.Remove(vec);
+            }
         } else {
             level.board[row, col] = (level.board[row, col] % 10) + 50;
+            portalList.Add(new coord(row, col));
         }
         displayGrid[row, col].sprite = getTileSprite(level.board[row, col]);
     }
@@ -350,6 +396,47 @@ public class LevelEditorScript : MonoBehaviour {
         //Debug.Log(IOScript.ExportLevel(level)); 
     }
 
+    void connectClick(float mouseX, float mouseY) {
+        int c = this.getMouseCol(mouseX);
+        int r = this.getMouseRow(mouseY);
+        int c2 = (int)lastConnect.col;
+        int r2 = (int)lastConnect.row;
+        Debug.Log("row = " + r + ", col = " + c);
+        if(c2 == -1 || r2 == -1) {
+            lastConnect = new coord(r, c);
+        } else {
+            // portal
+            if(level.board[r, c] / 10 == 5 && level.board[r2, c2] / 10 == 5) {
+                coord vec = new coord(r, c);
+                coord vec2 = new coord(r2, c2);
+                Debug.Log("Connecting Portals at " + vec + " and " + vec2);
+                if (portalMapping.ContainsKey(vec)){
+                    portalMapping.Remove(vec);
+                    //portalMapping[vec] = vec2;
+                } //else {
+                    portalMapping.Add(vec, vec2);
+                //}
+                if (portalMapping.ContainsKey(vec2)) {
+                    // portalMapping[vec2] = vec;
+                    portalMapping.Remove(vec2);
+                } //else {
+                    portalMapping.Add(vec2, vec);
+                //}
+                lastConnect = new coord(-1, -1);
+            }
+            // button
+            else if(level.board[r, c] / 10 == 3) {
+                Debug.Log("Open Edit Laser Popup");
+                EditButtonLaser(lasers[new coord(r, c)]);
+            }
+        }
+    }
+
+    void EditButtonLaser(Laser laser) {
+        this.editLaser = laser;
+        this.openLaserPopUp();
+    }
+
     void clickSaveAs() {
         openNamePopUp();
     }
@@ -364,6 +451,19 @@ public class LevelEditorScript : MonoBehaviour {
 
     void save(string fileName) {
         // TODO mix me with IO
+        portalList.Sort((a,b) => (a.row < b.row ? -1 : (a.row > b.row ? 1 : (a.col - b.col))));
+        level.portals = new int[portalList.Count];
+        for(int i = 0; i < portalList.Count; i++) {
+            level.portals[i] = portalList.IndexOf(portalMapping[portalList[i]]);
+        }
+        buttonList.Sort((a, b) => (a.row < b.row ? -1 : (a.row > b.row ? 1 : (a.col - b.col))));
+        level.lasers = new Laser[buttonList.Count];
+        level.buttons = new int[buttonList.Count];
+        for (int b = 0; b < buttonList.Count; b++) {
+            coord pt = buttonList[b];
+            level.lasers[b] = lasers[pt];
+            level.buttons[b] = b;
+        }
         Debug.Log("Saving Level...");
         Debug.Log(IOScript.ExportLevel(level, levelName));
     }
@@ -405,6 +505,36 @@ public class LevelEditorScript : MonoBehaviour {
         this.setSizePopUpVisible(false);
     }
 
+    void setLaserPopUpVisible(bool value) {
+        this.laserPopup.gameObject.SetActive(value);
+    }
+
+    public void openLaserPopUp() {
+        Transform interior = laserPopup.transform.Find("Popup interior");
+        interior.Find("row").Find("RowEditField").GetComponent<Text>().text = editLaser.startRow.ToString();
+        interior.Find("col").Find("ColEditField").GetComponent<Text>().text = editLaser.startCol.ToString();
+        interior.Find("len").Find("lenEditField").GetComponent<Text>().text = editLaser.length.ToString();
+        interior.Find("isHorizontal").GetComponent<Toggle>().enabled = true;
+        interior.Find("isHorizontal").GetComponent<Toggle>().isOn = editLaser.isHorizontal;
+        interior.Find("enableToggle").GetComponent<Toggle>().enabled = true;
+        interior.Find("enableToggle").GetComponent<Toggle>().isOn = editLaser.isActive;
+        this.setLaserPopUpVisible(true);
+    }
+
+    public void closeLaserPopUp() {
+        Transform interior = laserPopup.transform.Find("Popup interior");
+        editLaser.startRow = System.Int32.Parse(interior.Find("row").Find("RowEditField").GetComponent<Text>().text);
+        editLaser.startCol = System.Int32.Parse(interior.Find("col").Find("ColEditField").GetComponent<Text>().text);
+        editLaser.length = System.Int32.Parse(interior.Find("len").Find("lenEditField").GetComponent<Text>().text);
+        editLaser.isActive = interior.Find("enableToggle").GetComponent<Toggle>().isOn;
+        editLaser.isHorizontal = interior.Find("isHorizontal").GetComponent<Toggle>().isOn;
+        editLaser.type = BoardCodes.EMPTY;
+        lasers[lastConnect] = editLaser;
+        editLaser = null;
+        lastConnect = new coord(-1, -1);
+        this.setLaserPopUpVisible(false);
+    }
+
     #region add/remove cols/rows
     public void addColLeft() {
         cacheLevel = new Level();
@@ -423,9 +553,31 @@ public class LevelEditorScript : MonoBehaviour {
                 cacheLevel.board[r, c] = i;
             }
         }
+        for(int p = 0; p < portalList.Count; p++) {
+            coord vec = portalList[p];
+            if (portalMapping.ContainsKey(portalList[p])) {
+                coord vecOther = portalMapping[vec];
+                portalMapping.Remove(vec);
+                vec.col += 1;
+                portalList[p] = vec;
+                vecOther.col += 1;
+                portalMapping.Add(vec, vecOther);
+            }
+        }
+
+        for(int b = 0; b < buttonList.Count; b++) {
+            coord vec = buttonList[b];
+            Laser l = lasers[vec];
+            l.startCol++;
+            lasers.Remove(vec);
+            vec.col++;
+            lasers.Add(vec, l);
+            buttonList[b] = vec;
+        }
         level = cacheLevel;
         this.createAndPositionSquares(cacheLevel);
     }
+
     public void addColRight() {
         cacheLevel = new Level();
         cacheLevel.rows = level.rows;
@@ -461,6 +613,15 @@ public class LevelEditorScript : MonoBehaviour {
                 cacheLevel.board[r, c] = i;
             }
         }
+        int j = 0; while (j < portalList.Count) {
+            if (portalList[j].col < 0) {
+                coord vec = portalList[j];
+                portalList.Remove(vec);
+                coord vecOther = portalMapping[vec];
+                portalMapping.Remove(vec);
+                portalMapping.Remove(vecOther);
+            }
+        }
         level = cacheLevel;
         this.createAndPositionSquares(cacheLevel);
     }
@@ -477,6 +638,15 @@ public class LevelEditorScript : MonoBehaviour {
             for (int r = 1; r < level.rows; r++) {
                 int i = level.board[r, c];
                 cacheLevel.board[r, c] = i;
+            }
+        }
+        int j = 0; while (j < portalList.Count) {
+            if (portalList[j].col >= level.cols) {
+                coord vec = portalList[j];
+                portalList.Remove(vec);
+                coord vecOther = portalMapping[vec];
+                portalMapping.Remove(vec);
+                portalMapping.Remove(vecOther);
             }
         }
         level = cacheLevel;
@@ -519,6 +689,26 @@ public class LevelEditorScript : MonoBehaviour {
                 cacheLevel.board[r, c] = i;
             }
         }
+        for (int p = 0; p < portalList.Count; p++) {
+            coord vec = portalList[p];
+            if (portalMapping.ContainsKey(portalList[p])) {
+                coord vecOther = portalMapping[vec];
+                portalMapping.Remove(vec);
+                vec.row += 1;
+                portalList[p] = vec;
+                vecOther.row += 1;
+                portalMapping.Add(vec, vecOther);
+            }
+        }
+        for (int b = 0; b < buttonList.Count; b++) {
+            coord vec = buttonList[b];
+            Laser l = lasers[vec];
+            l.startRow++;
+            lasers.Remove(vec);
+            vec.row++;
+            lasers.Add(vec, l);
+            buttonList[b] = vec;
+        }
         level = cacheLevel;
         this.createAndPositionSquares(cacheLevel);
     }
@@ -537,9 +727,19 @@ public class LevelEditorScript : MonoBehaviour {
                 cacheLevel.board[r, c] = i;
             }
         }
+        int j = 0; while (j < portalList.Count) {
+            if (portalList[j].row >= level.rows) {
+                coord vec = portalList[j];
+                portalList.Remove(vec);
+                coord vecOther = portalMapping[vec];
+                portalMapping.Remove(vec);
+                portalMapping.Remove(vecOther);
+            }
+        }
         level = cacheLevel;
         this.createAndPositionSquares(cacheLevel);
     }
+
     public void removeRowBelow() {
         if (level.rows <= 3) {
             return;
@@ -553,6 +753,26 @@ public class LevelEditorScript : MonoBehaviour {
             for (int c = 1; c < level.cols; c++) {
                 int i = level.board[r + 1, c];
                 cacheLevel.board[r, c] = i;
+            }
+        }
+        for (int p = 0; p < portalList.Count; p++) {
+            coord vec = portalList[p];
+            if (portalMapping.ContainsKey(portalList[p])) {
+                coord vecOther = portalMapping[vec];
+                portalMapping.Remove(vec);
+                vec.row += 1;
+                portalList[p] = vec;
+                vecOther.row += 1;
+                portalMapping.Add(vec, vecOther);
+            }
+        }
+        int j = 0; while(j < portalList.Count) {
+            if(portalList[j].row < 0) {
+                coord vec = portalList[j];
+                portalList.Remove(vec);
+                coord vecOther = portalMapping[vec];
+                portalMapping.Remove(vec);
+                portalMapping.Remove(vecOther);
             }
         }
         level = cacheLevel;
@@ -596,4 +816,30 @@ public class LevelEditorScript : MonoBehaviour {
         }
     }
     #endregion
+
+    void renderLines() {
+        while(laserDisplay.Count > lasers.Count) {
+            GameObject.Destroy(laserDisplay[0]);
+            laserDisplay.RemoveAt(0);
+        }
+        while(laserDisplay.Count < lasers.Count) {
+            Image lr = Instantiate(laserPrefab, gridHolder.transform);
+            laserDisplay.Add(lr);
+        }
+        for(int i = 0; i < laserDisplay.Count; i++) {
+            Image lr = laserDisplay[i];
+            Laser l = lasers[buttonList[i]];
+            Vector3 pos1 = new Vector3(l.startCol * (width / level.cols), l.startRow * (height / level.rows), 0f);
+            Vector3 pos2 = new Vector3(pos1.x, pos1.y, pos1.z);
+            if (l.isHorizontal) {
+                pos2.y = pos1.y + l.length * (height / level.rows);
+                lr.rectTransform.sizeDelta = new Vector2(padding, l.length * (height / level.rows));
+                lr.rectTransform.anchoredPosition = new Vector2(l.startCol * (width / level.cols), l.startRow * (height / level.rows));
+            } else {
+                pos2.x = pos1.x + l.length * (width / level.cols);
+                lr.rectTransform.sizeDelta = new Vector2(l.length * (width / level.cols), padding);
+                lr.rectTransform.anchoredPosition = new Vector2(l.startCol * (width / level.cols), l.startRow * (height / level.rows));
+            }
+        }
+    }
 }

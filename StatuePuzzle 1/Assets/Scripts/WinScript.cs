@@ -34,12 +34,14 @@ public class WinScript : MonoBehaviour
 			playerWin = false;
 			//b.GetComponent<Image>().color = Color.green;
 			GameManagerScript.inputReady = false;
-			//restartTimer += Time.deltaTime;
+            //restartTimer += Time.deltaTime;
 
-			//if (restartTimer >= restartDelay) {
-			//SceneManager.LoadScene(0);
-			//}
-
+            //if (restartTimer >= restartDelay) {
+            //SceneManager.LoadScene(0);
+            //}
+            if (Input.GetKeyDown(KeyCode.Return)) {
+                new NextLevelScript().LoadScene(); 
+            }
 		}
 	}
 }

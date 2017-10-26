@@ -12,7 +12,7 @@ public class ButtonToggleScript : MonoBehaviour
 	private Sprite offSprite;
 
     //a reference to the laser that this button controls
-	public Laser laser;
+	public LaserScript laser;
 
 	// Use this for initialization
 	void Start () {
@@ -20,8 +20,8 @@ public class ButtonToggleScript : MonoBehaviour
 	}
 
 	public void TogglePressed () {
-        laser.gameObject.SetActive(!laser.gameObject.activeInHierarchy);
-        if (laser.gameObject.activeInHierarchy){
+        laser.ToggleActive(); 
+        if (laser.data.isActive){
 			GetComponent<SpriteRenderer>().sprite = onSprite;
 
 		} else {
@@ -30,7 +30,7 @@ public class ButtonToggleScript : MonoBehaviour
     }
 
     public void InitButton () {
-        if (laser.state == 1) {
+        if (laser.data.isActive) {
             GetComponent<SpriteRenderer>().sprite = onSprite;
         }
         else {
