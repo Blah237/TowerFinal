@@ -27,26 +27,51 @@ public class CreateLevelSelect : MonoBehaviour {
 	// Use this for initialization
 	void Start() {
 		levelList = new List<string>();
+        //mimic
 		levelList.Add("01level1");
-        levelList.Add("02level2");
-        levelList.Add("03level3");
+        levelList.Add("tutorial1");
+        //blocking
+        levelList.Add("tutorial3"); 
+        levelList.Add("tutorial5");
         levelList.Add("04blockLevel");
+        //mirror
+        levelList.Add("02level2");
+        levelList.Add("tutorial2");
+        //mirror + blocking 
+        levelList.Add("tutorial4");
+        //collision
+        levelList.Add("03level3");
+        //blocking + mirror + mimic
         levelList.Add("08level4");
-        levelList.Add("09level5");
-        levelList.Add("21smallSwap");
+
+        //swap 
+        levelList.Add("tutorial6");
         levelList.Add("22SwapMaze");
+        levelList.Add("21smallSwap");
         levelList.Add("23SwapTest");
+
+        //portal 
         levelList.Add("31dumbPortalTutorial");
         levelList.Add("32portal2");
+        //portal + swap 
         levelList.Add("33portalSwap");
+
+        //lasers 
+        levelList.Add("tutorial7");
+        levelList.Add("tutorial8");
+
+        //many floaty bois
+        levelList.Add("09level5");
         levelList.Add("34CircleWithPortals");
-        levelList.Add("PortalLinkTest");
-        levelList.Add("LaserTest");
-        levelList.Add("lasertest2");
-        levelList.Add("portalBugExhaustiveTest");
-        
+
+
+        //levelList.Add("PortalLinkTest");
+        //levelList.Add("LaserTest");
+        //levelList.Add("lasertest2");
+        //levelList.Add("portalBugExhaustiveTest");  
+
         //getFiles();
-		if (buttonMap == null) {
+        if (buttonMap == null) {
 			buttonMap = new Dictionary<string, bool>();
 			for (int i = 0; i < levelList.Count; i++)
 			{
