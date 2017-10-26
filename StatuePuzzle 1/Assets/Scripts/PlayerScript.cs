@@ -18,7 +18,9 @@ public class PlayerScript : MoveableScript {
 
     public void Celebrate() {
         animator.StopAllAnimations();
-        animator.Play("pep", restart: true); 
+        animator.Play("pep", restart: true);
+        GetComponentInChildren<ParticleSystem>().Play();
+        GetComponent<SpriteRenderer>().color = new Color(255, 255, 255); 
     }
 
 	public override coord GetAttemptedMoveCoords (Direction direction, int[,] boardState, int numSpaces)
