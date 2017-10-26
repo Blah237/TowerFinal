@@ -133,7 +133,8 @@ public class GameManagerScript : MonoBehaviour {
 		boardState = IOScript.ParseLevel(levelName);
 
 		// TODO: Below the way we get the index is DISGUSTING, this whole shitshow needs refactored
-		LoggingManager.instance.RecordLevelStart (CreateLevelSelect.levelList.IndexOf(levelName), levelName);
+		int levelNum = CreateLevelSelect.levelList.FindIndex(s => s == levelName);
+		LoggingManager.instance.RecordLevelStart (levelNum, levelName);
 
         mapOrigin = new Vector2(-boardState.cols / 2.0f, -boardState.rows / 2.0f);
         mainCamera.orthographicSize = boardState.rows / 2.0f + 1;
@@ -496,7 +497,6 @@ public class GameManagerScript : MonoBehaviour {
 
 		foreach (MoveableScript m in collided.Keys) {
             m.ExecuteMove(Direction.NONE, collided[m], false);
-			Debug.Log ("SOUND");
 			audio.PlayOneShot (m.collideSound);
 		}
 

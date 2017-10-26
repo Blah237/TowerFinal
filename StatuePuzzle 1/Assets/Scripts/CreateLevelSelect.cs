@@ -22,36 +22,37 @@ public class CreateLevelSelect : MonoBehaviour
 
 	private static int CANVAS_WIDTH_OFFSET = 0;
 
-	public static string[] levelList;
+	public static List<String> levelList;
 	public static Dictionary<string, bool> buttonMap = null;
 
 	// Use this for initialization
 	void Start()
 	{
-		levelList = new string[17];
-		levelList[0] = "01level1";
-		levelList[1] = "02level2";
-		levelList[2] = "03level3";
-		levelList[3] = "04blockLevel";
-		levelList[4] = "08level4";
-        levelList[5] = "09level5";
-        levelList[6] = "21smallSwap";
-        levelList[7] = "22SwapMaze";
-        levelList[8] = "23SwapTest";
-        levelList[9] = "31dumbPortalTutorial";
-        levelList[10] = "32portal2";
-        levelList[11] = "33portalSwap";
-        levelList[12] = "34CircleWithPortals";
-        levelList[13] = "PortalLinkTest";
-        levelList[14] = "LaserTest";
-        levelList[15] = "lasertest2"; 
-        levelList[16] = "portalBugExhaustiveTest";
+		levelList = new List<string> {
+			"01level1",
+			"02level2",
+			"03level3",
+			"04blockLevel",
+			"08level4",
+			"09level5",
+			"21smallSwap",
+			"22SwapMaze",
+			"23SwapTest",
+			"31dumbPortalTutorial",
+			"32portal2",
+			"33portalSwap",
+			"34CircleWithPortals",
+			"PortalLinkTest",
+			"LaserTest",
+			"lasertest2",
+			"portalBugExhaustiveTest"
+		};
         
         //getFiles();
 		if (buttonMap == null)
 		{
 			buttonMap = new Dictionary<string, bool>();
-			for (int i = 0; i < levelList.Length; i++)
+			for (int i = 0; i < levelList.Count; i++)
 			{
 				buttonMap.Add(levelList[i], false);
 			}
@@ -59,7 +60,7 @@ public class CreateLevelSelect : MonoBehaviour
 		
 		width *= canvas.pixelRect.width - CANVAS_WIDTH_OFFSET;
 		height *= canvas.pixelRect.height;
-		for (int i = 0; i < levelList.Length; i++)
+		for (int i = 0; i < levelList.Count; i++)
 		{
 			{
 				LoadOnClick button = GameObject.Instantiate(load);
@@ -83,22 +84,12 @@ public class CreateLevelSelect : MonoBehaviour
 	{
         DirectoryInfo levelDirectoryPath = new DirectoryInfo(Application.dataPath + "/Resources/Levels");
         FileInfo[] fileInfo = levelDirectoryPath.GetFiles("*.*", SearchOption.AllDirectories);
-		int incrementer = 0;
-			foreach (FileInfo file in fileInfo)
-			{
-				if (file.Extension != ".meta")
-				{
-					incrementer++;
-				}
-			}
-		levelList = new string[incrementer];
-		incrementer = 0;
+		levelList = new List<string>();
 		foreach (FileInfo file in fileInfo)
 		{
 			if (file.Extension != ".meta")
 			{
-				levelList[incrementer] = Path.GetFileNameWithoutExtension(file.Name);
-				incrementer++;
+				levelList.Add(Path.GetFileNameWithoutExtension(file.Name));
 			}
 		}
 	}
@@ -122,7 +113,7 @@ public static long DirCount(DirectoryInfo d)
 		square.rectTransform.localScale = Vector2.one;
 	}
 
-	public static string[] getLevelList()
+	public static List<string> getLevelList()
 	{
 		return levelList;
 	}
