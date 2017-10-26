@@ -33,7 +33,7 @@ public class LoggingManager : MonoBehaviour
 
     private string dynamicQuestId = null;
 
-    private float questId = 1f;
+    private float questId = -1f;
 
     private int sessionSeqId = 1;
 
@@ -72,6 +72,10 @@ public class LoggingManager : MonoBehaviour
     public void Initialize()
     {
     }
+
+	public bool GetLevelStarted() {
+		return isLevelStarted;
+	}
 
 	public void RecordEvent(EventCodes actionId, string actionDetail = "")
     {
@@ -183,7 +187,7 @@ public class LoggingManager : MonoBehaviour
             //Debug.Log(logReturnedString);
             PlayerQuestData pageLoadData = JsonUtility.FromJson<PlayerQuestData>(logReturnedString);
             dynamicQuestId = pageLoadData.dynamic_quest_id;
-            Debug.Log(dynamicQuestId);
+            Debug.Log("Dynamic quest ID: " + dynamicQuestId);
         }
 
     }
@@ -234,6 +238,11 @@ public class LoggingManager : MonoBehaviour
     private void Awake()
     {
         instance = this;
+		if (instance == null) {
+			Destroy (gameObject);
+		} else {
+			DontDestroyOnLoad(gameObject); // Prevent the logging manager been destroyed accidentally.
+		}
         if (!isDebugging)
         {
             if (Application.absoluteURL.Contains("https"))
@@ -241,14 +250,9 @@ public class LoggingManager : MonoBehaviour
                 pageHost = "https";
             }
         }
-    }
 
-    private void Start()
-    {
-		Debug.Log ("INITIALIZING");
 		LoggingManager.instance.Initialize ();
 		LoggingManager.instance.RecordPageLoad ();
-        DontDestroyOnLoad(gameObject); // Prevent the logging manager been destroyed accidentally.
     }
 
 }

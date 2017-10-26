@@ -343,7 +343,7 @@ public class GameManagerScript : MonoBehaviour {
 			}
         }
         Debug.Log("VICTORY!");
-		LoggingManager.instance.RecordEvent (LoggingManager.EventCodes.LEVEL_COMPLETE);
+		LoggingManager.instance.RecordEvent (LoggingManager.EventCodes.LEVEL_COMPLETE, "Level complete");
 		LoggingManager.instance.RecordLevelEnd ();
 	    winscript.playerWin = true;
         tutorial.enabled = false; 
