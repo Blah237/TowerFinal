@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.CodeDom;
 using System.Collections;
 using System.Collections.Generic;
@@ -30,27 +30,52 @@ public class CreateLevelSelect : MonoBehaviour {
 	void Start()
 	{
 		levelList = new List<string> {
-			"01level1",
-			"02level2",
-			"03level3",
-			"04blockLevel",
-			"08level4",
-			"09level5",
-			"21smallSwap",
-			"22SwapMaze",
-			"23SwapTest",
-			"31dumbPortalTutorial",
-			"32portal2",
-			"33portalSwap",
-			"34CircleWithPortals",
-			"PortalLinkTest",
-			"LaserTest",
-			"lasertest2",
-			"portalBugExhaustiveTest"
+            //mimic
+		    "01level1",
+            "tutorial1",
+            //blocking
+            "tutorial3",
+            "tutorial5",
+            "04blockLevel",
+            //mirror
+            "02level2",
+            "tutorial2",
+            //mirror + blocking 
+            "tutorial4",
+            //collision
+            "03level3",
+            //blocking + mirror + mimic
+            "08level4",
+
+            //swap 
+            "tutorial6",
+            "22SwapMaze",
+            "21smallSwap",
+            "23SwapTest",
+
+            //portal 
+            "31dumbPortalTutorial",
+            "32portal2",
+            //portal + swap 
+            "33portalSwap",
+
+            //lasers 
+            "tutorial7",
+            "tutorial8",
+
+            //many floaty bois
+            "09level5",
+            "34CircleWithPortals"
+
+
+            //levelList.Add("PortalLinkTest");
+            //levelList.Add("LaserTest");
+            //levelList.Add("lasertest2");
+            //levelList.Add("portalBugExhaustiveTest");  
 		};
-        
+
         //getFiles();
-		if (buttonMap == null) {
+        if (buttonMap == null) {
 			buttonMap = new Dictionary<string, bool>();
 			for (int i = 0; i < levelList.Count; i++)
 			{

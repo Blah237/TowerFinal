@@ -244,13 +244,17 @@ public class GameManagerScript : MonoBehaviour {
 				inputReady = false;
 				move(dir);
 			}
-		} else {
+		} else if (!checkWin()) {
 			inputReady = getAllDone();
 		}
 		if (pauseReady && checkPause())
 		{
 			pausescript.TogglePause();
             tutorial.enabled = !tutorial.enabled; 
+		}
+		if (pausescript.paused)
+		{
+			inputReady = false;
 		}
 	}
 
