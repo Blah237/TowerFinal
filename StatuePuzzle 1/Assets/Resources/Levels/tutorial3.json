@@ -1,8 +1,1 @@
-{"rows":6,
-  "cols":7,
-  "flatBoard":[1,1,1,1,1,1,1,1,1,0,1,10,1,1,1,1,0,1,0,1,1,1,1,0,1,0,1,1,1,2,0,0,3,0,1,1,1,1,1,1,1,1],
-  "lasers":[],
-  "buttons":[],
-  "portals":[],
-  "tutorial":"Your music is so powerful, Resonance will run into walls just to follow your every move. Use this to your advantage.\n\n
-  Consider it tough love"}
+{"rows":6,"cols":7,"flatBoard":[1,1,1,1,1,1,1,1,1,0,1,10,1,1,1,1,0,1,0,1,1,1,1,0,1,0,1,1,1,2,0,0,3,0,1,1,1,1,1,1,1,1],"lasers":[],"buttons":[],"portals":[],"tutorial":"Your music is so powerful, Resonance will bump into walls just to follow your every move. Use this to your advantage.\n\nConsider it tough love"}
