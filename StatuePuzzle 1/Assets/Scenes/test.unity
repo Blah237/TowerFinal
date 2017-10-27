@@ -684,7 +684,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.06163494, g: 0.3942371, b: 0.5588235, a: 0}
+  m_Color: {r: 0, g: 0, b: 0, a: 0}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -966,7 +966,6 @@ MonoBehaviour:
   win: 0
   dead: 0
   showRestartConfirm: 0
-  music: {fileID: 8300000, guid: 00599a208aef143b18bf4ed3194707ac, type: 3}
   audio: {fileID: 0}
   swap: {fileID: 1489777977322046, guid: 8840d96f49251704bb39ec1725e419bc, type: 2}
   portal: {fileID: 1460910959781724, guid: 4c74f76354da52847ae5db270f11eb3a, type: 2}
