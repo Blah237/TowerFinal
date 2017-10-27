@@ -7,6 +7,8 @@ public class AudioManagerScript : MonoBehaviour {
     public AudioClip music;
     public AudioSource audio;
 
+    static AudioManagerScript instance;
+
     // Use this for initialization
     void Start () {
         audio = this.GetComponent(typeof(AudioSource)) as AudioSource;
@@ -15,7 +17,11 @@ public class AudioManagerScript : MonoBehaviour {
     }
 
     private void Awake() {
-        AudioManagerScript instance = this;
+        if (instance != null) {
+            DestroyImmediate(this);
+            return;
+        }
+        instance = this;
         if (instance == null) {
             Destroy(gameObject);
         } else {
