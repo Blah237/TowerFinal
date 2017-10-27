@@ -253,7 +253,7 @@ public class GameManagerScript : MonoBehaviour {
                 checkWin();
             }
             Direction dir = readInput();
-			if (dir != Direction.NONE)
+			if (dir != Direction.NONE && !winscript.playerWin)
 			{
 				inputReady = false;
 				move(dir);
