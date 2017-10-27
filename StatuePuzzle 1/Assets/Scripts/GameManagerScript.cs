@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.Linq;
+using UnityEngine.Assertions.Must;
 using UnityEngine.UI;
 
 public enum Direction { NORTH, SOUTH, EAST, WEST, NONE }
@@ -72,16 +73,21 @@ public class GameManagerScript : MonoBehaviour {
 	public WinScript winscript;
 	public DeathScript deathscript;
 	public PauseScript pausescript;
+	public RestartLevel restartscript;
 
 	public ButtonToggleScript button;
 	
 	public GameObject ground;
 	public Camera mainCamera;
 
-    public Text tutorial; 
+    public Text tutorial;
+	public Text restartConfirmText;
 
 	public bool win;
 	public bool dead;
+	public bool showRestartConfirm;	
+
+	private int restartScreenTimer = 0;
 
 	public AudioClip music;
 	public AudioSource audio;
@@ -131,12 +137,9 @@ public class GameManagerScript : MonoBehaviour {
 
         //load level using Melody's I/O
 		boardState = IOScript.ParseLevel(levelName);
-		int levelNum = CreateLevelSelect.levelList.IndexOf(levelName) + 1;
-		/*for (int i = 0; i < levelName.Length; i++) {
-			if (Int32.TryParse (levelName.Substring (i, 1), out levelNum)) {
-				break;
-			}
-		}*/
+
+		// TODO: Below the way we get the index is DISGUSTING, this whole shitshow needs refactored
+		int levelNum = CreateLevelSelect.levelList.FindIndex(s => s == levelName);
 		LoggingManager.instance.RecordLevelStart (levelNum, levelName);
 
         mapOrigin = new Vector2(-boardState.cols / 2.0f, -boardState.rows / 2.0f);
@@ -235,22 +238,19 @@ public class GameManagerScript : MonoBehaviour {
 			firstStart = true;
 		}
 
+		foreach (MoveableScript m in needsSwap) {
+			PerformSwap(m); 
+		}
+		needsSwap.Clear(); 
+
 		if (inputReady) {
-            foreach (ButtonToggleScript button in buttonsPressed) {
-                button.TogglePressed();
-            }
-            buttonsPressed.Clear(); 
-            foreach (MoveableScript m in needsSwap) {
-                PerformSwap(m); 
-            }
-            needsSwap.Clear(); 
             Direction dir = readInput();
 			if (dir != Direction.NONE)
 			{
 				inputReady = false;
 				move(dir);
 			}
-		} else {
+		} else if (!checkWin()) {
 			inputReady = getAllDone();
 		}
 		if (pauseReady && checkPause())
@@ -258,6 +258,11 @@ public class GameManagerScript : MonoBehaviour {
 			pausescript.TogglePause();
             tutorial.enabled = !tutorial.enabled; 
 		}
+		if (pausescript.paused)
+		{
+			inputReady = false;
+		}
+		handleRestart();
 	}
 
     bool getAllDone() {
@@ -349,7 +354,7 @@ public class GameManagerScript : MonoBehaviour {
 			}
         }
         Debug.Log("VICTORY!");
-		LoggingManager.instance.RecordEvent (LoggingManager.EventCodes.LEVEL_COMPLETE);
+		LoggingManager.instance.RecordEvent (LoggingManager.EventCodes.LEVEL_COMPLETE, "Level complete");
 		LoggingManager.instance.RecordLevelEnd ();
 	    winscript.playerWin = true;
         tutorial.enabled = false; 
@@ -360,7 +365,34 @@ public class GameManagerScript : MonoBehaviour {
 	{
 		return Input.GetKeyDown(KeyCode.P);
 	}
-		
+
+	bool checkRestart()
+	{
+		return Input.GetKeyDown(KeyCode.R);
+	}
+
+	void handleRestart()
+	{
+		if (showRestartConfirm)
+		{
+			if (checkRestart())
+			{
+				showRestartConfirm = false;
+				restartConfirmText.GetComponent<Text>().color = Color.clear;
+				restartscript.LoadScene();
+			} else if (Input.anyKeyDown)
+			{
+				showRestartConfirm = false;
+				restartConfirmText.GetComponent<Text>().color = Color.clear;
+			}
+		}
+		else if (checkRestart())
+		{
+			showRestartConfirm = true;
+			restartConfirmText.GetComponent<Text>().color = Color.white;
+		}
+	}
+
 	public static void setLevelName(string level) {
 		levelName = level;
 	}
@@ -503,9 +535,13 @@ public class GameManagerScript : MonoBehaviour {
 
 		foreach (MoveableScript m in collided.Keys) {
             m.ExecuteMove(Direction.NONE, collided[m], false);
-			Debug.Log ("SOUND");
 			audio.PlayOneShot (m.collideSound);
 		}
+
+		foreach (ButtonToggleScript button in buttonsPressed) {
+			button.TogglePressed();
+		}
+		buttonsPressed.Clear(); 
 			
 		recordDynamicState ();	
 		checkWin ();
@@ -556,8 +592,10 @@ public class GameManagerScript : MonoBehaviour {
 			}
 		}
 
-		foreach (KeyValuePair<coord,ButtonToggleScript> b in buttonCoords) {
-			ds.buttonStates.Add (b.Key, b.Value.laser.data.isActive);
+		foreach (coord b in buttonCoords.Keys) {
+			if (buttonCoords [b].laser.data.isActive) {
+				ds.activeButtons.Add (b);
+			}
 		}
 
 		dynamicStateStack.Push (ds);

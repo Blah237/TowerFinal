@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.CodeDom;
 using System.Collections;
 using System.Collections.Generic;
@@ -21,32 +21,61 @@ public class CreateLevelSelect : MonoBehaviour {
 	public int cols;
 	public int rows;
 
-	public static List<string> levelList;
+	private static int CANVAS_WIDTH_OFFSET = 0;
+
+	public static List<String> levelList;
 	public static Dictionary<string, bool> buttonMap = null;
 
 	// Use this for initialization
-	void Start() {
-		levelList = new List<string>();
-		levelList.Add("01level1");
-        levelList.Add("02level2");
-        levelList.Add("03level3");
-        levelList.Add("04blockLevel");
-        levelList.Add("08level4");
-        levelList.Add("09level5");
-        levelList.Add("21smallSwap");
-        levelList.Add("22SwapMaze");
-        levelList.Add("23SwapTest");
-        levelList.Add("31dumbPortalTutorial");
-        levelList.Add("32portal2");
-        levelList.Add("33portalSwap");
-        levelList.Add("34CircleWithPortals");
-        levelList.Add("PortalLinkTest");
-        levelList.Add("LaserTest");
-        levelList.Add("lasertest2");
-        levelList.Add("portalBugExhaustiveTest");
-        
+	void Start()
+	{
+		levelList = new List<string> {
+            //mimic
+		    "01level1",
+            "tutorial1",
+            //blocking
+            "tutorial3",
+            "tutorial5",
+            "04blockLevel",
+            //mirror
+            "02level2",
+            "tutorial2",
+            //mirror + blocking 
+            "tutorial4",
+            //collision
+            "03level3",
+            //blocking + mirror + mimic
+            "08level4",
+
+            //swap 
+            "tutorial6",
+            "22SwapMaze",
+            "21smallSwap",
+            "23SwapTest",
+
+            //portal 
+            "31dumbPortalTutorial",
+            "32portal2",
+            //portal + swap 
+            "33portalSwap",
+
+            //lasers 
+            "tutorial7",
+            "tutorial8",
+
+            //many floaty bois
+            "09level5",
+            "34CircleWithPortals"
+
+
+            //levelList.Add("PortalLinkTest");
+            //levelList.Add("LaserTest");
+            //levelList.Add("lasertest2");
+            //levelList.Add("portalBugExhaustiveTest");  
+		};
+
         //getFiles();
-		if (buttonMap == null) {
+        if (buttonMap == null) {
 			buttonMap = new Dictionary<string, bool>();
 			for (int i = 0; i < levelList.Count; i++)
 			{
@@ -80,22 +109,12 @@ public class CreateLevelSelect : MonoBehaviour {
 	void getFiles() {
         DirectoryInfo levelDirectoryPath = new DirectoryInfo(Application.dataPath + "/Resources/Levels");
         FileInfo[] fileInfo = levelDirectoryPath.GetFiles("*.*", SearchOption.AllDirectories);
-		int incrementer = 0;
-			foreach (FileInfo file in fileInfo)
-			{
-				if (file.Extension != ".meta")
-				{
-					incrementer++;
-				}
-			}
 		levelList = new List<string>();
-		incrementer = 0;
 		foreach (FileInfo file in fileInfo)
 		{
 			if (file.Extension != ".meta")
 			{
 				levelList.Add(Path.GetFileNameWithoutExtension(file.Name));
-				incrementer++;
 			}
 		}
 	}
@@ -118,8 +137,9 @@ public class CreateLevelSelect : MonoBehaviour {
 		square.rectTransform.localScale = Vector2.one;
 	}
 
-	public static string[] getLevelList() {
-		return levelList.ToArray();
+	public static List<string> getLevelList()
+	{
+		return levelList;
 	}
 	
 	// Update is called once per frame
