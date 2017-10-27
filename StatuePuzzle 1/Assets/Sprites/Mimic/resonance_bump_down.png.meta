@@ -1,20 +1,19 @@
 fileFormatVersion: 2
-guid: 0f844538ad59e0941adb60dba7d8b5e3
-timeCreated: 1509066691
+guid: e5bd747389817bc4087bde6be891cda6
+timeCreated: 1509067158
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
-    21300000: resonance_bump_left_0
-    21300002: resonance_bump_left_1
-    21300004: resonance_bump_left_2
-    21300006: resonance_bump_left_3
-    21300008: resonance_bump_left_4
-    21300010: resonance_bump_left_5
-    21300012: resonance_bump_left_6
-    21300014: resonance_bump_left_7
-    21300016: resonance_bump_left_8
-    21300018: resonance_bump_left_9
-    21300020: resonance_bump_left_10
+    21300000: resonance_bump_down_0
+    21300002: resonance_bump_down_1
+    21300004: resonance_bump_down_2
+    21300006: resonance_bump_down_3
+    21300008: resonance_bump_down_4
+    21300010: resonance_bump_down_5
+    21300012: resonance_bump_down_6
+    21300014: resonance_bump_down_7
+    21300016: resonance_bump_down_8
+    21300018: resonance_bump_down_9
   serializedVersion: 4
   mipmaps:
     mipMapMode: 0
@@ -82,6 +81,14 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+  - buildTarget: Android
+    maxTextureSize: 2048
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
   - buildTarget: WebGL
     maxTextureSize: 2048
     textureFormat: -1
@@ -94,7 +101,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: resonance_bump_left_0
+      name: resonance_bump_down_0
       rect:
         serializedVersion: 2
         x: 0
@@ -108,7 +115,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: resonance_bump_left_1
+      name: resonance_bump_down_1
       rect:
         serializedVersion: 2
         x: 256
@@ -122,7 +129,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: resonance_bump_left_2
+      name: resonance_bump_down_2
       rect:
         serializedVersion: 2
         x: 512
@@ -136,7 +143,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: resonance_bump_left_3
+      name: resonance_bump_down_3
       rect:
         serializedVersion: 2
         x: 768
@@ -150,7 +157,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: resonance_bump_left_4
+      name: resonance_bump_down_4
       rect:
         serializedVersion: 2
         x: 1024
@@ -164,7 +171,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: resonance_bump_left_5
+      name: resonance_bump_down_5
       rect:
         serializedVersion: 2
         x: 1280
@@ -178,7 +185,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: resonance_bump_left_6
+      name: resonance_bump_down_6
       rect:
         serializedVersion: 2
         x: 1536
@@ -192,7 +199,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: resonance_bump_left_7
+      name: resonance_bump_down_7
       rect:
         serializedVersion: 2
         x: 1792
@@ -206,7 +213,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: resonance_bump_left_8
+      name: resonance_bump_down_8
       rect:
         serializedVersion: 2
         x: 2048
@@ -220,24 +227,10 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: resonance_bump_left_9
+      name: resonance_bump_down_9
       rect:
         serializedVersion: 2
         x: 2304
-        y: 0
-        width: 256
-        height: 256
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-    - serializedVersion: 2
-      name: resonance_bump_left_10
-      rect:
-        serializedVersion: 2
-        x: 2560
         y: 0
         width: 256
         height: 256
