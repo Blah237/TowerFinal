@@ -256,12 +256,16 @@ public class GameManagerScript : MonoBehaviour {
 				move(dir);
 			}
 		} else {
-			inputReady = getAllDone();
+			inputReady = (!winscript.playerWin && getAllDone());
 		}
 		if (pauseReady && checkPause())
 		{
 			pausescript.TogglePause();
             tutorial.enabled = !tutorial.enabled; 
+		}
+		if (pausescript.paused)
+		{
+			inputReady = false;
 		}
 	}
 
@@ -368,6 +372,7 @@ public class GameManagerScript : MonoBehaviour {
 		LoggingManager.instance.RecordEvent (LoggingManager.EventCodes.LEVEL_COMPLETE);
 		LoggingManager.instance.RecordLevelEnd ();
         player.Celebrate();
+        inputReady = false; 
 	    winscript.playerWin = true;
         tutorial.enabled = false; 
         return true;

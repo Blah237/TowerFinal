@@ -1,0 +1,1 @@
+{"rows":7,"cols":6,"flatBoard":[1,1,1,1,1,1,1,10,0,0,0,1,1,4,0,0,0,1,1,0,0,2,3,1,1,0,0,30,0,1,1,0,0,0,10,1,1,1,1,1,1,1],"lasers":[{"startRow":3,"startCol":1,"isHorizontal":true,"length":4,"isActive":true,"type":4}],"buttons":[0],"portals":[],"tutorial":""}
