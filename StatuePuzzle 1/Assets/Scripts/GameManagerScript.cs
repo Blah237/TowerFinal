@@ -260,6 +260,7 @@ public class GameManagerScript : MonoBehaviour {
 			}
 		} else {
 			inputReady = (!winscript.playerWin && getAllDone());
+			pauseReady = (!winscript.playerWin);
 		}
 		if (pauseReady && checkPause())
 		{
@@ -380,6 +381,7 @@ public class GameManagerScript : MonoBehaviour {
         player.Celebrate();
         inputReady = false; 
 	    winscript.playerWin = true;
+	    pauseReady = false;
         tutorial.enabled = false; 
         return true;
     }
