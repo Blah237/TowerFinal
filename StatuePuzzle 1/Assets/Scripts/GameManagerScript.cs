@@ -82,7 +82,8 @@ public class GameManagerScript : MonoBehaviour {
 
     public Text tutorial;
     public GameObject tutorial1;
-    public GameObject tutorial6; 
+    public GameObject tutorial6;
+    public GameObject tutorialCanvas; 
 	public Text restartConfirmText;
 
 	public bool win;
@@ -273,7 +274,8 @@ public class GameManagerScript : MonoBehaviour {
 		if (pauseReady && checkPause())
 		{
 			pausescript.TogglePause();
-            tutorial.enabled = !tutorial.enabled; 
+            tutorial.enabled = !tutorial.enabled;
+            tutorialCanvas.SetActive(!tutorialCanvas.activeInHierarchy); 
 		}
 		if (pausescript.paused)
 		{

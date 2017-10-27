@@ -1766,6 +1766,7 @@ MonoBehaviour:
   tutorial: {fileID: 1131664852}
   tutorial1: {fileID: 1852550541}
   tutorial6: {fileID: 846961451}
+  tutorialCanvas: {fileID: 2004494422}
   restartConfirmText: {fileID: 1515025431}
   win: 0
   dead: 0
