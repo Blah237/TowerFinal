@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.Linq;
+using UnityEngine.Assertions.Must;
 using UnityEngine.UI;
 
 public enum Direction { NORTH, SOUTH, EAST, WEST, NONE }
@@ -72,16 +73,21 @@ public class GameManagerScript : MonoBehaviour {
 	public WinScript winscript;
 	public DeathScript deathscript;
 	public PauseScript pausescript;
+	public RestartLevel restartscript;
 
 	public ButtonToggleScript button;
 	
 	public GameObject ground;
 	public Camera mainCamera;
 
-    public Text tutorial; 
+    public Text tutorial;
+	public Text restartConfirmText;
 
 	public bool win;
 	public bool dead;
+	public bool showRestartConfirm;	
+
+	private int restartScreenTimer = 0;
 
 	public AudioClip music;
 	public AudioSource audio;
@@ -256,6 +262,7 @@ public class GameManagerScript : MonoBehaviour {
 		{
 			inputReady = false;
 		}
+		handleRestart();
 	}
 
     bool getAllDone() {
@@ -358,7 +365,34 @@ public class GameManagerScript : MonoBehaviour {
 	{
 		return Input.GetKeyDown(KeyCode.P);
 	}
-		
+
+	bool checkRestart()
+	{
+		return Input.GetKeyDown(KeyCode.R);
+	}
+
+	void handleRestart()
+	{
+		if (showRestartConfirm)
+		{
+			if (checkRestart())
+			{
+				showRestartConfirm = false;
+				restartConfirmText.GetComponent<Text>().color = Color.clear;
+				restartscript.LoadScene();
+			} else if (Input.anyKeyDown)
+			{
+				showRestartConfirm = false;
+				restartConfirmText.GetComponent<Text>().color = Color.clear;
+			}
+		}
+		else if (checkRestart())
+		{
+			showRestartConfirm = true;
+			restartConfirmText.GetComponent<Text>().color = Color.white;
+		}
+	}
+
 	public static void setLevelName(string level) {
 		levelName = level;
 	}
