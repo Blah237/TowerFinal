@@ -89,7 +89,7 @@ public class GameManagerScript : MonoBehaviour {
 
 	private int restartScreenTimer = 0;
 
-	public AudioClip music;
+	//public AudioClip music;
 	public AudioSource audio;
     
     List<coord> goalCoords = new List<coord>();
@@ -108,7 +108,7 @@ public class GameManagerScript : MonoBehaviour {
 
     public static Vector2 mapOrigin;
 
-	bool firstStart;
+    bool firstStart;
 
     [SerializeField]
     public static bool inputReady = true;
@@ -131,9 +131,7 @@ public class GameManagerScript : MonoBehaviour {
     // Use this for initialization
     void Start() {
 
-		audio = this.GetComponent (typeof(AudioSource)) as AudioSource;
-		audio.clip = music;
-		audio.Play ();
+        audio = FindObjectOfType<AudioSource>();
 		firstStart = false;
 
         //load level using Melody's I/O
