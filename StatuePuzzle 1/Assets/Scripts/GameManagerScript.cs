@@ -268,6 +268,8 @@ public class GameManagerScript : MonoBehaviour {
 		}
 		if (pausescript.paused)
 		{
+			showRestartConfirm = false;
+			restartConfirmText.GetComponent<Text>().color = Color.clear;
 			inputReady = false;
 		}
 		handleRestart();
@@ -394,7 +396,7 @@ public class GameManagerScript : MonoBehaviour {
 
 	void handleRestart()
 	{
-		if (showRestartConfirm)
+		if (showRestartConfirm && pausescript.unpaused)
 		{
 			if (checkRestart())
 			{
@@ -407,7 +409,7 @@ public class GameManagerScript : MonoBehaviour {
 				restartConfirmText.GetComponent<Text>().color = Color.clear;
 			}
 		}
-		else if (checkRestart())
+		else if (checkRestart() && pausescript.unpaused)
 		{
 			showRestartConfirm = true;
 			restartConfirmText.GetComponent<Text>().color = Color.white;
