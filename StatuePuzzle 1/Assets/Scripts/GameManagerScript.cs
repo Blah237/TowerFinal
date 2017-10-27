@@ -85,7 +85,9 @@ public class GameManagerScript : MonoBehaviour {
 
 	public bool win;
 	public bool dead;
-	public bool showRestartConfirm;	
+	public bool showRestartConfirm;
+
+	public Image rightArrow;
 
 	private int restartScreenTimer = 0;
 
@@ -227,6 +229,15 @@ public class GameManagerScript : MonoBehaviour {
                 portalMap.Add(portalCoords[i], portalCoords[boardState.portals[i]]);
             }
         }
+
+	    foreach (MoveableScript m in moveables)
+	    {
+		    Vector2 moverPosition = m.GetComponent<Transform>().position;
+		    GameObject.Instantiate(rightArrow);
+		    rightArrow.GetComponent<Transform>().position = new Vector2(moverPosition.x + 50, moverPosition.y);
+		    rightArrow.GetComponent<Image>().color = Color.clear;
+	    }
+	   
 	}
 
 	// Update is called once per frame
@@ -272,6 +283,11 @@ public class GameManagerScript : MonoBehaviour {
 			inputReady = false;
 		}
 		handleRestart();
+		foreach (MoveableScript m in moveables)
+		{
+			handleWASD(m);
+
+		}
 	}
 
     bool getAllDone() {
@@ -413,6 +429,16 @@ public class GameManagerScript : MonoBehaviour {
 		{
 			showRestartConfirm = true;
 			restartConfirmText.GetComponent<Text>().color = Color.white;
+		}
+	}
+
+	void handleWASD(MoveableScript mover)
+	{
+		if (Input.GetKeyDown(KeyCode.D))
+		{
+			rightArrow.GetComponent<Image>().color = Color.white;
+		} else if (Input.GetKeyUp(KeyCode.D)){
+			rightArrow.GetComponent<Image>().color = Color.clear;
 		}
 	}
 
