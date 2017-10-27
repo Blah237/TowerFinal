@@ -54,8 +54,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1944135573968148}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -4.16, z: 1.8}
-  m_LocalScale: {x: 2.6923075, y: 2.6923075, z: 1}
+  m_LocalPosition: {x: 0.03, y: -4.63, z: 1.8}
+  m_LocalScale: {x: 3.4, y: 3.49, z: 1}
   m_Children: []
   m_Father: {fileID: 4401184859068412}
   m_RootOrder: 0
@@ -67,8 +67,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1892092808917540}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -2}
-  m_LocalScale: {x: 0.13, y: 0.13, z: 1}
+  m_LocalPosition: {x: -1, y: 0.46, z: -0.2}
+  m_LocalScale: {x: 0.1, y: 0.1, z: 1}
   m_Children:
   - {fileID: 4306230616311280}
   m_Father: {fileID: 0}
@@ -93,9 +93,9 @@ MonoBehaviour:
   direction: 0
   distanceToMove: 0
   coords:
-    row: 5
-    col: 3
-  yOffset: 0.55
+    row: 4
+    col: 2
+  yOffset: 0.46
   collideSound: {fileID: 8300000, guid: 3af1a6139175f4e578ec95527eeab2b4, type: 3}
   collisionMask: 0
 --- !u!114 &114879561478314368

@@ -31,9 +31,9 @@ public class WinScript : MonoBehaviour
 			CreateLevelSelect.buttonMap[GameManagerScript.levelName] = true;
 			NextLevel.GetComponent<Button>().interactable = true;
 			LevelSelectWin.GetComponent<Button>().interactable = true;
-			playerWin = false;
+			//playerWin = false;
 			//b.GetComponent<Image>().color = Color.green;
-			GameManagerScript.inputReady = false;
+			//GameManagerScript.inputReady = false;
             //restartTimer += Time.deltaTime;
 
             //if (restartTimer >= restartDelay) {
