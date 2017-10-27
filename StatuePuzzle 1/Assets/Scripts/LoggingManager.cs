@@ -237,6 +237,10 @@ public class LoggingManager : MonoBehaviour
 
     private void Awake()
     {
+        if(instance != null) {
+            DestroyImmediate(this);
+            return;
+        }
         instance = this;
 		if (instance == null) {
 			Destroy (gameObject);
