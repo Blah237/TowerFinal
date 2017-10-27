@@ -14,6 +14,7 @@ public class CreateLevelSelect : MonoBehaviour {
 	public float width;
 	public float height;
     private float padX;
+	private float padY = 50.0f;
 
     public float padding;
 	public Canvas canvas;
@@ -132,7 +133,7 @@ public class CreateLevelSelect : MonoBehaviour {
 	}
 	
 	void positionSquare(Image square, int r, int c) {
-		square.rectTransform.anchoredPosition = new Vector2(width / cols * (c + 0.5f) + padX, height - (height / rows * (r + 0.5f)));
+		square.rectTransform.anchoredPosition = new Vector2(width / cols * (c + 0.5f) + padX, height - (height / rows * (r + 0.5f)) + padY);
 		square.rectTransform.sizeDelta = new Vector2(width / (float)cols - padding / 2f, height / (float)rows - padding / 2f);
 		square.rectTransform.localScale = Vector2.one;
 	}
