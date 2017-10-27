@@ -13,10 +13,10 @@ public class NextLevelScript : MonoBehaviour {
 
 	private string getNextLevel()
 	{
-		string[] levelList = CreateLevelSelect.getLevelList();
-		for (int i = 0; i < levelList.Length; i ++) {
+		List<string> levelList = CreateLevelSelect.getLevelList();
+		for (int i = 0; i < levelList.Count; i ++) {
 			if (levelList[i] == currentLevel) {
-				if (i == levelList.Length - 1) {
+				if (i == levelList.Count - 1) {
 					currentLevel = levelList[0];
 					return levelList[0];
 				} else {

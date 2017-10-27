@@ -33,7 +33,7 @@ public class LoggingManager : MonoBehaviour
 
     private string dynamicQuestId = null;
 
-    private float questId = 1f;
+    private float questId = -1f;
 
     private int sessionSeqId = 1;
 
@@ -73,8 +73,15 @@ public class LoggingManager : MonoBehaviour
     {
     }
 
+	public bool GetLevelStarted() {
+		return isLevelStarted;
+	}
+
 	public void RecordEvent(EventCodes actionId, string actionDetail = "")
     {
+
+		Debug.Log (actionDetail);
+
         if (isDebugging)
         {
             return;
@@ -102,12 +109,12 @@ public class LoggingManager : MonoBehaviour
 
         if (www.isNetworkError)
         {
-            Debug.Log(www.error);
+            //Debug.Log(www.error);
         }
         else
         {
             string logReturnedString = www.downloadHandler.text;
-            Debug.Log(logReturnedString);
+            //Debug.Log(logReturnedString);
         }
     }
 
@@ -135,12 +142,12 @@ public class LoggingManager : MonoBehaviour
 
         if (www.isNetworkError)
         {
-            Debug.Log(www.error);
+            //Debug.Log(www.error);
         }
         else
         {
             string logReturnedString = www.downloadHandler.text;
-            Debug.Log(logReturnedString);
+            //Debug.Log(logReturnedString);
         }
     }
 
@@ -172,15 +179,15 @@ public class LoggingManager : MonoBehaviour
 
         if (www.isNetworkError)
         {
-            Debug.Log(www.error);
+            //Debug.Log(www.error);
         }
         else
         {
             string logReturnedString = www.downloadHandler.text;
-            Debug.Log(logReturnedString);
+            //Debug.Log(logReturnedString);
             PlayerQuestData pageLoadData = JsonUtility.FromJson<PlayerQuestData>(logReturnedString);
             dynamicQuestId = pageLoadData.dynamic_quest_id;
-            Debug.Log(dynamicQuestId);
+            Debug.Log("Dynamic quest ID: " + dynamicQuestId);
         }
 
     }
@@ -209,7 +216,7 @@ public class LoggingManager : MonoBehaviour
 
         if (www.isNetworkError)
         {
-            Debug.Log(www.error);
+            //Debug.Log(www.error);
         }
         else
         {
@@ -231,6 +238,11 @@ public class LoggingManager : MonoBehaviour
     private void Awake()
     {
         instance = this;
+		if (instance == null) {
+			Destroy (gameObject);
+		} else {
+			DontDestroyOnLoad(gameObject); // Prevent the logging manager been destroyed accidentally.
+		}
         if (!isDebugging)
         {
             if (Application.absoluteURL.Contains("https"))
@@ -238,14 +250,9 @@ public class LoggingManager : MonoBehaviour
                 pageHost = "https";
             }
         }
-    }
 
-    private void Start()
-    {
-		Debug.Log ("INITIALIZING");
 		LoggingManager.instance.Initialize ();
 		LoggingManager.instance.RecordPageLoad ();
-        DontDestroyOnLoad(gameObject); // Prevent the logging manager been destroyed accidentally.
     }
 
 }

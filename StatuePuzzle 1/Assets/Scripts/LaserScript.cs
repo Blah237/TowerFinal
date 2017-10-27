@@ -10,7 +10,7 @@ public class Laser {
     public int startCol = 0; //The left side of the box where the laser starts from. 
     public bool isHorizontal = true; //1 for horizontal, 0 for vertical. laser always grows up or left 
     public int length = 1; //How many squares the laser covers
-    public bool isActive = true; //0 is off, 1 is on 
+    public bool isActive = true;
     /**If type is a BoardCode of a moveable, then that character can go through the laser
         Otherwise, no characters can go through the laser**/ 
     public BoardCodes type; 
