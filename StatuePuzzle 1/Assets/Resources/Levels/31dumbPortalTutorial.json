@@ -1,5 +1,5 @@
 {"rows":5,"cols":7,
   "flatBoard":[1,1,1,1,1,1,1,1,1,2,0,0,1,1,1,1,1,1,1,1,1,1,3,50,1,50,10,1,1,1,1,1,1,1,1],
   "lasers":[],"buttons":[],"portals":[1,0],
-  "tutorial": "A Portal Tile will transport a character to another Portal Tile"
+  "tutorial": "Tunes are said to travel through time and space\n\nMaybe these tiles are the source of their power"
 }

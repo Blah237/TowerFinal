@@ -81,6 +81,9 @@ public class GameManagerScript : MonoBehaviour {
 	public Camera mainCamera;
 
     public Text tutorial;
+    public GameObject tutorial1;
+    public GameObject tutorial6;
+    public GameObject tutorialCanvas; 
 	public Text restartConfirmText;
 
 	public bool win;
@@ -144,7 +147,15 @@ public class GameManagerScript : MonoBehaviour {
         mapOrigin = new Vector2(-boardState.cols / 2.0f, -boardState.rows / 2.0f);
         mainCamera.orthographicSize = boardState.rows / 2.0f + 1;
         tutorial.text = boardState.tutorial;
-        tutorial.enabled = true; 
+        tutorial.enabled = true;
+        //tutorial1.SetActive(false); 
+        //tutorial6.SetActive(false); 
+        if(levelNum == 0) {
+            tutorial1.SetActive(true); 
+        } else if(levelNum == 5) {
+            tutorial6.SetActive(true); 
+        }
+        
 
         int buttonCount = 0;
 
@@ -263,7 +274,8 @@ public class GameManagerScript : MonoBehaviour {
 		if (pauseReady && checkPause())
 		{
 			pausescript.TogglePause();
-            tutorial.enabled = !tutorial.enabled; 
+            tutorial.enabled = !tutorial.enabled;
+            tutorialCanvas.SetActive(!tutorialCanvas.activeInHierarchy); 
 		}
 		if (pausescript.paused)
 		{
@@ -380,7 +392,9 @@ public class GameManagerScript : MonoBehaviour {
         inputReady = false; 
 	    winscript.playerWin = true;
 	    pauseReady = false;
-        tutorial.enabled = false; 
+        tutorial.enabled = false;
+        tutorial1.SetActive(false);
+        tutorial6.SetActive(false);
         return true;
     }
 
