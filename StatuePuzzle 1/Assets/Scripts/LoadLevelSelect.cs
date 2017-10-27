@@ -11,8 +11,10 @@ public class LoadLevelSelect : MonoBehaviour {
 
 	public void LoadScene(int level)
 	{
-		LoggingManager.instance.RecordEvent (LoggingManager.EventCodes.EXIT_TO_LEVEL_SELECT);
-		LoggingManager.instance.RecordLevelEnd ();
+		if (LoggingManager.instance.GetLevelStarted() == true) { // If true this is an exit to level select, if false it's level select after a win
+			LoggingManager.instance.RecordEvent (LoggingManager.EventCodes.EXIT_TO_LEVEL_SELECT, "Exit to level select");
+			LoggingManager.instance.RecordLevelEnd ();
+		}
 		SceneManager.LoadScene(0);
 	}
 }

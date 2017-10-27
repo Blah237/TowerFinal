@@ -21,54 +21,58 @@ public class CreateLevelSelect : MonoBehaviour {
 	public int cols;
 	public int rows;
 
-	public static List<string> levelList;
+	private static int CANVAS_WIDTH_OFFSET = 0;
+
+	public static List<String> levelList;
 	public static Dictionary<string, bool> buttonMap = null;
 
 	// Use this for initialization
-	void Start() {
-		levelList = new List<string>();
-        //mimic
-		levelList.Add("01level1");
-        levelList.Add("tutorial1");
-        //blocking
-        levelList.Add("tutorial3"); 
-        levelList.Add("tutorial5");
-        levelList.Add("04blockLevel");
-        //mirror
-        levelList.Add("02level2");
-        levelList.Add("tutorial2");
-        //mirror + blocking 
-        levelList.Add("tutorial4");
-        //collision
-        levelList.Add("03level3");
-        //blocking + mirror + mimic
-        levelList.Add("08level4");
+	void Start()
+	{
+		levelList = new List<string> {
+            //mimic
+		    "01level1",
+            "tutorial1",
+            //blocking
+            "tutorial3",
+            "tutorial5",
+            "04blockLevel",
+            //mirror
+            "02level2",
+            "tutorial2",
+            //mirror + blocking 
+            "tutorial4",
+            //collision
+            "03level3",
+            //blocking + mirror + mimic
+            "08level4",
 
-        //swap 
-        levelList.Add("tutorial6");
-        levelList.Add("22SwapMaze");
-        levelList.Add("21smallSwap");
-        levelList.Add("23SwapTest");
+            //swap 
+            "tutorial6",
+            "22SwapMaze",
+            "21smallSwap",
+            "23SwapTest",
 
-        //portal 
-        levelList.Add("31dumbPortalTutorial");
-        levelList.Add("32portal2");
-        //portal + swap 
-        levelList.Add("33portalSwap");
+            //portal 
+            "31dumbPortalTutorial",
+            "32portal2",
+            //portal + swap 
+            "33portalSwap",
 
-        //lasers 
-        levelList.Add("tutorial7");
-        levelList.Add("tutorial8");
+            //lasers 
+            "tutorial7",
+            "tutorial8",
 
-        //many floaty bois
-        levelList.Add("09level5");
-        levelList.Add("34CircleWithPortals");
+            //many floaty bois
+            "09level5",
+            "34CircleWithPortals"
 
 
-        //levelList.Add("PortalLinkTest");
-        //levelList.Add("LaserTest");
-        //levelList.Add("lasertest2");
-        //levelList.Add("portalBugExhaustiveTest");  
+            //levelList.Add("PortalLinkTest");
+            //levelList.Add("LaserTest");
+            //levelList.Add("lasertest2");
+            //levelList.Add("portalBugExhaustiveTest");  
+		};
 
         //getFiles();
         if (buttonMap == null) {
@@ -105,22 +109,12 @@ public class CreateLevelSelect : MonoBehaviour {
 	void getFiles() {
         DirectoryInfo levelDirectoryPath = new DirectoryInfo(Application.dataPath + "/Resources/Levels");
         FileInfo[] fileInfo = levelDirectoryPath.GetFiles("*.*", SearchOption.AllDirectories);
-		int incrementer = 0;
-			foreach (FileInfo file in fileInfo)
-			{
-				if (file.Extension != ".meta")
-				{
-					incrementer++;
-				}
-			}
 		levelList = new List<string>();
-		incrementer = 0;
 		foreach (FileInfo file in fileInfo)
 		{
 			if (file.Extension != ".meta")
 			{
 				levelList.Add(Path.GetFileNameWithoutExtension(file.Name));
-				incrementer++;
 			}
 		}
 	}
@@ -143,8 +137,9 @@ public class CreateLevelSelect : MonoBehaviour {
 		square.rectTransform.localScale = Vector2.one;
 	}
 
-	public static string[] getLevelList() {
-		return levelList.ToArray();
+	public static List<string> getLevelList()
+	{
+		return levelList;
 	}
 	
 	// Update is called once per frame
