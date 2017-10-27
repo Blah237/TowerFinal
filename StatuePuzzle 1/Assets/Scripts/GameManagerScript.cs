@@ -240,11 +240,6 @@ public class GameManagerScript : MonoBehaviour {
 			firstStart = true;
 		}
 
-		foreach (MoveableScript m in needsSwap) {
-			PerformSwap(m); 
-		}
-		needsSwap.Clear(); 
-
 		if (inputReady) {
             foreach (ButtonToggleScript button in buttonsPressed) {
                 button.TogglePressed();
@@ -563,11 +558,6 @@ public class GameManagerScript : MonoBehaviour {
             m.ExecuteMove(Direction.NONE, collided[m], false);
 			audio.PlayOneShot (m.collideSound);
 		}
-
-		foreach (ButtonToggleScript button in buttonsPressed) {
-			button.TogglePressed();
-		}
-		buttonsPressed.Clear(); 
 			
 		recordDynamicState ();	
     }
