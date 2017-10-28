@@ -57,7 +57,7 @@ public class LoggingManager : MonoBehaviour
         public string dynamic_quest_id;
     }
 
-    private string pageHost = "http";
+    private string pageHost = "https";
 
     private string phpPath = "://gdiac.cs.cornell.edu/cs4154/fall2017/";
 
