@@ -59,7 +59,7 @@ public class LoggingManager : MonoBehaviour
 
     private string pageHost = "https";
 
-    private string phpPath = "://gdiac.cs.cornell.edu/cs4154/fall2017/";
+    private string phpPath = "://gdiac.cis.cornell.edu/cs4154/fall2017/";
 
     private string pageLoadPath = "page_load.php";
 
