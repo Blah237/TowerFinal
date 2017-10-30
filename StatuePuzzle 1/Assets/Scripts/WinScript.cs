@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class WinScript : MonoBehaviour
 {
 
-	public bool playerWin;
+	public static bool playerWin;
 	//public float restartDelay = 5f;
 	private GameObject NextLevel;
 	private GameObject LevelSelectWin;
@@ -26,7 +26,8 @@ public class WinScript : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
-		if (playerWin) {
+		if (playerWin)
+		{
 			anim.SetTrigger("Win");
 			CreateLevelSelect.buttonMap[GameManagerScript.levelName] = true;
 			NextLevel.GetComponent<Button>().interactable = true;

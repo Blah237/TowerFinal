@@ -258,18 +258,18 @@ public class GameManagerScript : MonoBehaviour {
                 PerformSwap(m); 
             }
             needsSwap.Clear();
-            if (!winscript.playerWin) {
+            if (!WinScript.playerWin) {
                 checkWin();
             }
             Direction dir = readInput();
-			if (dir != Direction.NONE && !winscript.playerWin)
+			if (dir != Direction.NONE && !WinScript.playerWin)
 			{
 				inputReady = false;
 				move(dir);
 			}
 		} else {
-			inputReady = (!winscript.playerWin && getAllDone());
-			pauseReady = (!winscript.playerWin);
+			inputReady = (!WinScript.playerWin && getAllDone());
+			pauseReady = (!WinScript.playerWin);
 		}
 		if (pauseReady && checkPause())
 		{
@@ -390,7 +390,7 @@ public class GameManagerScript : MonoBehaviour {
 		LoggingManager.instance.RecordLevelEnd ();
         player.Celebrate();
         inputReady = false; 
-	    winscript.playerWin = true;
+	    WinScript.playerWin = true;
 	    pauseReady = false;
         tutorial.enabled = false;
         tutorial1.SetActive(false);
