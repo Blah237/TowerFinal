@@ -18,5 +18,8 @@ public class DynamicState
 	public string toJson() {
 		return JsonUtility.ToJson (this);
 	}
-}
 
+    public static DynamicState fromJson(string input) {
+        return JsonUtility.FromJson<DynamicState>(input);
+    }
+}
