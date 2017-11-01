@@ -26,6 +26,7 @@ public class VisualizationManagerScript : MonoBehaviour {
     Dictionary<coord, int> playerCounters = new Dictionary<coord, int>();
     Dictionary<coord, int> mimicCounters = new Dictionary<coord, int>();
     Dictionary<coord, int> mirrorCounters = new Dictionary<coord, int>();
+    List<DynamicState> restartsAndQuits = new List<DynamicState>();
 
     public string levelName;
     public string dataName;
@@ -44,10 +45,18 @@ public class VisualizationManagerScript : MonoBehaviour {
     public GameObject swap;
     public GameObject portal;
 
+    float playerYOff = 0f;
+    float mimicYOff = 0f;
+    float mirrorYOff = 0f;
+
     Vector2 mapOrigin;
 
     // Use this for initialization
     void Start () {
+        playerYOff = PlayerPrefab.GetComponent<MoveableScript>().yOffset;
+        mimicYOff = MimicPrefab.GetComponent<MoveableScript>().yOffset;
+        mirrorYOff = MirrorPrefab.GetComponent<MoveableScript>().yOffset;
+
         parseXML(dataName);
 
         frameSprites = new List<GameObject>();
@@ -119,6 +128,68 @@ public class VisualizationManagerScript : MonoBehaviour {
     }
 	
     public void setFrame(int frameNumber) {
+        int count = 0;
+        if (frameNumber == int.MinValue) {
+            if (this.frame == frameNumber) {
+                return;
+            }
+            this.frame = frameNumber;
+            Debug.Log("Setting Frame to " + this.frame);
+
+            while (frameSprites.Count > 0) {
+                GameObject go = frameSprites[0];
+                frameSprites.RemoveAt(0);
+                Destroy(go);
+            }
+            playerCounters.Clear();
+            mimicCounters.Clear();
+            mirrorCounters.Clear();
+            count = 0;
+            foreach (DynamicState s in restartsAndQuits) {  
+                if (s == null) {
+                    continue;
+                }
+                count++;
+                incCounter(s.playerPosition, 1);
+                foreach (coord pt in s.mimicPositions) {
+                    incCounter(pt, 2);
+                }
+                foreach (coord pt in s.mirrorPositions) {
+                    incCounter(pt, 3);
+                }
+            }
+            foreach (coord pt in playerCounters.Keys) {
+                GameObject go = GameObject.Instantiate(PlayerPrefab);
+                go.transform.position = new Vector3(pt.col + mapOrigin.x, pt.row + mapOrigin.y + playerYOff, 0);
+                SpriteRenderer view = go.GetComponent<SpriteRenderer>();
+                view.color = new Color(view.color.r, view.color.g, view.color.b, 2f * playerCounters[pt] / (float)count);
+                this.frameSprites.Add(go);
+                go.transform.localScale *= .5f;
+                go.transform.position += Vector3.right * -.25f;
+            }
+            foreach (coord pt in mimicCounters.Keys) {
+                GameObject go = GameObject.Instantiate(MimicPrefab);
+                go.transform.position = new Vector3(pt.col + mapOrigin.x, pt.row + mapOrigin.y + mimicYOff, 0);
+                SpriteRenderer view = go.GetComponent<SpriteRenderer>();
+                view.color = new Color(view.color.r, view.color.g, view.color.b, 2f * mimicCounters[pt] / (float)count);
+                this.frameSprites.Add(go);
+                go.transform.localScale *= .5f;
+                go.transform.position += Vector3.right * .25f;
+            }
+            foreach (coord pt in mirrorCounters.Keys) {
+                GameObject go = GameObject.Instantiate(MirrorPrefab);
+                go.transform.position = new Vector3(pt.col + mapOrigin.x, pt.row + mapOrigin.y + mirrorYOff, 0);
+                SpriteRenderer view = go.GetComponent<SpriteRenderer>();
+                view.color = new Color(view.color.r, view.color.g, view.color.b, 2f * mirrorCounters[pt] / (float)count);
+                this.frameSprites.Add(go);
+                go.transform.localScale *= .5f;
+                go.transform.position += Vector3.up * .5f;
+                go.transform.position += Vector3.right * -.25f;
+            }
+
+            return;
+        }
+
         int f = Mathf.Clamp(frameNumber, 0, maxFrame);
         if(this.frame == f) {
             return;
@@ -134,7 +205,6 @@ public class VisualizationManagerScript : MonoBehaviour {
         playerCounters.Clear();
         mimicCounters.Clear();
         mirrorCounters.Clear();
-        int count = 0;
         foreach(List<DynamicState> stateList in states) {
             if(stateList == null) {
                 continue;
@@ -156,24 +226,31 @@ public class VisualizationManagerScript : MonoBehaviour {
         }
         foreach(coord pt in playerCounters.Keys) {
             GameObject go = GameObject.Instantiate(PlayerPrefab);
-            go.transform.position = new Vector3(pt.col + mapOrigin.x, pt.row + mapOrigin.y, 0);
+            go.transform.position = new Vector3(pt.col + mapOrigin.x, pt.row + mapOrigin.y + playerYOff, 0);
             SpriteRenderer view = go.GetComponent<SpriteRenderer>();
-            view.color = new Color(view.color.r, view.color.g, view.color.b, playerCounters[pt] / (float)count);
+            view.color = new Color(view.color.r, view.color.g, view.color.b, 2f* playerCounters[pt] / (float)count);
             this.frameSprites.Add(go);
+            go.transform.localScale *= .5f;
+            go.transform.position += Vector3.right * -.25f;
         }
         foreach (coord pt in mimicCounters.Keys) {
             GameObject go = GameObject.Instantiate(MimicPrefab);
-            go.transform.position = new Vector3(pt.col + mapOrigin.x, pt.row + mapOrigin.y, 0);
+            go.transform.position = new Vector3(pt.col + mapOrigin.x, pt.row + mapOrigin.y + mimicYOff, 0);
             SpriteRenderer view = go.GetComponent<SpriteRenderer>();
-            view.color = new Color(view.color.r, view.color.g, view.color.b, mimicCounters[pt] / (float)count);
+            view.color = new Color(view.color.r, view.color.g, view.color.b, 2f* mimicCounters[pt] / (float)count);
             this.frameSprites.Add(go);
+            go.transform.localScale *= .5f;
+            go.transform.position += Vector3.right * .25f;
         }
         foreach (coord pt in mirrorCounters.Keys) {
             GameObject go = GameObject.Instantiate(MirrorPrefab);
-            go.transform.position = new Vector3(pt.col + mapOrigin.x, pt.row + mapOrigin.y, 0);
+            go.transform.position = new Vector3(pt.col + mapOrigin.x, pt.row + mapOrigin.y + mirrorYOff, 0);
             SpriteRenderer view = go.GetComponent<SpriteRenderer>();
-            view.color = new Color(view.color.r, view.color.g, view.color.b, mirrorCounters[pt] / (float)count);
+            view.color = new Color(view.color.r, view.color.g, view.color.b, 2f* mirrorCounters[pt] / (float)count);
             this.frameSprites.Add(go);
+            go.transform.localScale *= .5f;
+            go.transform.position += Vector3.up * .5f;
+            go.transform.position += Vector3.right * -.25f;
         }
     }
 
@@ -205,6 +282,8 @@ public class VisualizationManagerScript : MonoBehaviour {
             setFrame(this.frame - 1);
         } else if (Input.GetKeyDown(KeyCode.RightArrow)) {
             setFrame(this.frame + 1);
+        } else if (Input.GetKeyDown(KeyCode.R)) {
+            setFrame(int.MinValue);
         }
 	}
 
@@ -212,6 +291,7 @@ public class VisualizationManagerScript : MonoBehaviour {
         // user, quest, session_seq, action_id, action_detail
         string dataDirectory = "Data/";
         states = new List<List<DynamicState>>();
+        restartsAndQuits = new List<DynamicState>();
         TextAsset data = Resources.Load(dataDirectory + fileName) as TextAsset;
         logList logs = JsonUtility.FromJson<logList>(data.text);
         List<logEvent> table = logs.list;
@@ -221,10 +301,23 @@ public class VisualizationManagerScript : MonoBehaviour {
         int userCount = -1;
         foreach(logEvent row in table) {
             //ary = row.ItemArray;
-            if(row.action_id != 0) {
+            if (row.action_id == 4) {
                 continue;
             }
-            if(row.user_id != userID) {
+            if (row.action_id == 1) {
+                lastTurn++;
+                continue;
+            }
+            if(row.action_id == 3) {
+                restartsAndQuits.Add(states[userCount][states[userCount].Count - 1]);
+                continue;
+            }
+            if (row.action_id == 2) {
+                restartsAndQuits.Add(states[userCount][states[userCount].Count - 1]);
+                userID = "";
+                continue;
+            }
+            if (row.user_id != userID) {
                 userID = row.user_id;
                 seqOffset = row.session_seq_id;
                 lastTurn = seqOffset;
