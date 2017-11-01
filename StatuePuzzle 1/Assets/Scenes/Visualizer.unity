@@ -116,6 +116,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 338757672}
+  - component: {fileID: 338757673}
   m_Layer: 0
   m_Name: VisualizationManager
   m_TagString: Untagged
@@ -136,6 +137,34 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &338757673
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 338757671}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a10ef3a26a1204347a82dd02c5bdc6df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  levelName: 08level4
+  xmlName: quest9playerlog
+  mainCamera: {fileID: 1941038149}
+  PlayerPrefab: {fileID: 1916598891731138, guid: 3d503805ffd1713478bf2b2394c7c3ce,
+    type: 2}
+  MimicPrefab: {fileID: 1580197594017604, guid: 8bea7a5c069bf864fa4e86f3c23e65df,
+    type: 2}
+  MirrorPrefab: {fileID: 1892092808917540, guid: 01b5ae09af0fc344ab32c9fe38ad4be1,
+    type: 2}
+  wall: {fileID: 1784765721464430, guid: b9ab2db89b3ea7740901f43e7eb60526, type: 2}
+  frontWall: {fileID: 1128486389162076, guid: 53768ab1dc5f8de4c864d01727cb1e08, type: 2}
+  goal: {fileID: 114095783370264170, guid: c83ab70655bd8a14e82dc9f920175f50, type: 2}
+  laser: {fileID: 114063543840357474, guid: aad1a95ba1d89fc419645f12940941ea, type: 2}
+  button: {fileID: 114314181420704094, guid: 33cd7d1640e4b45d693dbcd62a4cbd9e, type: 2}
+  ground: {fileID: 1900275814461204, guid: a0a76314bf72774499c31c852003199e, type: 2}
+  swap: {fileID: 1489777977322046, guid: 8840d96f49251704bb39ec1725e419bc, type: 2}
+  portal: {fileID: 1460910959781724, guid: 4c74f76354da52847ae5db270f11eb3a, type: 2}
 --- !u!1 &1941038145
 GameObject:
   m_ObjectHideFlags: 0
@@ -185,7 +214,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0.10980392, g: 0.10980392, b: 0.10980392, a: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
@@ -194,7 +223,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 60
+  field of view: 80
   orthographic: 1
   orthographic size: 5
   m_Depth: -1

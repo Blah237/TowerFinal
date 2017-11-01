@@ -1,10 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using UnityEngine;
 
 public class VisualizationManagerScript : MonoBehaviour {
 
-    int frame = 0;
+    int frame = -1;
     int maxFrame;
     List<List<DynamicState>> states;
     List<GameObject> frameSprites;
@@ -13,6 +14,7 @@ public class VisualizationManagerScript : MonoBehaviour {
     Dictionary<coord, int> mirrorCounters = new Dictionary<coord, int>();
 
     public string levelName;
+    public string xmlName;
     public Camera mainCamera;
 
     public GameObject PlayerPrefab;
@@ -32,8 +34,12 @@ public class VisualizationManagerScript : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        states = new List<List<DynamicState>>();
+        parseXML("Assets/Resources/Data/" + xmlName+ ".xml");
+
         frameSprites = new List<GameObject>();
+        foreach(List<DynamicState> l in states) {
+            maxFrame = Mathf.Max(maxFrame, l.Count);
+        }
 
         //load level using Melody's I/O
         Level boardState = IOScript.ParseLevel(levelName);
@@ -99,7 +105,13 @@ public class VisualizationManagerScript : MonoBehaviour {
     }
 	
     public void setFrame(int frameNumber) {
-        this.frame = Mathf.Clamp(frameNumber, 0, maxFrame);
+        int f = Mathf.Clamp(frameNumber, 0, maxFrame);
+        if(this.frame == f) {
+            return;
+        }
+        this.frame = f;
+        Debug.Log("Setting Frame to " + this.frame);
+        
         while(frameSprites.Count > 0) {
             GameObject go = frameSprites[0];
             frameSprites.RemoveAt(0);
@@ -127,21 +139,21 @@ public class VisualizationManagerScript : MonoBehaviour {
         }
         foreach(coord pt in playerCounters.Keys) {
             GameObject go = GameObject.Instantiate(PlayerPrefab);
-            go.transform.position = new Vector3(pt.col, pt.row, 0);
+            go.transform.position = new Vector3(pt.col + mapOrigin.x, pt.row + mapOrigin.y, 0);
             SpriteRenderer view = go.GetComponent<SpriteRenderer>();
             view.color = new Color(view.color.r, view.color.g, view.color.b, 255f * playerCounters[pt] / (float)count);
             this.frameSprites.Add(go);
         }
         foreach (coord pt in mimicCounters.Keys) {
             GameObject go = GameObject.Instantiate(MimicPrefab);
-            go.transform.position = new Vector3(pt.col, pt.row, 0);
+            go.transform.position = new Vector3(pt.col + mapOrigin.x, pt.row + mapOrigin.y, 0);
             SpriteRenderer view = go.GetComponent<SpriteRenderer>();
             view.color = new Color(view.color.r, view.color.g, view.color.b, 255f * mimicCounters[pt] / (float)count);
             this.frameSprites.Add(go);
         }
         foreach (coord pt in mirrorCounters.Keys) {
             GameObject go = GameObject.Instantiate(MimicPrefab);
-            go.transform.position = new Vector3(pt.col, pt.row, 0);
+            go.transform.position = new Vector3(pt.col + mapOrigin.x, pt.row + mapOrigin.y, 0);
             SpriteRenderer view = go.GetComponent<SpriteRenderer>();
             view.color = new Color(view.color.r, view.color.g, view.color.b, 255f * mirrorCounters[pt] / (float)count);
             this.frameSprites.Add(go);
@@ -178,4 +190,42 @@ public class VisualizationManagerScript : MonoBehaviour {
             setFrame(this.frame + 1);
         }
 	}
+
+    void parseXML(string fileName) {
+        // user, quest, session_seq, action_id, action_detail
+        states = new List<List<DynamicState>>();
+        DataSet ds = new DataSet();
+        DataTable table = new DataTable("table");
+        ds.Tables.Add(table);
+        ds.ReadXml(fileName, XmlReadMode.ReadSchema);
+        //DataTable table = ds.Tables[0];//new DataTable();//
+        //table.ReadXmlSchema(fileName);
+        //table.ReadXml(fileName);
+        string userID = "";
+        int seqOffset = 0;
+        object[] ary;
+        int lastTurn = -1;
+        int userCount = -1;
+        foreach(DataRow row in table.Rows) {
+            ary = row.ItemArray;
+            if((int)ary[3] != 0) {
+                continue;
+            }
+            if((string)ary[0] != userID) {
+                seqOffset = (int)ary[2];
+                lastTurn = 0;
+                userCount++;
+                states.Add(new List<DynamicState>());
+                states[userCount].Add(DynamicState.fromJson((string)ary[4]));
+            } else {
+                while((int)ary[2] > lastTurn + 1) {
+                    states[userCount].Add(null);
+                    lastTurn++;
+                }
+                states[userCount].Add(DynamicState.fromJson((string)ary[4]));
+            }
+        }
+        table.Clear();
+        table = null;
+    }
 }
