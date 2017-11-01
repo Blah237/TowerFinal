@@ -149,7 +149,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   levelName: 08level4
-  xmlName: quest9playerlog
+  dataName: quest9playerlog
   mainCamera: {fileID: 1941038149}
   PlayerPrefab: {fileID: 1916598891731138, guid: 3d503805ffd1713478bf2b2394c7c3ce,
     type: 2}

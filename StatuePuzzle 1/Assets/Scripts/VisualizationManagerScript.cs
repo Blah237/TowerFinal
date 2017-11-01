@@ -1,7 +1,21 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Data;
 using UnityEngine;
+
+[System.Serializable]
+public class logList
+{
+    public List<logEvent> list;
+}
+
+[System.Serializable]
+public struct logEvent {
+    public string user_id;
+    public int quest_id;
+    public int session_seq_id;
+    public int action_id;
+    public string action_detail;
+}
 
 public class VisualizationManagerScript : MonoBehaviour {
 
@@ -14,7 +28,7 @@ public class VisualizationManagerScript : MonoBehaviour {
     Dictionary<coord, int> mirrorCounters = new Dictionary<coord, int>();
 
     public string levelName;
-    public string xmlName;
+    public string dataName;
     public Camera mainCamera;
 
     public GameObject PlayerPrefab;
@@ -34,7 +48,7 @@ public class VisualizationManagerScript : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        parseXML("Assets/Resources/Data/" + xmlName+ ".xml");
+        parseXML(dataName);
 
         frameSprites = new List<GameObject>();
         foreach(List<DynamicState> l in states) {
@@ -193,39 +207,35 @@ public class VisualizationManagerScript : MonoBehaviour {
 
     void parseXML(string fileName) {
         // user, quest, session_seq, action_id, action_detail
+        string dataDirectory = "Data/";
         states = new List<List<DynamicState>>();
-        DataSet ds = new DataSet();
-        DataTable table = new DataTable("table");
-        ds.Tables.Add(table);
-        ds.ReadXml(fileName, XmlReadMode.ReadSchema);
-        //DataTable table = ds.Tables[0];//new DataTable();//
-        //table.ReadXmlSchema(fileName);
-        //table.ReadXml(fileName);
+        TextAsset data = Resources.Load(dataDirectory + fileName) as TextAsset;
+        logList logs = JsonUtility.FromJson<logList>(data.text);
+        List<logEvent> table = logs.list;
         string userID = "";
         int seqOffset = 0;
-        object[] ary;
         int lastTurn = -1;
         int userCount = -1;
-        foreach(DataRow row in table.Rows) {
-            ary = row.ItemArray;
-            if((int)ary[3] != 0) {
+        foreach(logEvent row in table) {
+            //ary = row.ItemArray;
+            if(row.action_id != 0) {
                 continue;
             }
-            if((string)ary[0] != userID) {
-                seqOffset = (int)ary[2];
+            if(row.user_id != userID) {
+                userID = row.user_id;
+                seqOffset = row.session_seq_id;
                 lastTurn = 0;
                 userCount++;
                 states.Add(new List<DynamicState>());
-                states[userCount].Add(DynamicState.fromJson((string)ary[4]));
+                states[userCount].Add(DynamicState.fromJson(row.action_detail));
             } else {
-                while((int)ary[2] > lastTurn + 1) {
+                while(row.session_seq_id > lastTurn + 1) {
                     states[userCount].Add(null);
                     lastTurn++;
                 }
-                states[userCount].Add(DynamicState.fromJson((string)ary[4]));
+                states[userCount].Add(DynamicState.fromJson(row.action_detail));
             }
         }
-        table.Clear();
         table = null;
     }
 }
