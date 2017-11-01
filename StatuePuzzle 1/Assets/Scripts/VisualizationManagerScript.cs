@@ -136,7 +136,10 @@ public class VisualizationManagerScript : MonoBehaviour {
         mirrorCounters.Clear();
         int count = 0;
         foreach(List<DynamicState> stateList in states) {
-            if(stateList.Count >= frame) {
+            if(stateList == null) {
+                continue;
+            }
+            if(stateList.Count > frame) {
                 DynamicState s = stateList[this.frame];
                 if(s == null) {
                     continue;
@@ -146,7 +149,7 @@ public class VisualizationManagerScript : MonoBehaviour {
                 foreach(coord pt in s.mimicPositions) {
                     incCounter(pt, 2);
                 }
-                foreach (coord pt in s.mimicPositions) {
+                foreach (coord pt in s.mirrorPositions) {
                     incCounter(pt, 3);
                 }
             }
@@ -155,21 +158,21 @@ public class VisualizationManagerScript : MonoBehaviour {
             GameObject go = GameObject.Instantiate(PlayerPrefab);
             go.transform.position = new Vector3(pt.col + mapOrigin.x, pt.row + mapOrigin.y, 0);
             SpriteRenderer view = go.GetComponent<SpriteRenderer>();
-            view.color = new Color(view.color.r, view.color.g, view.color.b, 255f * playerCounters[pt] / (float)count);
+            view.color = new Color(view.color.r, view.color.g, view.color.b, playerCounters[pt] / (float)count);
             this.frameSprites.Add(go);
         }
         foreach (coord pt in mimicCounters.Keys) {
             GameObject go = GameObject.Instantiate(MimicPrefab);
             go.transform.position = new Vector3(pt.col + mapOrigin.x, pt.row + mapOrigin.y, 0);
             SpriteRenderer view = go.GetComponent<SpriteRenderer>();
-            view.color = new Color(view.color.r, view.color.g, view.color.b, 255f * mimicCounters[pt] / (float)count);
+            view.color = new Color(view.color.r, view.color.g, view.color.b, mimicCounters[pt] / (float)count);
             this.frameSprites.Add(go);
         }
         foreach (coord pt in mirrorCounters.Keys) {
-            GameObject go = GameObject.Instantiate(MimicPrefab);
+            GameObject go = GameObject.Instantiate(MirrorPrefab);
             go.transform.position = new Vector3(pt.col + mapOrigin.x, pt.row + mapOrigin.y, 0);
             SpriteRenderer view = go.GetComponent<SpriteRenderer>();
-            view.color = new Color(view.color.r, view.color.g, view.color.b, 255f * mirrorCounters[pt] / (float)count);
+            view.color = new Color(view.color.r, view.color.g, view.color.b, mirrorCounters[pt] / (float)count);
             this.frameSprites.Add(go);
         }
     }
@@ -224,7 +227,7 @@ public class VisualizationManagerScript : MonoBehaviour {
             if(row.user_id != userID) {
                 userID = row.user_id;
                 seqOffset = row.session_seq_id;
-                lastTurn = 0;
+                lastTurn = seqOffset;
                 userCount++;
                 states.Add(new List<DynamicState>());
                 states[userCount].Add(DynamicState.fromJson(row.action_detail));
@@ -234,6 +237,7 @@ public class VisualizationManagerScript : MonoBehaviour {
                     lastTurn++;
                 }
                 states[userCount].Add(DynamicState.fromJson(row.action_detail));
+                lastTurn++;
             }
         }
         table = null;
