@@ -22,6 +22,7 @@ public class VisualizationManagerScript : MonoBehaviour {
     int frame = -1;
     int maxFrame;
     List<List<DynamicState>> states;
+    List<int> endResult; 
     List<GameObject> frameSprites;
     Dictionary<coord, int> playerCounters = new Dictionary<coord, int>();
     Dictionary<coord, int> mimicCounters = new Dictionary<coord, int>();
@@ -58,6 +59,8 @@ public class VisualizationManagerScript : MonoBehaviour {
         mirrorYOff = MirrorPrefab.GetComponent<MoveableScript>().yOffset;
 
         parseXML(dataName);
+        StateTransitionDiagram.Init();
+        StateTransitionDiagram.MakeDiagram(states, endResult); 
 
         frameSprites = new List<GameObject>();
         foreach(List<DynamicState> l in states) {
@@ -291,6 +294,7 @@ public class VisualizationManagerScript : MonoBehaviour {
         // user, quest, session_seq, action_id, action_detail
         string dataDirectory = "Data/";
         states = new List<List<DynamicState>>();
+        endResult = new List<int>(); 
         restartsAndQuits = new List<DynamicState>();
         TextAsset data = Resources.Load(dataDirectory + fileName) as TextAsset;
         logList logs = JsonUtility.FromJson<logList>(data.text);
@@ -299,9 +303,23 @@ public class VisualizationManagerScript : MonoBehaviour {
         int seqOffset = 0;
         int lastTurn = -1;
         int userCount = -1;
+        bool didEnd = false; 
         foreach(logEvent row in table) {
             //ary = row.ItemArray;
             if (row.action_id == 4) {
+                if (didEnd) {
+                    endResult[endResult.Count - 1] = 4;
+                }
+                else {
+                    DynamicState s = states[userCount][states[userCount].Count - 1]; 
+                    if(s == null || s.mirrorPositions.Count == 0 || s.mimicPositions.Count == 0) {
+                        continue; 
+                    }
+                    if (s.mimicPositions[0].col == 8 && s.mimicPositions[0].row == 7 && s.mirrorPositions[0].col == 1 && s.mirrorPositions[0].row == 1) {
+                        endResult.Add(4);
+                        didEnd = true;
+                    }
+                }
                 continue;
             }
             if (row.action_id == 1) {
@@ -309,12 +327,13 @@ public class VisualizationManagerScript : MonoBehaviour {
                 continue;
             }
             if(row.action_id == 3) {
+               
                 restartsAndQuits.Add(states[userCount][states[userCount].Count - 1]);
                 continue;
             }
             if (row.action_id == 2) {
                 restartsAndQuits.Add(states[userCount][states[userCount].Count - 1]);
-                userID = "";
+                //userID = "";
                 continue;
             }
             if (row.user_id != userID) {
@@ -322,6 +341,10 @@ public class VisualizationManagerScript : MonoBehaviour {
                 seqOffset = row.session_seq_id;
                 lastTurn = seqOffset;
                 userCount++;
+                if (!didEnd) {
+                    endResult.Add(3); 
+                }
+                didEnd = false; 
                 states.Add(new List<DynamicState>());
                 states[userCount].Add(DynamicState.fromJson(row.action_detail));
             } else {
