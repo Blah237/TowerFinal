@@ -39,6 +39,10 @@ public class LoggingManager : MonoBehaviour
 
     private int QuestSeqId = 1;
 
+	private int abstoredValue = -1;
+
+	private bool abValueSet = false;
+
     /**
      * Two internal classes for JSON deserialsation
      */
@@ -68,6 +72,8 @@ public class LoggingManager : MonoBehaviour
     private string playerQuestPath = "player_quest.php";
 
     private string playerQuestEndPath = "player_quest_end.php";
+
+	private string playerABTestPath = "record_abtest.php";
 
     public void Initialize()
     {
@@ -229,6 +235,41 @@ public class LoggingManager : MonoBehaviour
         }
 
     }
+
+	public int assignABTestValue(int candidate)
+	{
+		if (!isDebugging)
+		{
+			if (PlayerPrefs.HasKey("ab_test_value"))
+			{
+				abstoredValue = PlayerPrefs.GetInt("ab_test_value");
+			}
+			else
+			{
+				abstoredValue = candidate;
+				PlayerPrefs.SetInt("ab_test_value", abstoredValue);
+			}
+
+			abValueSet = true;  //true if this method is called;
+			return abstoredValue;
+		}
+		else
+		{
+			return candidate;
+		}
+	}
+
+	public void RecordABTestValue()
+	{
+		if (isDebugging)
+		{
+			return;
+		}
+
+		TestInitialization();
+		Debug.Assert(abValueSet, "recordABTestValue: You must call assignABTestValue before recording the A/B test value.");
+		StartCoroutine(GetABTestRecordRequest());
+	}
 
     private void TestInitialization()
     {
