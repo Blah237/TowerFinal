@@ -271,6 +271,24 @@ public class LoggingManager : MonoBehaviour
 		StartCoroutine(GetABTestRecordRequest());
 	}
 
+	private IEnumerator GetABTestRecordRequest()
+	{
+		string requestData = "?game_id=" + gameId + "&user_id=" + userId + "&abvalue=" + abstoredValue;
+
+		UnityWebRequest www = UnityWebRequest.Get(pageHost + phpPath + playerABTestPath + requestData);
+		yield return www.Send();
+
+		if (www.isNetworkError)
+		{
+			Debug.Log(www.error);
+		}
+		else
+		{
+			string logReturnedString = www.downloadHandler.text;
+			Debug.Log(logReturnedString);
+		}
+	}
+
     private void TestInitialization()
     {
         Debug.Assert(gameId != -1, "Call initialize() / Initialize in the Editor mode before recording.");
