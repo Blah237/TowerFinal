@@ -537,7 +537,7 @@ public class GameManagerScript : MonoBehaviour {
             foreach (MoveableScript moveable in moveDirections.Keys) {
 				moveable.ExecuteMove (moveDirections[moveable], 1, false);
 				if (moveDirections [moveable] == Direction.NONE) {
-					audio.PlayOneShot (moveable.collideSound);
+					audio.PlayOneShot (moveable.collideSound, .5f);
 				}
 
                 // check for a swap
@@ -572,7 +572,7 @@ public class GameManagerScript : MonoBehaviour {
 
 		foreach (MoveableScript m in collided.Keys) {
             m.ExecuteMove(Direction.NONE, collided[m], false);
-			audio.PlayOneShot (m.collideSound);
+			audio.PlayOneShot (m.collideSound, .5f);
 		}
 			
 		recordDynamicState ();	
