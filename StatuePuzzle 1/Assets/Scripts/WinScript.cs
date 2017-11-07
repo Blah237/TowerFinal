@@ -29,7 +29,7 @@ public class WinScript : MonoBehaviour
 		if (playerWin)
 		{
 			anim.SetTrigger("Win");
-			CreateLevelSelect.buttonMap[GameManagerScript.levelName] = true;
+			PlayerPrefs.SetInt (GameManagerScript.levelName, 1); //Set to 1 to indicate a win
 			NextLevel.GetComponent<Button>().interactable = true;
 			LevelSelectWin.GetComponent<Button>().interactable = true;
 			//playerWin = false;
