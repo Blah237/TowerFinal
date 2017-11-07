@@ -30,50 +30,90 @@ public class CreateLevelSelect : MonoBehaviour {
 	// Use this for initialization
 	void Start()
 	{
-		levelList = new List<string> {
-            //mimic
-		    "01level1",
-            "tutorial1",
-            //blocking
-            "tutorial3",
-            "tutorial5",
-            "04blockLevel",
-            //mirror
-            "02level2",
-            "tutorial2",
-            //mirror + blocking 
-            "tutorial4",
-            //collision
-            "03level3",
-            //blocking + mirror + mimic
-            "08level4",
+		
+		if (LoggingManager.instance.GetABStoredValue() == 0) {
+			//Do option A
+			levelList = new List<string> {
+				//mimic
+				"01level1",
+				"tutorial1",
+				//blocking
+				"tutorial3",
+				"tutorial5",
+				"04blockLevel",
+				//mirror
+				"02level2",
+				"tutorial2",
+				//mirror + blocking 
+				"tutorial4",
+				//collision
+				"03level3",
+				//blocking + mirror + mimic
+				"08level4",
 
-            //swap 
-            "tutorial6",
-            "22SwapMaze",
-            "21smallSwap",
-            "23SwapTest",
+				//swap 
+				"tutorial6",
+				"22SwapMaze",
+				"21smallSwap",
+				"23SwapTest",
 
-            //portal 
-            "31dumbPortalTutorial",
-            "32portal2",
-            //portal + swap 
-            "33portalSwap",
+				//portal 
+				"31dumbPortalTutorial",
+				"32portal2",
+				//portal + swap 
+				"33portalSwap",
 
-            //lasers 
-            "tutorial7",
-            "tutorial8",
+				//lasers 
+				"tutorial7",
+				"tutorial8",
 
-            //many floaty bois
-            "09level5",
-            "34CircleWithPortals"
+				//many floaty bois
+				"09level5",
+				"34CircleWithPortals"
+			};
+		} else if (LoggingManager.instance.GetABStoredValue() == 1) {
+			//Do option B
+			levelList = new List<string> {
+				//mimic
+				"tutorial1",
+				"01level1",
+				//blocking
+				"tutorial3",
+				"tutorial5",
+				"04blockLevel",
+				//mirror
+				"02level2",
+				"tutorial2",
+				//mirror + blocking 
+				"tutorial4",
+				//collision
+				"03level3",
+				//blocking + mirror + mimic
+				"08level4",
 
+				//swap 
+				"tutorial6",
+				"22SwapMaze",
+				"21smallSwap",
+				"23SwapTest",
 
-            //levelList.Add("PortalLinkTest");
-            //levelList.Add("LaserTest");
-            //levelList.Add("lasertest2");
-            //levelList.Add("portalBugExhaustiveTest");  
-		};
+				//portal 
+				"31dumbPortalTutorial",
+				"32portal2",
+				//portal + swap 
+				"33portalSwap",
+
+				//lasers 
+				"tutorial7",
+				"tutorial8",
+
+				//many floaty bois
+				"09level5",
+				"34CircleWithPortals"
+			};
+		} else {
+			throw new Exception ("PlayerPref for AB testing was not initialized correctly.");
+		}
 
         //getFiles();
         if (buttonMap == null) {

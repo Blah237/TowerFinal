@@ -83,6 +83,10 @@ public class LoggingManager : MonoBehaviour
 		return isLevelStarted;
 	}
 
+	public int GetABStoredValue() {
+		return abstoredValue;
+	}
+
 	public void RecordEvent(EventCodes actionId, string actionDetail = "")
     {
 
@@ -296,6 +300,8 @@ public class LoggingManager : MonoBehaviour
 
     private void Awake()
     {
+
+		// Prevent duplication and initialize singleton
         if(instance != null) {
             DestroyImmediate(this);
             return;
@@ -316,6 +322,10 @@ public class LoggingManager : MonoBehaviour
 
 		LoggingManager.instance.Initialize ();
 		LoggingManager.instance.RecordPageLoad ();
-    }
+
+		// Initialize AB testing or load from PlayerPrefs
+		assignABTestValue (Random.Range (0, 2));
+		RecordABTestValue ();
+	}
 
 }
