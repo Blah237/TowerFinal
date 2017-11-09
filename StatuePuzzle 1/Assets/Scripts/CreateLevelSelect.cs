@@ -25,7 +25,6 @@ public class CreateLevelSelect : MonoBehaviour {
 	private static int CANVAS_WIDTH_OFFSET = 0;
 
 	public static List<String> levelList;
-	public static Dictionary<string, bool> buttonMap = null;
 
 	// Use this for initialization
 	void Start()
@@ -76,13 +75,6 @@ public class CreateLevelSelect : MonoBehaviour {
 		};
 
         //getFiles();
-        if (buttonMap == null) {
-			buttonMap = new Dictionary<string, bool>();
-			for (int i = 0; i < levelList.Count; i++)
-			{
-				buttonMap.Add(levelList[i], false);
-			}
-		}
 
         padX = (1f - width) / 2f * canvas.pixelRect.width;
         width *= canvas.pixelRect.width;
@@ -91,7 +83,7 @@ public class CreateLevelSelect : MonoBehaviour {
 		{
 			{
 				LoadOnClick button = GameObject.Instantiate(load);
-				if (buttonMap[levelList[i]])
+				if (PlayerPrefs.GetInt(levelList[i], 0) == 1) // 0 for incomplete, 1 for complete
 				{
 					button.GetComponent<Image>().color = Color.green;
 				}
