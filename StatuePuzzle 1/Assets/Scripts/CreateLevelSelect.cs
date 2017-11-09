@@ -27,90 +27,24 @@ public class CreateLevelSelect : MonoBehaviour {
 	public static List<String> levelList;
 	public static Dictionary<string, bool> buttonMap = null;
 
+	// Wrapper class for deserializing JSON, required for Unity's shit JSON util
+	private class LevelList {
+		public List<String> levelList;
+		public static LevelList CreateFromJson(string json) {
+			return JsonUtility.FromJson<LevelList> (json);
+		}
+	}
+
 	// Use this for initialization
 	void Start()
 	{
-		
+
 		if (LoggingManager.instance.GetABStoredValue() == 0) {
-			//Do option A
-			levelList = new List<string> {
-				//mimic
-				"01level1",
-				"tutorial1",
-				//blocking
-				"tutorial3",
-				"tutorial5",
-				"04blockLevel",
-				//mirror
-				"02level2",
-				"tutorial2",
-				//mirror + blocking 
-				"tutorial4",
-				//collision
-				"03level3",
-				//blocking + mirror + mimic
-				"08level4",
-
-				//swap 
-				"tutorial6",
-				"22SwapMaze",
-				"21smallSwap",
-				"23SwapTest",
-
-				//portal 
-				"31dumbPortalTutorial",
-				"32portal2",
-				//portal + swap 
-				"33portalSwap",
-
-				//lasers 
-				"tutorial7",
-				"tutorial8",
-
-				//many floaty bois
-				"09level5",
-				"34CircleWithPortals"
-			};
+			TextAsset json = Resources.Load("LevelProgressions/ProgA") as TextAsset;
+			levelList = LevelList.CreateFromJson (json.text).levelList;
 		} else if (LoggingManager.instance.GetABStoredValue() == 1) {
-			//Do option B
-			levelList = new List<string> {
-				//mimic
-				"tutorial1",
-				"01level1",
-				//blocking
-				"tutorial3",
-				"tutorial5",
-				"04blockLevel",
-				//mirror
-				"02level2",
-				"tutorial2",
-				//mirror + blocking 
-				"tutorial4",
-				//collision
-				"03level3",
-				//blocking + mirror + mimic
-				"08level4",
-
-				//swap 
-				"tutorial6",
-				"22SwapMaze",
-				"21smallSwap",
-				"23SwapTest",
-
-				//portal 
-				"31dumbPortalTutorial",
-				"32portal2",
-				//portal + swap 
-				"33portalSwap",
-
-				//lasers 
-				"tutorial7",
-				"tutorial8",
-
-				//many floaty bois
-				"09level5",
-				"34CircleWithPortals"
-			};
+			TextAsset json = Resources.Load("LevelProgressions/ProgB") as TextAsset;
+			levelList = LevelList.CreateFromJson (json.text).levelList;
 		} else {
 			throw new Exception ("PlayerPref for AB testing was not initialized correctly.");
 		}
