@@ -39,6 +39,10 @@ public class LoggingManager : MonoBehaviour
 
     private int QuestSeqId = 1;
 
+	private int abstoredValue = -1;
+
+	private bool abValueSet = false;
+
     /**
      * Two internal classes for JSON deserialsation
      */
@@ -69,12 +73,18 @@ public class LoggingManager : MonoBehaviour
 
     private string playerQuestEndPath = "player_quest_end.php";
 
+	private string playerABTestPath = "record_abtest.php";
+
     public void Initialize()
     {
     }
 
 	public bool GetLevelStarted() {
 		return isLevelStarted;
+	}
+
+	public int GetABStoredValue() {
+		return abstoredValue;
 	}
 
 	public void RecordEvent(EventCodes actionId, string actionDetail = "")
@@ -230,6 +240,59 @@ public class LoggingManager : MonoBehaviour
 
     }
 
+	public int assignABTestValue(int candidate)
+	{
+		if (!isDebugging)
+		{
+			if (PlayerPrefs.HasKey("ab_test_value"))
+			{
+				abstoredValue = PlayerPrefs.GetInt("ab_test_value");
+			}
+			else
+			{
+				abstoredValue = candidate;
+				PlayerPrefs.SetInt("ab_test_value", abstoredValue);
+			}
+
+			abValueSet = true;  //true if this method is called;
+			return abstoredValue;
+		}
+		else
+		{
+			return candidate;
+		}
+	}
+
+	public void RecordABTestValue()
+	{
+		if (isDebugging)
+		{
+			return;
+		}
+
+		TestInitialization();
+		Debug.Assert(abValueSet, "recordABTestValue: You must call assignABTestValue before recording the A/B test value.");
+		StartCoroutine(GetABTestRecordRequest());
+	}
+
+	private IEnumerator GetABTestRecordRequest()
+	{
+		string requestData = "?game_id=" + gameId + "&user_id=" + userId + "&abvalue=" + abstoredValue;
+
+		UnityWebRequest www = UnityWebRequest.Get(pageHost + phpPath + playerABTestPath + requestData);
+		yield return www.Send();
+
+		if (www.isNetworkError)
+		{
+			Debug.Log(www.error);
+		}
+		else
+		{
+			string logReturnedString = www.downloadHandler.text;
+			Debug.Log(logReturnedString);
+		}
+	}
+
     private void TestInitialization()
     {
         Debug.Assert(gameId != -1, "Call initialize() / Initialize in the Editor mode before recording.");
@@ -237,6 +300,8 @@ public class LoggingManager : MonoBehaviour
 
     private void Awake()
     {
+
+		// Prevent duplication and initialize singleton
         if(instance != null) {
             DestroyImmediate(this);
             return;
@@ -257,6 +322,10 @@ public class LoggingManager : MonoBehaviour
 
 		LoggingManager.instance.Initialize ();
 		LoggingManager.instance.RecordPageLoad ();
-    }
+
+		// Initialize AB testing or load from PlayerPrefs
+		assignABTestValue (Random.Range (0, 2));
+		RecordABTestValue ();
+	}
 
 }

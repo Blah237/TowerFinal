@@ -26,53 +26,27 @@ public class CreateLevelSelect : MonoBehaviour {
 
 	public static List<String> levelList;
 
+	// Wrapper class for deserializing JSON, required for Unity's shit JSON util
+	private class LevelList {
+		public List<String> levelList;
+		public static LevelList CreateFromJson(string json) {
+			return JsonUtility.FromJson<LevelList> (json);
+		}
+	}
+
 	// Use this for initialization
 	void Start()
 	{
-		levelList = new List<string> {
-            //mimic
-		    "01level1",
-            "tutorial1",
-            //blocking
-            "tutorial3",
-            "tutorial5",
-            "04blockLevel",
-            //mirror
-            "02level2",
-            "tutorial2",
-            //mirror + blocking 
-            "tutorial4",
-            //collision
-            "03level3",
-            //blocking + mirror + mimic
-            "08level4",
 
-            //swap 
-            "tutorial6",
-            "22SwapMaze",
-            "21smallSwap",
-            "23SwapTest",
-
-            //portal 
-            "31dumbPortalTutorial",
-            "32portal2",
-            //portal + swap 
-            "33portalSwap",
-
-            //lasers 
-            "tutorial7",
-            "tutorial8",
-
-            //many floaty bois
-            "09level5",
-            "34CircleWithPortals"
-
-
-            //levelList.Add("PortalLinkTest");
-            //levelList.Add("LaserTest");
-            //levelList.Add("lasertest2");
-            //levelList.Add("portalBugExhaustiveTest");  
-		};
+		if (LoggingManager.instance.GetABStoredValue() == 0) {
+			TextAsset json = Resources.Load("LevelProgressions/ProgA") as TextAsset;
+			levelList = LevelList.CreateFromJson (json.text).levelList;
+		} else if (LoggingManager.instance.GetABStoredValue() == 1) {
+			TextAsset json = Resources.Load("LevelProgressions/ProgB") as TextAsset;
+			levelList = LevelList.CreateFromJson (json.text).levelList;
+		} else {
+			throw new Exception ("PlayerPref for AB testing was not initialized correctly.");
+		}
 
         //getFiles();
 
