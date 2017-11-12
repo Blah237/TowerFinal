@@ -299,7 +299,7 @@ MonoBehaviour:
   padding: 10
   canvas: {fileID: 790765220}
   cols: 6
-  rows: 4
+  rows: 5
 --- !u!1 &884679899
 GameObject:
   m_ObjectHideFlags: 0
