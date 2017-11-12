@@ -490,7 +490,7 @@ public class GameManagerScript : MonoBehaviour {
 					moveDirections[m] = Direction.NONE;
 					dead = true;
 					deathscript.playerDeath = true;
-                    if (!desiredCoords[player].Equals(player.GetCoords()) || m.type == BoardCodes.PLAYER || other.type == BoardCodes.PLAYER) {
+                    if (desiredCoords.ContainsKey(player) && !desiredCoords[player].Equals(player.GetCoords()) || m.type == BoardCodes.PLAYER || other.type == BoardCodes.PLAYER) {
                         collided.Add(m, 2);
                         collided.Add(other, 2);
                     }
