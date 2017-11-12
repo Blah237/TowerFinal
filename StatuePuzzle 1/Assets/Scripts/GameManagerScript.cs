@@ -93,7 +93,7 @@ public class GameManagerScript : MonoBehaviour {
 	private int restartScreenTimer = 0;
 
 	//public AudioClip music;
-	public AudioSource audio;
+	public AudioManagerScript audio;
     
     List<coord> goalCoords = new List<coord>();
     Dictionary<coord, GoalScript> goalAtCoords = new Dictionary<coord, GoalScript>(); 
@@ -134,7 +134,9 @@ public class GameManagerScript : MonoBehaviour {
     // Use this for initialization
     void Start() {
 
-        audio = FindObjectOfType<AudioSource>();
+        audio = FindObjectOfType<AudioManagerScript>();
+		audio.mimicGoal.loop = true;
+		audio.mirrorGoal.loop = true;
 		firstStart = false;
 
         //load level using Melody's I/O
@@ -386,6 +388,8 @@ public class GameManagerScript : MonoBehaviour {
             return false; 
         }
         Debug.Log("VICTORY!");
+		audio.mirrorGoal.loop = false;
+		audio.mimicGoal.loop = false;
 		LoggingManager.instance.RecordEvent (LoggingManager.EventCodes.LEVEL_COMPLETE, "Level complete");
 		LoggingManager.instance.RecordLevelEnd ();
         player.Celebrate();
@@ -537,7 +541,7 @@ public class GameManagerScript : MonoBehaviour {
             foreach (MoveableScript moveable in moveDirections.Keys) {
 				moveable.ExecuteMove (moveDirections[moveable], 1, false);
 				if (moveDirections [moveable] == Direction.NONE) {
-					audio.PlayOneShot (moveable.collideSound, .5f);
+					audio.soundFx.PlayOneShot (moveable.collideSound, .5f);
 				}
 
                 // check for a swap
@@ -572,9 +576,34 @@ public class GameManagerScript : MonoBehaviour {
 
 		foreach (MoveableScript m in collided.Keys) {
             m.ExecuteMove(Direction.NONE, collided[m], false);
-			audio.PlayOneShot (m.collideSound, .5f);
+			audio.soundFx.PlayOneShot (m.collideSound, .5f);
+		}
+
+		// toggle ambient goal sounds
+		int mirrorsOnGoal = 0;
+		int mimicsOnGoal = 0;
+		foreach (MoveableScript m in moveables) {
+			if (m.type == BoardCodes.MIMIC && goalCoords.Contains(m.GetCoords())) {
+				mimicsOnGoal++;
+			} else if (m.type == BoardCodes.MIRROR && goalCoords.Contains(m.GetCoords())) {
+				mirrorsOnGoal++;
+			}
+				
 		}
 			
+		// loop ambient goal sounds
+		if (mirrorsOnGoal > 0) {
+			audio.mirrorGoal.Play();
+		} else {
+			audio.mirrorGoal.Stop();
+		}
+
+		if (mimicsOnGoal > 0) {
+			audio.mimicGoal.Play();
+		} else {
+			audio.mimicGoal.Stop();
+		}
+
 		recordDynamicState ();	
     }
 
