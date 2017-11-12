@@ -38,14 +38,17 @@ public class CreateLevelSelect : MonoBehaviour {
 	void Start()
 	{
 
-		if (LoggingManager.instance.GetABStoredValue() == 0) {
-			TextAsset json = Resources.Load("LevelProgressions/ProgA") as TextAsset;
+		if (LoggingManager.instance.GetABStoredValue () == 0) {
+			TextAsset json = Resources.Load ("LevelProgressions/ProgA") as TextAsset;
 			levelList = LevelList.CreateFromJson (json.text).levelList;
-		} else if (LoggingManager.instance.GetABStoredValue() == 1) {
-			TextAsset json = Resources.Load("LevelProgressions/ProgB") as TextAsset;
+		} else if (LoggingManager.instance.GetABStoredValue () == 1) {
+			TextAsset json = Resources.Load ("LevelProgressions/ProgB") as TextAsset;
 			levelList = LevelList.CreateFromJson (json.text).levelList;
-		} else {
+		} else if (!LoggingManager.instance.isDebugging) {
 			throw new Exception ("PlayerPref for AB testing was not initialized correctly.");
+		} else { // Logging manager is debugging, just default to ProgA
+			TextAsset json = Resources.Load ("LevelProgressions/ProgA") as TextAsset;
+			levelList = LevelList.CreateFromJson (json.text).levelList;
 		}
 
         //getFiles();
