@@ -295,6 +295,13 @@ public class GameManagerScript : MonoBehaviour {
         return true;
     }
 
+	public void resume()
+	{
+		pausescript.TogglePause();
+		tutorial.enabled = !tutorial.enabled;
+		tutorialCanvas.SetActive(!tutorialCanvas.activeInHierarchy); 
+	}
+
 	private void undo() {
 		// TODO: Record an undo with logging as an event
 		try {
