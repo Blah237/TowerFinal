@@ -55,7 +55,9 @@ public class CreateLevelSelect : MonoBehaviour {
 
         padX = (1f - width) / 2f * canvas.pixelRect.width;
         width *= canvas.pixelRect.width;
-		height *= canvas.pixelRect.height;
+        width -= 120; //doing this because Nathaniel told me to 
+        padX += 55;   //doing this because Nathaniel told me to 
+        height *= canvas.pixelRect.height;
 		for (int i = 0; i < levelList.Count; i++)
 		{
 			{
