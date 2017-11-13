@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class AudioManagerScript : MonoBehaviour {
 
-    public AudioClip music;
-    public AudioSource audio;
+    public AudioSource music;
+	public AudioSource soundFx;
+	public AudioSource mirrorGoal;
+	public AudioSource mimicGoal;
 
     static AudioManagerScript instance;
     public static bool mute {
@@ -14,9 +16,7 @@ public class AudioManagerScript : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        audio = this.GetComponent(typeof(AudioSource)) as AudioSource;
-        audio.clip = music;
-        audio.Play();
+        music.Play();
     }
 
     private void Awake() {
@@ -34,7 +34,7 @@ public class AudioManagerScript : MonoBehaviour {
 
     public static void toggleMute() {
         mute = !mute;
-        instance.audio.mute = mute;
+        instance.GetComponent<AudioSource>().mute = mute;
     }
 
     // Update is called once per frame

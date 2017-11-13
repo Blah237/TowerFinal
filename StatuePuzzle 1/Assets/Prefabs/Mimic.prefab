@@ -408,6 +408,7 @@ MonoBehaviour:
     col: 1
   yOffset: 0.4
   collideSound: {fileID: 8300000, guid: 3b1b6fb2b27c045e7a23ff40ebcd726f, type: 3}
+  goalSound: {fileID: 8300000, guid: 9632b325f2e954ac59e666ea235e6a99, type: 3}
   collisionMask: 0
 --- !u!114 &114843623887497846
 MonoBehaviour:
