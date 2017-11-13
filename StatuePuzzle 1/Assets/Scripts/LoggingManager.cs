@@ -328,4 +328,7 @@ public class LoggingManager : MonoBehaviour
 		RecordABTestValue ();
 	}
 
+    public void RecordMute(bool muteVlaue) {
+        // NOP
+    }
 }
