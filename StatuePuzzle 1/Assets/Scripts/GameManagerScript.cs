@@ -357,36 +357,6 @@ public class GameManagerScript : MonoBehaviour {
                     buttonCoords[c].TogglePressed();
                 }
             }
-            /*foreach (MoveableScript m in moveables) {
-				coord prevCoord = m.GetCoords();
-				coord undoCoord;
-				switch (m.type) {
-				case BoardCodes.PLAYER:
-					undoCoord = ds.playerPosition;
-					m.SetCoords (undoCoord);
-					break;
-				case BoardCodes.MIMIC:
-					undoCoord = mimicCoords [mimicIdx];
-					m.SetCoords (undoCoord);
-					mimicIdx++;
-					break;
-				case BoardCodes.MIRROR:
-					undoCoord = mirrorCoords [mirrorIdx];
-					m.SetCoords (undoCoord);
-					mirrorIdx++;
-					break;
-				default:
-					undoCoord = new coord(0,0);
-					break;
-				}*/
-
-           /* if (buttonCoords.ContainsKey(undoCoord)) {
-					buttonCoords[undoCoord].TogglePressed();
-				} else if (buttonCoords.ContainsKey(prevCoord)) {
-					buttonCoords[prevCoord].TogglePressed();
-				}
-				m.transform.position = new Vector3(m.GetCoords().col + mapOrigin.x, m.GetCoords().row + mapOrigin.y + m.yOffset, 0);
-			} */
 
 		} catch (InvalidOperationException) {
 			//TODO: Actually display this to the user 
