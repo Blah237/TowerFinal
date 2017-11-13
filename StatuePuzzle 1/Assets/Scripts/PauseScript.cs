@@ -12,6 +12,7 @@ public class PauseScript : MonoBehaviour
 	private Animator anim;
 	private GameObject LevelSelectPause;
 	private GameObject RestartPause;
+	private GameObject ResumePause;
 	
 	
 	// Use this for initialization
@@ -20,6 +21,7 @@ public class PauseScript : MonoBehaviour
 		unpaused = true;
 		LevelSelectPause = GameObject.Find("LevelSelectPause");
 		RestartPause = GameObject.Find("RestartLevelPause");
+		ResumePause = GameObject.Find("ResumePause");
 	}
 
 	public void TogglePause ()
@@ -32,6 +34,9 @@ public class PauseScript : MonoBehaviour
 			LevelSelectPause.GetComponent<Button>().interactable = true;
 			RestartPause.GetComponent<Image>().raycastTarget = true;
 			RestartPause.GetComponent<Button>().interactable = true;
+			ResumePause.GetComponent<Image>().raycastTarget = true;
+			ResumePause.GetComponent<Button>().interactable = true;
+			
 			anim.SetBool("Unpaused", false);
 			Debug.Log("Game Paused");
 			anim.SetTrigger("Paused");
@@ -45,6 +50,8 @@ public class PauseScript : MonoBehaviour
 			LevelSelectPause.GetComponent<Image>().raycastTarget = false;
 			RestartPause.GetComponent<Button>().interactable = false;
 			RestartPause.GetComponent<Image>().raycastTarget = false;
+			ResumePause.GetComponent<Button>().interactable = false;
+			ResumePause.GetComponent<Image>().raycastTarget = false;
 			GameManagerScript.inputReady = true;
 		}
 	}
