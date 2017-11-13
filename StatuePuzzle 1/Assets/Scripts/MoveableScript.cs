@@ -25,6 +25,7 @@ public abstract class MoveableScript : MonoBehaviour {
     protected Animation2DManager animator; 
     
 	public AudioClip collideSound;
+	public AudioClip goalSound; // ambient for floaty bois, win for Bardo
 
     public int collisionMask;
     public BoardCodes type { get; protected set; }

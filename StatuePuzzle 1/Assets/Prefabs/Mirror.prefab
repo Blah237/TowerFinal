@@ -104,6 +104,7 @@ MonoBehaviour:
     col: 2
   yOffset: 0.4
   collideSound: {fileID: 8300000, guid: 3af1a6139175f4e578ec95527eeab2b4, type: 3}
+  goalSound: {fileID: 8300000, guid: 6f003dce0be764ed99655fbf014d8d64, type: 3}
   collisionMask: 0
 --- !u!114 &114392076273423246
 MonoBehaviour:

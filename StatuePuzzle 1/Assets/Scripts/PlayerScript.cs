@@ -6,6 +6,7 @@ public class PlayerScript : MoveableScript {
 
 	//player specific fields
 	private bool isDead = false;
+    public AudioClip victorySound;
 
     public bool GetIsDead() {
 		return isDead;
