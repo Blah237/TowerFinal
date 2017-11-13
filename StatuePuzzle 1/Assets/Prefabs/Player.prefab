@@ -468,6 +468,7 @@ MonoBehaviour:
   collideSound: {fileID: 8300000, guid: 66e0ffe2de7ba41beb930e439adc8946, type: 3}
   goalSound: {fileID: 0}
   collisionMask: 0
+  victorySound: {fileID: 8300000, guid: 5b3692540f7f5554ab39995406637090, type: 3}
 --- !u!114 &114636160081313736
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -393,6 +393,7 @@ public class GameManagerScript : MonoBehaviour {
 		LoggingManager.instance.RecordEvent (LoggingManager.EventCodes.LEVEL_COMPLETE, "Level complete");
 		LoggingManager.instance.RecordLevelEnd ();
         player.Celebrate();
+        audio.soundFx.PlayOneShot(player.victorySound);
         inputReady = false; 
 	    WinScript.playerWin = true;
 	    pauseReady = false;
