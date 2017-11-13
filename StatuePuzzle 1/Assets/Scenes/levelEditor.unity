@@ -3808,7 +3808,7 @@ MonoBehaviour:
   - sprite: {fileID: 21300000, guid: 716a8a814a388764584c2690fb2f7b39, type: 3}
     value: 54
   loadedLevel: 1
-  levelName: sectionedOffHard2
+  levelName: mandatorySwapEZ2
   gridHolder: {fileID: 324320328}
   saveButton: {fileID: 194176733}
   saveAsButton: {fileID: 900029193}
