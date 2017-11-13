@@ -82,6 +82,7 @@ public class GameManagerScript : MonoBehaviour {
 
     public Text tutorial;
     public GameObject tutorial1;
+    public GameObject tutorial3; 
     public GameObject tutorial6;
     public GameObject tutorialCanvas; 
 	public Text restartConfirmText;
@@ -150,8 +151,6 @@ public class GameManagerScript : MonoBehaviour {
         mainCamera.orthographicSize = boardState.rows / 2.0f + 1;
         tutorial.text = boardState.tutorial;
         tutorial.enabled = true;
-        //tutorial1.SetActive(false); 
-        //tutorial6.SetActive(false); 
         if(levelNum == 0) {
             tutorial1.SetActive(true); 
         } else if(levelNum == 5) {
@@ -262,6 +261,7 @@ public class GameManagerScript : MonoBehaviour {
             needsSwap.Clear();
             if (!WinScript.playerWin) {
                 checkWin();
+                checkFailState(); 
             }
             Direction dir = readInput();
 			if (dir != Direction.NONE && !WinScript.playerWin)
@@ -402,6 +402,16 @@ public class GameManagerScript : MonoBehaviour {
         return true;
     }
 
+    void checkFailState() {
+        if(levelName == "tutorial3") {
+            if (moveables[1].GetCoords().col - 1 == moveables[0].GetCoords().col) {
+                tutorial3.SetActive(true);
+            } else {
+                tutorial3.SetActive(false); 
+            }
+        }
+    }
+
 	bool checkPause()
 	{
 		return Input.GetKeyDown(KeyCode.P);
@@ -494,7 +504,7 @@ public class GameManagerScript : MonoBehaviour {
 					moveDirections[m] = Direction.NONE;
 					dead = true;
 					deathscript.playerDeath = true;
-                    if (!desiredCoords[player].Equals(player.GetCoords()) || m.type == BoardCodes.PLAYER || other.type == BoardCodes.PLAYER) {
+                    if (desiredCoords.ContainsKey(player) && !desiredCoords[player].Equals(player.GetCoords()) || m.type == BoardCodes.PLAYER || other.type == BoardCodes.PLAYER) {
                         collided.Add(m, 2);
                         collided.Add(other, 2);
                     }
