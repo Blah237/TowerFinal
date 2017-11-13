@@ -8,6 +8,9 @@ public class AudioManagerScript : MonoBehaviour {
     public AudioSource audio;
 
     static AudioManagerScript instance;
+    public static bool mute {
+        get; private set;
+    }
 
     // Use this for initialization
     void Start () {
@@ -29,8 +32,13 @@ public class AudioManagerScript : MonoBehaviour {
         }
     }
 
-        // Update is called once per frame
-        void Update () {
+    public static void toggleMute() {
+        mute = !mute;
+        instance.audio.mute = mute;
+    }
+
+    // Update is called once per frame
+    void Update () {
 		
 	}
 }
