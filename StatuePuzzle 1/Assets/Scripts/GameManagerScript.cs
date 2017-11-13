@@ -552,16 +552,21 @@ public class GameManagerScript : MonoBehaviour {
         }  
 
 		// Check for collisions moving into pieces that couldn't move
-		foreach (MoveableScript m in moveables) {
-			foreach (MoveableScript other in moveables) {
-				if (other == m || other == null) {
-					continue;
-				} else if (moveDirections[other] == Direction.NONE
-					&& (other.GetCoords().Equals(desiredCoords[m]) || (blockingCoords.ContainsKey(m) && other.GetCoords().Equals(blockingCoords[m])))) {
-					moveDirections [m] = Direction.NONE;
-					collided[m] = 1;
-					collided[other] = 1;
-				} 
+		for (int i = 0; i < moveables.Count; i++) {
+			foreach (MoveableScript m in moveables) {
+				foreach (MoveableScript other in moveables) {
+					if (other == m || other == null) {
+						continue;
+					} else if (moveDirections [other] == Direction.NONE
+					          && (other.GetCoords ().Equals (desiredCoords [m]) || (blockingCoords.ContainsKey (m) && other.GetCoords ().Equals (blockingCoords [m])))) {
+						moveDirections [m] = Direction.NONE;
+						collided [m] = 1;
+						collided [other] = 1;
+						Debug.Log ("Couldn't move" + ":" + other.GetCoords ());
+					} else {
+						Debug.Log (moveDirections [other] + ":" + other.GetCoords ());
+					}
+				}
 			}
 		}
    
