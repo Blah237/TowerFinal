@@ -11,6 +11,7 @@ public class LoadOnClick : MonoBehaviour {
 
 	public void LoadScene(string level)
 	{
+		WinScript.playerWin = false;
 		GameManagerScript.levelName = levelName;
 		NextLevelScript.currentLevel = levelName;
 		SceneManager.LoadScene(1);

@@ -12,6 +12,7 @@ public class RestartLevel : MonoBehaviour {
 	
 	public void LoadScene()
 	{
+		WinScript.playerWin = false;
 		LoggingManager.instance.RecordEvent (LoggingManager.EventCodes.RESTART, "Restart");
 		LoggingManager.instance.RecordLevelEnd ();
 		SceneManager.LoadScene(1);

@@ -31,6 +31,7 @@ public class NextLevelScript : MonoBehaviour {
 
 	public void LoadScene()
 	{
+		WinScript.playerWin = false;
 		string nextLevel = getNextLevel();
 		GameManagerScript.levelName = nextLevel;
 		Debug.Log(nextLevel);

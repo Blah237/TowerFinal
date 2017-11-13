@@ -25,64 +25,33 @@ public class CreateLevelSelect : MonoBehaviour {
 	private static int CANVAS_WIDTH_OFFSET = 0;
 
 	public static List<String> levelList;
-	public static Dictionary<string, bool> buttonMap = null;
+
+	// Wrapper class for deserializing JSON, required for Unity's shit JSON util
+	private class LevelList {
+		public List<String> levelList;
+		public static LevelList CreateFromJson(string json) {
+			return JsonUtility.FromJson<LevelList> (json);
+		}
+	}
 
 	// Use this for initialization
 	void Start()
 	{
-		levelList = new List<string> {
-            //mimic
-		    "01level1",
-            "tutorial1",
-            //blocking
-            "tutorial3",
-            "tutorial5",
-            "04blockLevel",
-            //mirror
-            "02level2",
-            "tutorial2",
-            //mirror + blocking 
-            "tutorial4",
-            //collision
-            "03level3",
-            //blocking + mirror + mimic
-            "08level4",
 
-            //swap 
-            "tutorial6",
-            "22SwapMaze",
-            "21smallSwap",
-            "23SwapTest",
-
-            //portal 
-            "31dumbPortalTutorial",
-            "32portal2",
-            //portal + swap 
-            "33portalSwap",
-
-            //lasers 
-            "tutorial7",
-            "tutorial8",
-
-            //many floaty bois
-            "09level5",
-            "34CircleWithPortals"
-
-
-            //levelList.Add("PortalLinkTest");
-            //levelList.Add("LaserTest");
-            //levelList.Add("lasertest2");
-            //levelList.Add("portalBugExhaustiveTest");  
-		};
+		if (LoggingManager.instance.GetABStoredValue () == 0) {
+			TextAsset json = Resources.Load ("LevelProgressions/ProgA") as TextAsset;
+			levelList = LevelList.CreateFromJson (json.text).levelList;
+		} else if (LoggingManager.instance.GetABStoredValue () == 1) {
+			TextAsset json = Resources.Load ("LevelProgressions/ProgB") as TextAsset;
+			levelList = LevelList.CreateFromJson (json.text).levelList;
+		} else if (!LoggingManager.instance.isDebugging) {
+			throw new Exception ("PlayerPref for AB testing was not initialized correctly.");
+		} else { // Logging manager is debugging, just default to ProgA
+			TextAsset json = Resources.Load ("LevelProgressions/ProgA") as TextAsset;
+			levelList = LevelList.CreateFromJson (json.text).levelList;
+		}
 
         //getFiles();
-        if (buttonMap == null) {
-			buttonMap = new Dictionary<string, bool>();
-			for (int i = 0; i < levelList.Count; i++)
-			{
-				buttonMap.Add(levelList[i], false);
-			}
-		}
 
         padX = (1f - width) / 2f * canvas.pixelRect.width;
         width *= canvas.pixelRect.width;
@@ -91,7 +60,7 @@ public class CreateLevelSelect : MonoBehaviour {
 		{
 			{
 				LoadOnClick button = GameObject.Instantiate(load);
-				if (buttonMap[levelList[i]])
+				if (PlayerPrefs.GetInt(levelList[i], 0) == 1) // 0 for incomplete, 1 for complete
 				{
 					button.GetComponent<Image>().color = Color.green;
 				}

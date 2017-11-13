@@ -81,6 +81,10 @@ public class GameManagerScript : MonoBehaviour {
 	public Camera mainCamera;
 
     public Text tutorial;
+    public GameObject tutorial1;
+    public GameObject tutorial3; 
+    public GameObject tutorial6;
+    public GameObject tutorialCanvas; 
 	public Text restartConfirmText;
 
 	public bool win;
@@ -92,7 +96,7 @@ public class GameManagerScript : MonoBehaviour {
 	private int restartScreenTimer = 0;
 
 	//public AudioClip music;
-	public AudioSource audio;
+	public AudioManagerScript audio;
     
     List<coord> goalCoords = new List<coord>();
     Dictionary<coord, GoalScript> goalAtCoords = new Dictionary<coord, GoalScript>(); 
@@ -133,7 +137,9 @@ public class GameManagerScript : MonoBehaviour {
     // Use this for initialization
     void Start() {
 
-        audio = FindObjectOfType<AudioSource>();
+        audio = FindObjectOfType<AudioManagerScript>();
+		audio.mimicGoal.loop = true;
+		audio.mirrorGoal.loop = true;
 		firstStart = false;
 
         //load level using Melody's I/O
@@ -146,7 +152,13 @@ public class GameManagerScript : MonoBehaviour {
         mapOrigin = new Vector2(-boardState.cols / 2.0f, -boardState.rows / 2.0f);
         mainCamera.orthographicSize = boardState.rows / 2.0f + 1;
         tutorial.text = boardState.tutorial;
-        tutorial.enabled = true; 
+        tutorial.enabled = true;
+        if(levelNum == 0) {
+            tutorial1.SetActive(true); 
+        } else if(levelNum == 5) {
+            tutorial6.SetActive(true); 
+        }
+        
 
         int buttonCount = 0;
 
@@ -258,23 +270,25 @@ public class GameManagerScript : MonoBehaviour {
                 PerformSwap(m); 
             }
             needsSwap.Clear();
-            if (!winscript.playerWin) {
+            if (!WinScript.playerWin) {
                 checkWin();
+                checkFailState(); 
             }
             Direction dir = readInput();
-			if (dir != Direction.NONE && !winscript.playerWin)
+			if (dir != Direction.NONE && !WinScript.playerWin)
 			{
 				inputReady = false;
 				move(dir);
 			}
 		} else {
-			inputReady = (!winscript.playerWin && getAllDone());
-			pauseReady = (!winscript.playerWin);
+			inputReady = (!WinScript.playerWin && getAllDone());
+			pauseReady = (!WinScript.playerWin);
 		}
 		if (pauseReady && checkPause())
 		{
 			pausescript.TogglePause();
-            tutorial.enabled = !tutorial.enabled; 
+            tutorial.enabled = !tutorial.enabled;
+            tutorialCanvas.SetActive(!tutorialCanvas.activeInHierarchy); 
 		}
 		if (pausescript.paused)
 		{
@@ -390,14 +404,29 @@ public class GameManagerScript : MonoBehaviour {
             return false; 
         }
         Debug.Log("VICTORY!");
+		audio.mirrorGoal.loop = false;
+		audio.mimicGoal.loop = false;
 		LoggingManager.instance.RecordEvent (LoggingManager.EventCodes.LEVEL_COMPLETE, "Level complete");
 		LoggingManager.instance.RecordLevelEnd ();
         player.Celebrate();
+        audio.soundFx.PlayOneShot(player.victorySound);
         inputReady = false; 
-	    winscript.playerWin = true;
+	    WinScript.playerWin = true;
 	    pauseReady = false;
-        tutorial.enabled = false; 
+        tutorial.enabled = false;
+        tutorial1.SetActive(false);
+        tutorial6.SetActive(false);
         return true;
+    }
+
+    void checkFailState() {
+        if(levelName == "tutorial3") {
+            if (moveables[1].GetCoords().col - 1 == moveables[0].GetCoords().col) {
+                tutorial3.SetActive(true);
+            } else {
+                tutorial3.SetActive(false); 
+            }
+        }
     }
 
 	bool checkPause()
@@ -502,7 +531,7 @@ public class GameManagerScript : MonoBehaviour {
 					moveDirections[m] = Direction.NONE;
 					dead = true;
 					deathscript.playerDeath = true;
-                    if (!desiredCoords[player].Equals(player.GetCoords()) || m.type == BoardCodes.PLAYER || other.type == BoardCodes.PLAYER) {
+                    if (desiredCoords.ContainsKey(player) && !desiredCoords[player].Equals(player.GetCoords()) || m.type == BoardCodes.PLAYER || other.type == BoardCodes.PLAYER) {
                         collided.Add(m, 2);
                         collided.Add(other, 2);
                     }
@@ -549,7 +578,7 @@ public class GameManagerScript : MonoBehaviour {
             foreach (MoveableScript moveable in moveDirections.Keys) {
 				moveable.ExecuteMove (moveDirections[moveable], 1, false);
 				if (moveDirections [moveable] == Direction.NONE) {
-					audio.PlayOneShot (moveable.collideSound);
+					audio.soundFx.PlayOneShot (moveable.collideSound, .5f);
 				}
 
                 // check for a swap
@@ -584,9 +613,34 @@ public class GameManagerScript : MonoBehaviour {
 
 		foreach (MoveableScript m in collided.Keys) {
             m.ExecuteMove(Direction.NONE, collided[m], false);
-			audio.PlayOneShot (m.collideSound);
+			audio.soundFx.PlayOneShot (m.collideSound, .5f);
+		}
+
+		// toggle ambient goal sounds
+		int mirrorsOnGoal = 0;
+		int mimicsOnGoal = 0;
+		foreach (MoveableScript m in moveables) {
+			if (m.type == BoardCodes.MIMIC && goalCoords.Contains(m.GetCoords())) {
+				mimicsOnGoal++;
+			} else if (m.type == BoardCodes.MIRROR && goalCoords.Contains(m.GetCoords())) {
+				mirrorsOnGoal++;
+			}
+				
 		}
 			
+		// loop ambient goal sounds
+		if (mirrorsOnGoal > 0) {
+			audio.mirrorGoal.Play();
+		} else {
+			audio.mirrorGoal.Stop();
+		}
+
+		if (mimicsOnGoal > 0) {
+			audio.mimicGoal.Play();
+		} else {
+			audio.mimicGoal.Stop();
+		}
+
 		recordDynamicState ();	
     }
 

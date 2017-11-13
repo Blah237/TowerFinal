@@ -4,18 +4,27 @@ using UnityEngine;
 
 public class AudioManagerScript : MonoBehaviour {
 
-    public AudioClip music;
-    public AudioSource audio;
+    public AudioSource music;
+	public AudioSource soundFx;
+	public AudioSource mirrorGoal;
+	public AudioSource mimicGoal;
+
+    static AudioManagerScript instance;
+    public static bool mute {
+        get; private set;
+    }
 
     // Use this for initialization
     void Start () {
-        audio = this.GetComponent(typeof(AudioSource)) as AudioSource;
-        audio.clip = music;
-        audio.Play();
+        music.Play();
     }
 
     private void Awake() {
-        AudioManagerScript instance = this;
+        if (instance != null) {
+            DestroyImmediate(this);
+            return;
+        }
+        instance = this;
         if (instance == null) {
             Destroy(gameObject);
         } else {
@@ -23,8 +32,13 @@ public class AudioManagerScript : MonoBehaviour {
         }
     }
 
+    public static void toggleMute() {
+        mute = !mute;
+        instance.audio.mute = mute;
+    }
+
     // Update is called once per frame
-        void Update () {
+    void Update () {
 		
 	}
 }
