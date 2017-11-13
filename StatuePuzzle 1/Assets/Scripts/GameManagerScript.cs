@@ -276,6 +276,18 @@ public class GameManagerScript : MonoBehaviour {
 			pausescript.TogglePause();
             tutorial.enabled = !tutorial.enabled;
             tutorialCanvas.SetActive(!tutorialCanvas.activeInHierarchy); 
+		} else if (pauseReady && Input.GetKeyDown(KeyCode.Escape))
+		{
+			if (pausescript.paused)
+			{
+				LoadLevelSelect.LoadSceneCopy();
+			}
+			else
+			{
+				pausescript.TogglePause();
+				tutorial.enabled = !tutorial.enabled;
+				tutorialCanvas.SetActive(!tutorialCanvas.activeInHierarchy);
+			}
 		}
 		if (pausescript.paused)
 		{
