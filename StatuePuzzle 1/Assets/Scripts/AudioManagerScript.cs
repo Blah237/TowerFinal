@@ -34,7 +34,7 @@ public class AudioManagerScript : MonoBehaviour {
 
     public static void toggleMute() {
         mute = !mute;
-        instance.audio.mute = mute;
+        instance.GetComponent<AudioSource>().mute = mute;
     }
 
     // Update is called once per frame

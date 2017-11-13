@@ -1851,7 +1851,7 @@ MonoBehaviour:
   win: 0
   dead: 0
   showRestartConfirm: 0
-  rightArrow: {fileID: 382811332}
+  rightArrow: {fileID: 0}
   audio: {fileID: 0}
   swap: {fileID: 1489777977322046, guid: 8840d96f49251704bb39ec1725e419bc, type: 2}
   portal: {fileID: 1460910959781724, guid: 4c74f76354da52847ae5db270f11eb3a, type: 2}
@@ -1998,12 +1998,12 @@ Prefab:
     - target: {fileID: 224539547607480610, guid: 60c248b5039d9954fbf4447cbb4d4cf0,
         type: 2}
       propertyPath: m_AnchoredPosition.x
-      value: -26.875711
+      value: -26.875732
       objectReference: {fileID: 0}
     - target: {fileID: 224539547607480610, guid: 60c248b5039d9954fbf4447cbb4d4cf0,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -26.875711
+      value: -26.875717
       objectReference: {fileID: 0}
     - target: {fileID: 224539547607480610, guid: 60c248b5039d9954fbf4447cbb4d4cf0,
         type: 2}
@@ -6316,7 +6316,6 @@ RectTransform:
   - {fileID: 409578527}
   - {fileID: 1131664851}
   - {fileID: 1515025430}
-  - {fileID: 382811331}
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
