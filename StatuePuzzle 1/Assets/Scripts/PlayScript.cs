@@ -6,18 +6,6 @@ using UnityEngine.SceneManagement;
 public class PlayScript : MonoBehaviour
 {
 
-	// Use this for initialization
-	void Start()
-	{
-		
-	}
-
-	// Update is called once per frame
-	void Update()
-	{
-
-	}
-
 	public void LoadScene()
 	{
 		for (int i = 0; i < CreateLevelSelect.getLevelList().Count; i++)
