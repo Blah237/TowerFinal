@@ -13,12 +13,11 @@ public class MuteButtonScript : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         i = this.GetComponent<Image>();
-        i.sprite = (AudioManagerScript.mute ? SoundOff : SoundOn);
+        i.sprite = (AudioManagerScript.instance.isMuted ? SoundOff : SoundOn);
 	}
-	
+
     public void toggleMute() {
-        AudioManagerScript.toggleMute();
-        LoggingManager.instance.RecordMute(AudioManagerScript.mute);
-        i.sprite = (AudioManagerScript.mute ? SoundOff : SoundOn);
+		AudioManagerScript.instance.toggleMute();
+		i.sprite = (AudioManagerScript.instance.isMuted ? SoundOff : SoundOn);
     }
 }
