@@ -92,9 +92,6 @@ public class GameManagerScript : MonoBehaviour {
 	public bool showRestartConfirm;	
 
 	private int restartScreenTimer = 0;
-
-	//public AudioClip music;
-	public AudioManagerScript audio;
     
     List<coord> goalCoords = new List<coord>();
     Dictionary<coord, GoalScript> goalAtCoords = new Dictionary<coord, GoalScript>(); 
@@ -135,9 +132,8 @@ public class GameManagerScript : MonoBehaviour {
     // Use this for initialization
     void Start() {
 
-        audio = FindObjectOfType<AudioManagerScript>();
-		audio.mimicGoal.loop = true;
-		audio.mirrorGoal.loop = true;
+		AudioManagerScript.instance.mimicGoal.loop = true;
+		AudioManagerScript.instance.mirrorGoal.loop = true;
 		firstStart = false;
 
         //load level using Melody's I/O
@@ -408,12 +404,12 @@ public class GameManagerScript : MonoBehaviour {
             return false; 
         }
         Debug.Log("VICTORY!");
-		audio.mirrorGoal.loop = false;
-		audio.mimicGoal.loop = false;
+		AudioManagerScript.instance.mirrorGoal.loop = false;
+		AudioManagerScript.instance.mimicGoal.loop = false;
 		LoggingManager.instance.RecordEvent (LoggingManager.EventCodes.LEVEL_COMPLETE, "Level complete");
 		LoggingManager.instance.RecordLevelEnd ();
         player.Celebrate();
-        audio.soundFx.PlayOneShot(player.victorySound);
+        //AudioManagerScript.instance.soundFx.PlayOneShot(player.victorySound);
         inputReady = false; 
 	    WinScript.playerWin = true;
 	    pauseReady = false;
@@ -577,7 +573,7 @@ public class GameManagerScript : MonoBehaviour {
             foreach (MoveableScript moveable in moveDirections.Keys) {
 				moveable.ExecuteMove (moveDirections[moveable], 1, false);
 				if (moveDirections [moveable] == Direction.NONE) {
-					audio.soundFx.PlayOneShot (moveable.collideSound, .5f);
+					AudioManagerScript.instance.soundFx.PlayOneShot (moveable.collideSound, .5f);
 				}
 
                 // check for a swap
@@ -612,7 +608,7 @@ public class GameManagerScript : MonoBehaviour {
 
 		foreach (MoveableScript m in collided.Keys) {
             m.ExecuteMove(Direction.NONE, collided[m], false);
-			audio.soundFx.PlayOneShot (m.collideSound, .5f);
+			AudioManagerScript.instance.soundFx.PlayOneShot (m.collideSound, .5f);
 		}
 
 		// toggle ambient goal sounds
@@ -629,15 +625,15 @@ public class GameManagerScript : MonoBehaviour {
 			
 		// loop ambient goal sounds
 		if (mirrorsOnGoal > 0) {
-			audio.mirrorGoal.Play();
+			AudioManagerScript.instance.mirrorGoal.Play();
 		} else {
-			audio.mirrorGoal.Stop();
+			AudioManagerScript.instance.mirrorGoal.Stop();
 		}
 
 		if (mimicsOnGoal > 0) {
-			audio.mimicGoal.Play();
+			AudioManagerScript.instance.mimicGoal.Play();
 		} else {
-			audio.mimicGoal.Stop();
+			AudioManagerScript.instance.mimicGoal.Stop();
 		}
 
 		recordDynamicState ();	
