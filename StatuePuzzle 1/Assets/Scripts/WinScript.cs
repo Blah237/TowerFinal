@@ -11,6 +11,7 @@ public class WinScript : MonoBehaviour
 	//public float restartDelay = 5f;
 	private GameObject NextLevel;
 	private GameObject LevelSelectWin;
+	private GameObject RestartWin;
 
 	private Animator anim;
 	//private float restartTimer;
@@ -21,6 +22,7 @@ public class WinScript : MonoBehaviour
 		anim = GetComponent<Animator>();
 		NextLevel = GameObject.Find("Next Level");
 		LevelSelectWin = GameObject.Find("Button");
+		RestartWin = GameObject.Find("Restart Level");
 	}
 	
 	// Update is called once per frame
@@ -32,6 +34,9 @@ public class WinScript : MonoBehaviour
 			PlayerPrefs.SetInt (GameManagerScript.levelName, 1); //Set to 1 to indicate a win
 			NextLevel.GetComponent<Button>().interactable = true;
 			LevelSelectWin.GetComponent<Button>().interactable = true;
+			RestartWin.GetComponent<Button>().interactable = true;
+			RestartWin.GetComponent<Image>().raycastTarget = true;
+			
 			//playerWin = false;
 			//b.GetComponent<Image>().color = Color.green;
 			//GameManagerScript.inputReady = false;
