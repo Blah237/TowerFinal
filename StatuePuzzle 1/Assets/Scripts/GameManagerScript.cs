@@ -131,7 +131,7 @@ public class GameManagerScript : MonoBehaviour {
 
     // Use this for initialization
     void Start() {
-
+		
 		AudioManagerScript.instance.mimicGoal.loop = true;
 		AudioManagerScript.instance.mirrorGoal.loop = true;
 		firstStart = false;
@@ -237,6 +237,39 @@ public class GameManagerScript : MonoBehaviour {
         }
 	}
 
+	void updateLoopingSounds() {
+
+		if (pausescript.paused) {
+			return;
+		}
+
+		// Looping sound effects
+		int mirrorsOnGoal = 0;
+		int mimicsOnGoal = 0;
+		foreach (MoveableScript m in moveables) {
+			if (m.type == BoardCodes.MIMIC && goalCoords.Contains(m.GetCoords())) {
+				mimicsOnGoal++;
+			} else if (m.type == BoardCodes.MIRROR && goalCoords.Contains(m.GetCoords())) {
+				mirrorsOnGoal++;
+			}
+		}
+
+		Debug.Log (mimicsOnGoal);
+		Debug.Log (AudioManagerScript.instance.mimicGoal.isPlaying);
+
+		if (mirrorsOnGoal > 0 && !AudioManagerScript.instance.mirrorGoal.isPlaying) {
+			AudioManagerScript.instance.mirrorGoal.Play();
+		} else if (mirrorsOnGoal <= 0) {
+			AudioManagerScript.instance.mirrorGoal.Stop();
+		}
+
+		if (mimicsOnGoal > 0 && !AudioManagerScript.instance.mimicGoal.isPlaying) {
+			AudioManagerScript.instance.mimicGoal.Play();
+		} else if (mimicsOnGoal <= 0) {
+			AudioManagerScript.instance.mimicGoal.Stop();
+		}
+	}
+
 	// Update is called once per frame
 	void Update () {
 
@@ -245,6 +278,8 @@ public class GameManagerScript : MonoBehaviour {
 			recordDynamicState ();
 			firstStart = true;
 		}
+
+		updateLoopingSounds ();
 
 		if (inputReady) {
             foreach (ButtonToggleScript button in buttonsPressed) {
@@ -278,7 +313,7 @@ public class GameManagerScript : MonoBehaviour {
 		{
 			if (pausescript.paused)
 			{
-				LoadLevelSelect.LoadSceneCopy();
+				LoadLevelSelect.LoadSceneEscFromPause();
 			}
 			else
 			{
@@ -609,31 +644,6 @@ public class GameManagerScript : MonoBehaviour {
 		foreach (MoveableScript m in collided.Keys) {
             m.ExecuteMove(Direction.NONE, collided[m], false);
 			AudioManagerScript.instance.soundFx.PlayOneShot (m.collideSound, .5f);
-		}
-
-		// toggle ambient goal sounds
-		int mirrorsOnGoal = 0;
-		int mimicsOnGoal = 0;
-		foreach (MoveableScript m in moveables) {
-			if (m.type == BoardCodes.MIMIC && goalCoords.Contains(m.GetCoords())) {
-				mimicsOnGoal++;
-			} else if (m.type == BoardCodes.MIRROR && goalCoords.Contains(m.GetCoords())) {
-				mirrorsOnGoal++;
-			}
-				
-		}
-			
-		// loop ambient goal sounds
-		if (mirrorsOnGoal > 0) {
-			AudioManagerScript.instance.mirrorGoal.Play();
-		} else {
-			AudioManagerScript.instance.mirrorGoal.Stop();
-		}
-
-		if (mimicsOnGoal > 0) {
-			AudioManagerScript.instance.mimicGoal.Play();
-		} else {
-			AudioManagerScript.instance.mimicGoal.Stop();
 		}
 
 		recordDynamicState ();	

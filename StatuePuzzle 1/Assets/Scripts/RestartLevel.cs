@@ -12,6 +12,7 @@ public class RestartLevel : MonoBehaviour {
 	
 	public void LoadScene()
 	{
+		AudioManagerScript.instance.stopEffects ();
 		WinScript.playerWin = false;
 		LoggingManager.instance.RecordEvent (LoggingManager.EventCodes.RESTART, "Restart");
 		LoggingManager.instance.RecordLevelEnd ();
