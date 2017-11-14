@@ -18,7 +18,6 @@ public class MuteButtonScript : MonoBehaviour {
 	
     public void toggleMute() {
         AudioManagerScript.toggleMute();
-        LoggingManager.instance.RecordMute(AudioManagerScript.mute);
         i.sprite = (AudioManagerScript.mute ? SoundOff : SoundOn);
     }
 }
