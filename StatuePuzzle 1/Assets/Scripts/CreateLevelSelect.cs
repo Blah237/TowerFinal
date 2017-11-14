@@ -45,7 +45,7 @@ public class CreateLevelSelect : MonoBehaviour {
 		} else if (!LoggingManager.instance.isDebugging) {
 			throw new Exception ("PlayerPref for AB testing was not initialized correctly.");
 		} else { // Logging manager is debugging, just default to ProgA
-			TextAsset json = Resources.Load ("LevelProgressions/ProgAOld") as TextAsset;
+			TextAsset json = Resources.Load ("LevelProgressions/ProgA") as TextAsset;
 			levelList = LevelList.CreateFromJson (json.text).levelList;
 		}
 	}
