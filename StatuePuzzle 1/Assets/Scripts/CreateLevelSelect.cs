@@ -34,10 +34,8 @@ public class CreateLevelSelect : MonoBehaviour {
 		}
 	}
 
-	// Use this for initialization
-	void Start()
+	static void BuildList()
 	{
-
 		if (LoggingManager.instance.GetABStoredValue () == 0) {
 			TextAsset json = Resources.Load ("LevelProgressions/ProgA") as TextAsset;
 			levelList = LevelList.CreateFromJson (json.text).levelList;
@@ -50,6 +48,16 @@ public class CreateLevelSelect : MonoBehaviour {
 			TextAsset json = Resources.Load ("LevelProgressions/ProgA") as TextAsset;
 			levelList = LevelList.CreateFromJson (json.text).levelList;
 		}
+	}
+
+	// Use this for initialization
+	void Start()
+	{
+		if (levelList == null)
+		{
+			BuildList();
+		}
+		
 
         //getFiles();
 
@@ -111,6 +119,10 @@ public class CreateLevelSelect : MonoBehaviour {
 
 	public static List<string> getLevelList()
 	{
+		if (levelList == null)
+		{
+			BuildList();
+		}
 		return levelList;
 	}
 	

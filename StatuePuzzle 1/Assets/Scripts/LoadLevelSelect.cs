@@ -20,7 +20,7 @@ public class LoadLevelSelect : MonoBehaviour {
 				LoggingManager.instance.RecordLevelEnd();
 			}
 		}
-		SceneManager.LoadScene(0);
+		SceneManager.LoadScene(2);
 		
 
 	}
@@ -32,6 +32,6 @@ public class LoadLevelSelect : MonoBehaviour {
 			LoggingManager.instance.RecordEvent (LoggingManager.EventCodes.EXIT_TO_LEVEL_SELECT, "Exit to level select");
 			LoggingManager.instance.RecordLevelEnd ();
 		}
-		SceneManager.LoadScene(0);
+		SceneManager.LoadScene(2);
 	}
 }

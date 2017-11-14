@@ -318,44 +318,45 @@ public class GameManagerScript : MonoBehaviour {
 
 	private void undo() {
 		// TODO: Record an undo with logging as an event
+        if(dynamicStateStack.Count <= 1) {
+            return;
+        }
 		try {
 			dynamicStateStack.Pop();
 			DynamicState ds = dynamicStateStack.Peek();
 			LoggingManager.instance.RecordEvent(LoggingManager.EventCodes.UNDO,ds.toJson());
-			int mimicIdx = 0;
-			int mirrorIdx = 0;
+			//int mimicIdx = 0;
+			//int mirrorIdx = 0;
 			List<coord> mimicCoords = ds.mimicPositions.ToList ();
 			List<coord> mirrorCoords = ds.mirrorPositions.ToList ();
-			foreach (MoveableScript m in moveables) {
-				coord prevCoord = m.GetCoords();
-				coord undoCoord;
-				switch (m.type) {
-				case BoardCodes.PLAYER:
-					undoCoord = ds.playerPosition;
-					m.SetCoords (undoCoord);
-					break;
-				case BoardCodes.MIMIC:
-					undoCoord = mimicCoords [mimicIdx];
-					m.SetCoords (undoCoord);
-					mimicIdx++;
-					break;
-				case BoardCodes.MIRROR:
-					undoCoord = mirrorCoords [mirrorIdx];
-					m.SetCoords (undoCoord);
-					mirrorIdx++;
-					break;
-				default:
-					undoCoord = new coord(0,0);
-					break;
-				}
-
-				if (buttonCoords.ContainsKey(undoCoord)) {
-					buttonCoords[undoCoord].TogglePressed();
-				} else if (buttonCoords.ContainsKey(prevCoord)) {
-					buttonCoords[prevCoord].TogglePressed();
-				}
-				m.transform.position = new Vector3(m.GetCoords().col + mapOrigin.x, m.GetCoords().row + mapOrigin.y + m.yOffset, 0);
-			} 
+            while(moveables.Count > 0) {
+                MoveableScript ms = moveables[0];
+                moveables.RemoveAt(0);
+                if(ms is PlayerScript) {
+                    continue;
+                }
+                Destroy(ms.gameObject);
+            }
+            player.SetCoords(ds.playerPosition.col, ds.playerPosition.row);
+            player.transform.position = new Vector3(player.GetCoords().col + mapOrigin.x, player.GetCoords().row + mapOrigin.y + player.yOffset);
+            moveables.Add(player);
+            foreach(coord c in mimicCoords) {
+                MimicScript m = GameObject.Instantiate(mimic);
+                m.SetCoords(c.col, c.row);
+                m.transform.position = new Vector3(c.col + mapOrigin.x, c.row + mapOrigin.y + m.yOffset, -0.2f);
+                moveables.Add(m);
+            }
+            foreach (coord c in mirrorCoords) {
+                MirrorScript m = GameObject.Instantiate(mirror);
+                m.SetCoords(c.col, c.row);
+                m.transform.position = new Vector3(c.col + mapOrigin.x, c.row + mapOrigin.y + m.yOffset, -0.2f);
+                moveables.Add(m);
+            }
+            foreach(coord c in buttonCoords.Keys) {
+                if(buttonCoords[c].laser.data.isActive != ds.activeButtons.Contains(c)) {
+                    buttonCoords[c].TogglePressed();
+                }
+            }
 
 		} catch (InvalidOperationException) {
 			//TODO: Actually display this to the user 
@@ -688,8 +689,8 @@ public class GameManagerScript : MonoBehaviour {
 		}
 
 		foreach (coord b in buttonCoords.Keys) {
-			if (buttonCoords [b].laser.data.isActive) {
-				ds.activeButtons.Add (b);
+			if (buttonCoords[b].laser.data.isActive) {
+				ds.activeButtons.Add(b);
 			}
 		}
 
