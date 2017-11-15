@@ -30,13 +30,13 @@ public class PauseScript : MonoBehaviour
 		unpaused = !unpaused;
 		if (paused)
 		{
+			AudioManagerScript.instance.stopEffects ();
 			LevelSelectPause.GetComponent<Image>().raycastTarget = true;
 			LevelSelectPause.GetComponent<Button>().interactable = true;
 			RestartPause.GetComponent<Image>().raycastTarget = true;
 			RestartPause.GetComponent<Button>().interactable = true;
 			ResumePause.GetComponent<Image>().raycastTarget = true;
 			ResumePause.GetComponent<Button>().interactable = true;
-			
 			anim.SetBool("Unpaused", false);
 			Debug.Log("Game Paused");
 			anim.SetTrigger("Paused");

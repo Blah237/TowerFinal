@@ -10,14 +10,16 @@ public class AudioManagerScript : MonoBehaviour {
 	public AudioSource soundFx;
 	public AudioSource mirrorGoal;
 	public AudioSource mimicGoal;
-
+	public bool isEffectsMuted;
     public bool isMuted {
         get; private set;
     }
+		
 
     // Use this for initialization
     void Start () {
 		isMuted = false;
+		isEffectsMuted = false;
         music.Play();
     }
 
@@ -48,12 +50,23 @@ public class AudioManagerScript : MonoBehaviour {
 			}
 		}
 
+		toggleEffectsMute ();
         isMuted = !isMuted;
         music.mute = isMuted;
-        soundFx.mute = isMuted;
-        mirrorGoal.mute = isMuted;
-        mimicGoal.mute = isMuted;
     }
+
+	public void toggleEffectsMute() {
+		isEffectsMuted = !isEffectsMuted;
+		soundFx.mute = isEffectsMuted;
+		mirrorGoal.mute = isEffectsMuted;
+		mimicGoal.mute = isEffectsMuted;
+	}
+
+	public void stopEffects() {
+		mirrorGoal.Stop ();
+		mimicGoal.Stop ();
+		soundFx.Stop ();
+	}
 
     // Update is called once per frame
     void Update () {
