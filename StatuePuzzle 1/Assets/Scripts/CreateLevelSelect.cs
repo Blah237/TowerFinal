@@ -57,7 +57,6 @@ public class CreateLevelSelect : MonoBehaviour {
 		{
 			BuildList();
 		}
-		
 
         //getFiles();
 
@@ -66,14 +65,20 @@ public class CreateLevelSelect : MonoBehaviour {
         width -= 120; //doing this because Nathaniel told me to 
         padX += 55;   //doing this because Nathaniel told me to 
         height *= canvas.pixelRect.height;
+		bool reachedLockedLevel = false;
 		for (int i = 0; i < levelList.Count; i++)
 		{
 			{
 				LoadOnClick button = GameObject.Instantiate(load);
-				if (PlayerPrefs.GetInt(levelList[i], 0) == 1) // 0 for incomplete, 1 for complete
-				{
-					button.GetComponent<Image>().color = Color.green;
+				if (PlayerPrefs.GetInt (levelList [i], 0) == 1) { // 0 for incomplete, 1 for complete
+					button.GetComponent<Image> ().color = Color.green;
+				} else if (!reachedLockedLevel) {
+					button.GetComponent<Image> ().color = Color.yellow;
+					reachedLockedLevel = true;
+				} else if (reachedLockedLevel) {
+					button.GetComponent<Button>().interactable = false;
 				}
+
 				button.GetComponent<LoadOnClick>().levelName = levelList[i];
 				Text text = button.GetComponentInChildren<Text>();
                 text.text = ""+ (i + 1);//levelList[i];

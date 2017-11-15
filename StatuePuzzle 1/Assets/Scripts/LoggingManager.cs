@@ -321,16 +321,18 @@ public class LoggingManager : MonoBehaviour
                 pageHost = "https";
             }
         }
-
+			
 		LoggingManager.instance.Initialize ();
 		LoggingManager.instance.RecordPageLoad ();
+
+		// Reset Prefs if debugging
+		if (LoggingManager.instance.isDebugging) {
+			PlayerPrefs.DeleteAll ();
+		}
 
 		// Initialize AB testing or load from PlayerPrefs
 		assignABTestValue (Random.Range (0, 2));
 		RecordABTestValue ();
 	}
 
-    public void RecordMute(bool muteVlaue) {
-        // NOP
-    }
 }
