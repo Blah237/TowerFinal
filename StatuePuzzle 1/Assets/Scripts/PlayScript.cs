@@ -14,12 +14,14 @@ public class PlayScript : MonoBehaviour
 				if (PlayerPrefs.GetInt(CreateLevelSelect.getLevelList()[i], 0) == 0) // 0 for incomplete, 1 for complete
 				{
 					GameManagerScript.levelName = CreateLevelSelect.getLevelList()[i];
+					NextLevelScript.currentLevel = CreateLevelSelect.getLevelList()[i];
 					SceneManager.LoadScene(1);
 					return;
 				}
 			}
 		}
 		GameManagerScript.levelName = CreateLevelSelect.getLevelList()[0];
+		NextLevelScript.currentLevel = CreateLevelSelect.getLevelList()[0];
 		SceneManager.LoadScene(1);
 	}
 }
