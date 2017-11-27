@@ -337,4 +337,8 @@ public class LoggingManager : MonoBehaviour
 		RecordABTestValue ();
 	}
 
+    public void RecordEmail(string email) {
+        // NO-OP
+    }
+
 }
