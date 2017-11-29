@@ -75,7 +75,7 @@ public class CreateLevelSelect : MonoBehaviour {
 				} else if (!reachedLockedLevel) {
 					button.GetComponent<Image> ().color = Color.yellow;
 					reachedLockedLevel = true;
-				} else if (reachedLockedLevel) {
+				} else if (reachedLockedLevel && !LoggingManager.instance.isDebugging) {
 					button.GetComponent<Button>().interactable = false;
 				}
 
