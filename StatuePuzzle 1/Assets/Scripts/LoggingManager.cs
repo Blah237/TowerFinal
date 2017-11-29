@@ -12,7 +12,8 @@ public class LoggingManager : MonoBehaviour
 		EXIT_TO_LEVEL_SELECT = 3,
 		LEVEL_COMPLETE = 4,
 		MUTE = 5,
-		UNMUTE = 6
+		UNMUTE = 6,
+		EMAIL = 7
 	}
 
     public static LoggingManager instance;
@@ -338,7 +339,9 @@ public class LoggingManager : MonoBehaviour
 	}
 
     public void RecordEmail(string email) {
-        // NO-OP
+		RecordLevelStart (9999, "Main menu action");
+		RecordEvent (EventCodes.EMAIL, email);
+		RecordLevelEnd ();
     }
 
 }
