@@ -5,9 +5,9 @@ using UnityEngine;
 public abstract class MoveableScript : MonoBehaviour {
 
     [SerializeField]
-    private bool isMoving;
+    protected bool isMoving;
     [SerializeField]
-    private bool isColliding;
+    protected bool isColliding;
     public float speed = 1f;
     public float cSpeed = 0.7f;
     public float collideFactor; 
@@ -60,6 +60,7 @@ public abstract class MoveableScript : MonoBehaviour {
 	}
 
 	private void Update() {
+        SetAnimationState(); 
 		if(isMoving) {
 			float dt = Time.deltaTime; 
 			int y = direction == Direction.NORTH ? 1 : (direction == Direction.SOUTH ? -1 : 0);
@@ -71,7 +72,7 @@ public abstract class MoveableScript : MonoBehaviour {
                 isMoving = false;
                 distance += distanceToMove;
                 distanceToMove = 0;
-                SetAnimationState(direction);
+                //SetAnimationState(direction);
                 //snap to correct place for portals
                 Vector3 endPos = new Vector3(coords.col + GameManagerScript.mapOrigin.x, coords.row + GameManagerScript.mapOrigin.y + yOffset, this.transform.position.z);
                 this.transform.position = endPos;
@@ -93,7 +94,7 @@ public abstract class MoveableScript : MonoBehaviour {
             }
             if (distanceToMove <= 0) {
                 isColliding = false;
-                SetAnimationState(direction);
+                //SetAnimationState(direction);
                 Vector3 endPos = new Vector3(coords.col + GameManagerScript.mapOrigin.x, coords.row + GameManagerScript.mapOrigin.y + yOffset, this.transform.position.z);
                 this.transform.position = endPos;
             }
@@ -121,7 +122,7 @@ public abstract class MoveableScript : MonoBehaviour {
             this.direction = direction;
         }
 
-        SetAnimationState(direction);
+        SetAnimationState();
         //Debug.Log(this.name + " moving " + direction.ToString());
 
         //change statue position
@@ -147,18 +148,5 @@ public abstract class MoveableScript : MonoBehaviour {
         coords = portalCoords;
     }
 
-    public void SetAnimationState(Direction direction) {
-        int animateDir = (int)this.direction;
-        if (isColliding) {
-            animateDir += 4;  //direction + 4 will give you the index of the colliding animation 
-        } else if(isMoving && type == BoardCodes.PLAYER) {
-            animateDir += 8; //right now, only the bard has a walk cycle
-        }
-        if (animator != null) {
-            if (!animator.isPlaying("pep")) {
-                animator.StopAllAnimations();
-                animator.Play(animateDir, loop: true);
-            }
-        }
-    }
+    public abstract void SetAnimationState();
 }
