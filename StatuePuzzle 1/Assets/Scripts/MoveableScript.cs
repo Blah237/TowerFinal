@@ -7,10 +7,13 @@ public abstract class MoveableScript : MonoBehaviour {
     [SerializeField]
     private bool isMoving;
     [SerializeField]
+	private float requiredRotation = 0f;
+	public bool shouldSwap = false;
     private bool isColliding;
     public float speed = 1f;
     public float cSpeed = 0.7f;
     public float collideFactor; 
+	public Transform outline;
     [SerializeField]
     public Direction direction;
     [SerializeField]
@@ -34,6 +37,7 @@ public abstract class MoveableScript : MonoBehaviour {
     void Start() {
         InitializeType();
         animator = GetComponent<Animation2DManager>();
+		outline = this.transform.GetChild (0);
     }
 
     protected abstract void InitializeType();
@@ -101,6 +105,17 @@ public abstract class MoveableScript : MonoBehaviour {
                 transform.Translate(new Vector3(x * distance, y * distance, 0), Space.World);
             }
         }
+		if (requiredRotation > 0f) {
+			int rotateAmount = 10;
+			this.transform.Rotate (new Vector3 (0, rotateAmount, 0));
+			this.requiredRotation -= rotateAmount;
+			if (requiredRotation <= 0) {
+				this.shouldSwap = true;
+			}
+			this.outline.GetComponent<Renderer> ().enabled = false;
+		} else {
+			this.outline.GetComponent<Renderer> ().enabled = true;
+		}
 	}
 
 	//TODO: I think Unity is encouraging bad design here, but models should NOT be getting boardsate
@@ -146,6 +161,10 @@ public abstract class MoveableScript : MonoBehaviour {
     public void EnterPortal(int[,] boardState, coord portalCoords) {
         coords = portalCoords;
     }
+
+	public void startSpin(int degrees) {
+		this.requiredRotation = degrees;
+	}
 
     public void SetAnimationState(Direction direction) {
         int animateDir = (int)this.direction;

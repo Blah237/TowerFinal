@@ -281,6 +281,8 @@ public class GameManagerScript : MonoBehaviour {
 
 		updateLoopingSounds ();
 
+		CheckSwaps ();
+
 		if (inputReady) {
             foreach (ButtonToggleScript button in buttonsPressed) {
                 button.TogglePressed();
@@ -650,33 +652,46 @@ public class GameManagerScript : MonoBehaviour {
     }
 
     private void PerformSwap(MoveableScript moveable) {
-        Direction dr = moveable.direction;
-        int row = moveable.GetCoords().row;
-        int col = moveable.GetCoords().col; 
-
-        if (moveable.type == BoardCodes.MIMIC) {
-            boardState.board[row, col] = 24;
-            // Instantiate a Mirror
-            MirrorScript m = GameObject.Instantiate(mirror);
-            m.SetCoords(col, row);
-            m.transform.position = new Vector3(col + mapOrigin.x, row + mapOrigin.y + m.yOffset, 0);
-            moveables.Add(m);
-            m.ExecuteMove(dr, 0);
-            this.moveables.Remove(moveable);
-            GameObject.Destroy(moveable.gameObject);
-        }
-        else if (moveable.type == BoardCodes.MIRROR) {
-            boardState.board[row, col] = 23;
-            // Instantiate a Mimic
-            MimicScript m = GameObject.Instantiate(mimic);
-            m.SetCoords(col, row);
-            m.transform.position = new Vector3(col + mapOrigin.x, row + mapOrigin.y + m.yOffset, 0);
-            moveables.Add(m);
-            m.ExecuteMove(dr, 0);
-            this.moveables.Remove(moveable);
-            GameObject.Destroy(moveable.gameObject);
-        }
+		moveable.startSpin (360);
     }
+
+	private void CheckSwaps () {
+
+		List<MoveableScript> toDelete = new List<MoveableScript> ();
+		List<MoveableScript> toAdd = new List<MoveableScript> ();
+		foreach (MoveableScript moveable in moveables) {
+			Direction dr = moveable.direction;
+			int row = moveable.GetCoords().row;
+			int col = moveable.GetCoords().col; 
+			if (moveable.shouldSwap && moveable.type == BoardCodes.MIMIC) {
+				boardState.board [row, col] = 24;
+				// Instantiate a Mirror
+				MirrorScript m = GameObject.Instantiate (mirror);
+				m.SetCoords (col, row);
+				toAdd.Add (m);
+				toDelete.Add (moveable);
+			} else if (moveable.shouldSwap && moveable.type == BoardCodes.MIRROR) {
+				boardState.board [row, col] = 23;
+				// Instantiate a Mimic
+				MimicScript m = GameObject.Instantiate (mimic);
+				m.SetCoords (col, row);
+				toAdd.Add (m);
+				toDelete.Add (moveable);
+			}
+		}
+
+		foreach (MoveableScript moveable in toDelete) {
+			this.moveables.Remove (moveable);
+			GameObject.Destroy (moveable.gameObject);
+		}
+
+		foreach (MoveableScript m in toAdd) {
+			int col = m.GetCoords ().col;
+			int row = m.GetCoords ().row;
+			m.transform.position = new Vector3 (col + mapOrigin.x, row + mapOrigin.y + m.yOffset, 0);
+			moveables.Add (m);
+		}
+	}
 
 	private void recordDynamicState() {
 		DynamicState ds = new DynamicState ();
