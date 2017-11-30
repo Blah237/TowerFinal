@@ -9,7 +9,7 @@ public abstract class MoveableScript : MonoBehaviour {
     [SerializeField]
     protected bool isColliding;
     public float speed = 1f;
-    public float cSpeed = 0.7f;
+    public float cSpeed = 0.9f;
     public float collideFactor; 
     [SerializeField]
     public Direction direction;
@@ -21,6 +21,8 @@ public abstract class MoveableScript : MonoBehaviour {
     protected coord coords;
     [SerializeField]
     public float yOffset;
+
+    private bool justChanged = false; 
 
     protected Animation2DManager animator; 
     
@@ -60,7 +62,11 @@ public abstract class MoveableScript : MonoBehaviour {
 	}
 
 	private void Update() {
-        SetAnimationState();
+        Debug.Log("isMoving: " + isMoving); 
+        if (!justChanged) {
+            SetAnimationState();
+        }
+        justChanged = false; 
         if(isMoving) {
 			float dt = Time.deltaTime; 
 			int y = direction == Direction.NORTH ? 1 : (direction == Direction.SOUTH ? -1 : 0);
@@ -70,6 +76,8 @@ public abstract class MoveableScript : MonoBehaviour {
 			distanceToMove -= distance;
             if (distanceToMove <= 0) {
                 isMoving = false;
+                Debug.Log("Set Move to false"); 
+                justChanged = true; 
                 distance += distanceToMove;
                 distanceToMove = 0;
                 //snap to correct place for portals
@@ -93,6 +101,7 @@ public abstract class MoveableScript : MonoBehaviour {
             }
             if (distanceToMove <= 0) {
                 isColliding = false;
+                justChanged = true; 
                 Vector3 endPos = new Vector3(coords.col + GameManagerScript.mapOrigin.x, coords.row + GameManagerScript.mapOrigin.y + yOffset, this.transform.position.z);
                 this.transform.position = endPos;
             }
@@ -108,7 +117,7 @@ public abstract class MoveableScript : MonoBehaviour {
 	public abstract Direction GetAttemptedMoveDirection (Direction direction, int[,] boardState);
 
 	public void ExecuteMove(Direction direction, int numSpaces, bool animOnly = false) {
-        
+        Debug.Log("Execute Move"); 
         distanceToMove = numSpaces;
         //TODO if your first direction is NONE, things get weird 
         if (direction == Direction.NONE) {

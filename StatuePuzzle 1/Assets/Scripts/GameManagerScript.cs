@@ -281,8 +281,6 @@ public class GameManagerScript : MonoBehaviour {
 
 		updateLoopingSounds ();
 
-        inputReady = (!WinScript.playerWin && getAllDone());
-
         if (inputReady) {
             foreach (ButtonToggleScript button in buttonsPressed) {
                 button.TogglePressed();
@@ -303,7 +301,8 @@ public class GameManagerScript : MonoBehaviour {
 				move(dir);
 			}
 		} else {
-			pauseReady = (!WinScript.playerWin);
+            inputReady = (!WinScript.playerWin && getAllDone());
+            pauseReady = (!WinScript.playerWin);
 		}
 		if (pauseReady && checkPause())
 		{
