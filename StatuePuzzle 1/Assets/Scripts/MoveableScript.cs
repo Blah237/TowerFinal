@@ -62,7 +62,7 @@ public abstract class MoveableScript : MonoBehaviour {
 	}
 
 	private void Update() {
-        Debug.Log("isMoving: " + isMoving); 
+        //Debug.Log("isMoving: " + isMoving); 
         if (!justChanged) {
             SetAnimationState();
         }

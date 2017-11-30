@@ -11,6 +11,7 @@ public class PlayerScript : MoveableScript {
         Idle, 
         Bump, 
         Move, 
+        Pep, 
         Transition
     }
     private AnimState animState = AnimState.Idle; 
@@ -25,7 +26,7 @@ public class PlayerScript : MoveableScript {
 	}
 
     public override void SetAnimationState() {
-        if (animator != null && !animator.isPlaying("pep")) {
+        if (animator != null && animState != AnimState.Pep) {
             if (isColliding && animState != AnimState.Bump) {
                 animator.StopAllAnimations(); 
                 animator.Play("bump", restart: true);
@@ -60,8 +61,10 @@ public class PlayerScript : MoveableScript {
     }
 
     public void Celebrate() {
+        Debug.Log("PEP"); 
         animator.StopAllAnimations();
         animator.Play("pep", restart: true);
+        animState = AnimState.Pep; 
         GetComponentInChildren<ParticleSystem>().Play();
         GetComponent<SpriteRenderer>().color = new Color(255, 255, 255); 
     }
