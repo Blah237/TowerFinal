@@ -254,8 +254,8 @@ public class GameManagerScript : MonoBehaviour {
 			}
 		}
 
-		Debug.Log (mimicsOnGoal);
-		Debug.Log (AudioManagerScript.instance.mimicGoal.isPlaying);
+		//Debug.Log (mimicsOnGoal);
+		//Debug.Log (AudioManagerScript.instance.mimicGoal.isPlaying);
 
 		if (mirrorsOnGoal > 0 && !AudioManagerScript.instance.mirrorGoal.isPlaying) {
 			AudioManagerScript.instance.mirrorGoal.Play();
