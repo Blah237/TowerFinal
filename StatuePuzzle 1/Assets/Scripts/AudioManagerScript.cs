@@ -22,9 +22,12 @@ public class AudioManagerScript : MonoBehaviour {
     void Start () {
 		isMuted = false;
 		isEffectsMuted = false;
-        music.Play();
-        mimicGoal.Play();
-        mirrorGoal.Play();
+        setMimicPlayingCount(0);
+        setMirrorPlayingCount(0);
+        double t = AudioSettings.dspTime + .1f;
+        mimicGoal.PlayScheduled(t);
+        music.PlayScheduled(t);
+        mirrorGoal.PlayScheduled(t);
     }
 
     private void Awake() {
@@ -89,6 +92,11 @@ public class AudioManagerScript : MonoBehaviour {
         mimicGoal.mute = mimicPlaying <= 0 || isMuted;
     }
 
+    public void setMimicPlayingCount(int count) {
+        mimicPlaying = count;
+        mimicGoal.mute = mimicPlaying <= 0 || isMuted;
+    }
+
     public void addMirrorPlaying() {
         mirrorPlaying++;
         mirrorGoal.mute = mirrorPlaying <= 0 || isMuted;
@@ -97,6 +105,11 @@ public class AudioManagerScript : MonoBehaviour {
     public void removeMirrorPlaying() {
         mirrorPlaying--;
         mirrorPlaying = Mathf.Max(mirrorPlaying, 0);
+        mirrorGoal.mute = mirrorPlaying <= 0 || isMuted;
+    }
+
+    public void setMirrorPlayingCount(int count) {
+        mirrorPlaying = count;
         mirrorGoal.mute = mirrorPlaying <= 0 || isMuted;
     }
 
