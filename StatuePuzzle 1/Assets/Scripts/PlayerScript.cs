@@ -26,30 +26,25 @@ public class PlayerScript : MoveableScript {
 
     public override void SetAnimationState() {
         if (animator != null && !animator.isPlaying("pep")) {
-            //animator.StopAllAnimations(); 
             if (isColliding && animState != AnimState.Bump) {
+                animator.StopAllAnimations(); 
                 animator.Play("bump", restart: true);
                 animState = AnimState.Bump;
             }
             else if (isMoving) {
-                //Debug.Log("IsMoving"); 
                 if (animState == AnimState.Idle) {
-                    Debug.Log("Play Transition"); 
                     animator.Play("transition", restart: true);
                     animState = AnimState.Transition; 
                 } else if (animState == AnimState.Transition && !animator.isPlaying("transition")) {
-                    Debug.Log("Play Move"); 
                     animator.Play("move", restart: true, loop: true);
                     animState = AnimState.Move; 
                 }
             } else {
                 if(animState == AnimState.Move) {
-                    Debug.Log("Play Transition End");
                     animator.StopAllAnimations(); 
                     animator.Play("transition", reverse: true, restart: true);
                     animState = AnimState.Transition; 
                 } else if (animState == AnimState.Transition && !animator.isPlaying("transition")) {
-                    Debug.Log("Play Idle");
                     animator.Play("idle", restart: true, loop: true);
                     animState = AnimState.Idle; 
                 } else if (animState == AnimState.Bump && !animator.isPlaying("bump")) {
@@ -102,7 +97,6 @@ public class PlayerScript : MoveableScript {
 	public override Direction GetAttemptedMoveDirection (Direction direction, int[,] boardState)
 	{
         this.direction = direction;
-        SetAnimationState();
         switch (direction) {
 		case Direction.NORTH:
 			if (coords.row >= boardState.GetLength (0) || boardState [coords.row + 1, coords.col] == 1) {

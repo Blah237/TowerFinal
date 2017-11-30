@@ -64,7 +64,6 @@ public class MirrorScript : MoveableScript {
         switch (direction) {
 		case Direction.NORTH: {
                     this.direction = Direction.SOUTH;
-                    SetAnimationState(); 
                     if (coords.row >= boardState.GetLength(0) || boardState[coords.row - 1, coords.col] == 1) {
                         return Direction.NONE;
                     }
@@ -74,7 +73,6 @@ public class MirrorScript : MoveableScript {
                 }
 		case Direction.SOUTH: {
                     this.direction = Direction.NORTH;
-                    SetAnimationState(); 
                     if (coords.row <= 0 || boardState[coords.row + 1, coords.col] == 1) {
                         return Direction.NONE;
                     }
@@ -84,7 +82,6 @@ public class MirrorScript : MoveableScript {
                 }
 		case Direction.EAST: {
                     this.direction = Direction.WEST;
-                    SetAnimationState(); 
                     if (coords.col >= boardState.GetLength(1) || boardState[coords.row, coords.col - 1] == 1) {
                         return Direction.NONE;
                     }
@@ -94,7 +91,6 @@ public class MirrorScript : MoveableScript {
                 }
 		case Direction.WEST: {
                     this.direction = Direction.EAST;
-                    SetAnimationState(); 
                     if (coords.col <= 0 || boardState[coords.row, coords.col + 1] == 1) {
                         return Direction.NONE;
                     }

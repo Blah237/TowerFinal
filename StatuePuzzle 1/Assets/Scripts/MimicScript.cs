@@ -59,7 +59,6 @@ public class MimicScript : MoveableScript
 
     public override Direction GetAttemptedMoveDirection(Direction direction, int[,] boardState) {
         this.direction = direction; 
-        SetAnimationState(); 
         switch (direction) {
             case Direction.NORTH:
                 if (coords.row <= 0 || boardState[coords.row + 1, coords.col] == 1) {

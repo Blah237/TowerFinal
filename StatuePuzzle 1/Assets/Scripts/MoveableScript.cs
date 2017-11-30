@@ -60,8 +60,8 @@ public abstract class MoveableScript : MonoBehaviour {
 	}
 
 	private void Update() {
-        SetAnimationState(); 
-		if(isMoving) {
+        SetAnimationState();
+        if(isMoving) {
 			float dt = Time.deltaTime; 
 			int y = direction == Direction.NORTH ? 1 : (direction == Direction.SOUTH ? -1 : 0);
 			int x = direction == Direction.EAST ? 1 : (direction == Direction.WEST ? -1 : 0);
@@ -72,7 +72,6 @@ public abstract class MoveableScript : MonoBehaviour {
                 isMoving = false;
                 distance += distanceToMove;
                 distanceToMove = 0;
-                //SetAnimationState(direction);
                 //snap to correct place for portals
                 Vector3 endPos = new Vector3(coords.col + GameManagerScript.mapOrigin.x, coords.row + GameManagerScript.mapOrigin.y + yOffset, this.transform.position.z);
                 this.transform.position = endPos;
@@ -94,7 +93,6 @@ public abstract class MoveableScript : MonoBehaviour {
             }
             if (distanceToMove <= 0) {
                 isColliding = false;
-                //SetAnimationState(direction);
                 Vector3 endPos = new Vector3(coords.col + GameManagerScript.mapOrigin.x, coords.row + GameManagerScript.mapOrigin.y + yOffset, this.transform.position.z);
                 this.transform.position = endPos;
             }
@@ -110,7 +108,7 @@ public abstract class MoveableScript : MonoBehaviour {
 	public abstract Direction GetAttemptedMoveDirection (Direction direction, int[,] boardState);
 
 	public void ExecuteMove(Direction direction, int numSpaces, bool animOnly = false) {
-
+        
         distanceToMove = numSpaces;
         //TODO if your first direction is NONE, things get weird 
         if (direction == Direction.NONE) {
@@ -121,8 +119,7 @@ public abstract class MoveableScript : MonoBehaviour {
             isMoving = true;
             this.direction = direction;
         }
-
-        SetAnimationState();
+        
         //Debug.Log(this.name + " moving " + direction.ToString());
 
         //change statue position

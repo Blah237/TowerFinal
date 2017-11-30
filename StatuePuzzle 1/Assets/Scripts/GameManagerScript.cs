@@ -281,7 +281,9 @@ public class GameManagerScript : MonoBehaviour {
 
 		updateLoopingSounds ();
 
-		if (inputReady) {
+        inputReady = (!WinScript.playerWin && getAllDone());
+
+        if (inputReady) {
             foreach (ButtonToggleScript button in buttonsPressed) {
                 button.TogglePressed();
             }
@@ -301,7 +303,6 @@ public class GameManagerScript : MonoBehaviour {
 				move(dir);
 			}
 		} else {
-			inputReady = (!WinScript.playerWin && getAllDone());
 			pauseReady = (!WinScript.playerWin);
 		}
 		if (pauseReady && checkPause())
@@ -594,9 +595,9 @@ public class GameManagerScript : MonoBehaviour {
 						moveDirections [m] = Direction.NONE;
 						collided [m] = 1;
 						collided [other] = 1;
-						Debug.Log ("Couldn't move" + ":" + other.GetCoords ());
+						//Debug.Log ("Couldn't move" + ":" + other.GetCoords ());
 					} else {
-						Debug.Log (moveDirections [other] + ":" + other.GetCoords ());
+						//Debug.Log (moveDirections [other] + ":" + other.GetCoords ());
 					}
 				}
 			}
