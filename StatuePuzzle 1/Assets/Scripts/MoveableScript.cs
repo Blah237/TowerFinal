@@ -90,7 +90,9 @@ public abstract class MoveableScript : MonoBehaviour {
 			distanceToMove -= distance;
             if (distanceToMove <= 0) {
                 isMoving = false;
-                Debug.Log("Set Move to false"); 
+                if (LoggingManager.instance.isDebugging) {
+                    Debug.Log("Set Move to false");
+                }
                 justChanged = true; 
                 distance += distanceToMove;
                 distanceToMove = 0;
@@ -160,7 +162,9 @@ public abstract class MoveableScript : MonoBehaviour {
 	public abstract Direction GetAttemptedMoveDirection (Direction direction, int[,] boardState);
 
 	public void ExecuteMove(Direction direction, int numSpaces, bool animOnly = false) {
-        Debug.Log("Execute Move"); 
+        if (LoggingManager.instance.isDebugging) {
+            Debug.Log("Execute Move");
+        }
         distanceToMove = numSpaces;
         //TODO if your first direction is NONE, things get weird 
         if (direction == Direction.NONE) {

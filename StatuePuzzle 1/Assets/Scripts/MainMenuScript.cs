@@ -15,22 +15,30 @@ public class MainMenuScript : MonoBehaviour {
     public void showPrivacy() {
         //privacy.enabled = true;
         privacy.gameObject.SetActive(true);
-        Debug.Log("Show Privacy");
+        if (LoggingManager.instance.isDebugging) {
+            Debug.Log("Show Privacy");
+        }
     }
 
     public void hidePrivacy() {
         privacy.gameObject.SetActive(false);
-        Debug.Log("Hide Privacy");
+        if (LoggingManager.instance.isDebugging) {
+            Debug.Log("Hide Privacy");
+        }
     }
 
     public void showMailing() {
         mailing.gameObject.SetActive(true);
-        Debug.Log("Show Mailing");
+        if (LoggingManager.instance.isDebugging) {
+            Debug.Log("Show Mailing");
+        }
     }
 
     public void hideMailing() {
         mailing.gameObject.SetActive(false);
-        Debug.Log("Hide Mailing");
+        if (LoggingManager.instance.isDebugging) {
+            Debug.Log("Hide Mailing");
+        }
     }
 
     public void submitMailing() {
@@ -41,11 +49,15 @@ public class MainMenuScript : MonoBehaviour {
 
     public void showCredits() {
         credits.gameObject.SetActive(true);
-        Debug.Log("Show Credits");
+        if (LoggingManager.instance.isDebugging) {
+            Debug.Log("Show Credits");
+        }
     }
 
     public void hideCredits() {
         credits.gameObject.SetActive(false);
-        Debug.Log("Hide Credits");
+        if (LoggingManager.instance.isDebugging) {
+            Debug.Log("Hide Credits");
+        }
     }
 }

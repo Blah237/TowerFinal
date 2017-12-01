@@ -34,11 +34,15 @@ public class PlayerScript : MoveableScript {
             }
             else if (isMoving) {
                 if (animState == AnimState.Idle) {
-                    Debug.Log("Play Transition"); 
+                    if (LoggingManager.instance.isDebugging) {
+                        Debug.Log("Play Transition");
+                    }
                     animator.Play("transition", restart: true);
                     animState = AnimState.Transition; 
                 } else if (animState == AnimState.Bump || (animState == AnimState.Transition && !animator.isPlaying("transition"))) {
-                    Debug.Log("Play Move");
+                    if (LoggingManager.instance.isDebugging) {
+                        Debug.Log("Play Move");
+                    }
                     animator.Play("move", restart: true, loop: true);
                     animState = AnimState.Move; 
                 }
@@ -46,10 +50,14 @@ public class PlayerScript : MoveableScript {
                 if(animState == AnimState.Move) {
                     animator.StopAllAnimations(); 
                     animator.Play("transition", reverse: true, restart: true);
-                    Debug.Log("Play End Transition");
+                    if (LoggingManager.instance.isDebugging) {
+                        Debug.Log("Play End Transition");
+                    }
                     animState = AnimState.Transition; 
                 } else if (animState == AnimState.Transition && !animator.isPlaying("transition")) {
-                    Debug.Log("Play Idle");
+                    if (LoggingManager.instance.isDebugging) {
+                        Debug.Log("Play Idle");
+                    }
                     animator.Play("idle", restart: true, loop: true);
                     animState = AnimState.Idle; 
                 } else if (animState == AnimState.Bump && !animator.isPlaying("bump")) {
@@ -61,7 +69,9 @@ public class PlayerScript : MoveableScript {
     }
 
     public void Celebrate() {
-        Debug.Log("PEP"); 
+        if (LoggingManager.instance.isDebugging) {
+            Debug.Log("PEP");
+        }
         animator.StopAllAnimations();
         animator.Play("pep", restart: true);
         animState = AnimState.Pep; 

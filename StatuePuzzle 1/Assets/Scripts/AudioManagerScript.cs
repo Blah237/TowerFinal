@@ -115,10 +115,12 @@ public class AudioManagerScript : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
-		if(music.isPlaying || mimicGoal.isPlaying || mirrorGoal.isPlaying) {
+		if(music.isPlaying) {
             return;
         } else {
-            Debug.Log("looping music");
+            if (LoggingManager.instance.isDebugging) {
+                Debug.Log("looping music");
+            }
             double t = AudioSettings.dspTime + .1f;
             mimicGoal.PlayScheduled(t);
             music.PlayScheduled(t);

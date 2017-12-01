@@ -17,6 +17,9 @@ public class MuteButtonScript : MonoBehaviour {
 	}
 
     public void toggleMute() {
+        if (LoggingManager.instance.isDebugging) {
+            Debug.Log("Mute Pressed");
+        }
 		AudioManagerScript.instance.toggleMute();
 		i.sprite = (AudioManagerScript.instance.isMuted ? SoundOff : SoundOn);
     }

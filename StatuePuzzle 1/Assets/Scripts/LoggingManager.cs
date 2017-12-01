@@ -92,8 +92,9 @@ public class LoggingManager : MonoBehaviour
 
 	public void RecordEvent(EventCodes actionId, string actionDetail = "")
     {
-
-		Debug.Log (actionDetail);
+        if (isDebugging) {
+            Debug.Log(actionDetail);
+        }
 
         if (isDebugging)
         {
@@ -101,7 +102,9 @@ public class LoggingManager : MonoBehaviour
         }
 
         TestInitialization();
-        Debug.Assert(isLevelStarted, "Cannot record a player's action before a level start.");
+        if (isDebugging) {
+            Debug.Assert(isLevelStarted, "Cannot record a player's action before a level start.");
+        }
 		StartCoroutine(GetPlayerAction((int) actionId, actionDetail));
         sessionSeqId += 1;
         QuestSeqId += 1;
@@ -200,7 +203,9 @@ public class LoggingManager : MonoBehaviour
             //Debug.Log(logReturnedString);
             PlayerQuestData pageLoadData = JsonUtility.FromJson<PlayerQuestData>(logReturnedString);
             dynamicQuestId = pageLoadData.dynamic_quest_id;
-            Debug.Log("Dynamic quest ID: " + dynamicQuestId);
+            if (isDebugging) {
+                Debug.Log("Dynamic quest ID: " + dynamicQuestId);
+            }
         }
 
     }
@@ -227,18 +232,17 @@ public class LoggingManager : MonoBehaviour
         UnityWebRequest www = UnityWebRequest.Get(pageHost + phpPath + pageLoadPath + requestData);
         yield return www.Send();
 
-        if (www.isNetworkError)
-        {
+        if (www.isNetworkError) {
             //Debug.Log(www.error);
-        }
-        else
-        {
+        } else {
             string logReturnedString = www.downloadHandler.text;
             PageLoadData pageLoadData = JsonUtility.FromJson<PageLoadData>(logReturnedString);
             userId = pageLoadData.user_id;
             sessionId = pageLoadData.session_id;
-            Debug.Log("User ID: " + userId);
-            Debug.Log("Session ID: " + sessionId);
+            if (isDebugging) {
+                Debug.Log("User ID: " + userId);
+                Debug.Log("Session ID: " + sessionId);
+            }
         }
 
     }
@@ -289,12 +293,16 @@ public class LoggingManager : MonoBehaviour
 
 		if (www.isNetworkError)
 		{
-			Debug.Log(www.error);
+            if (isDebugging) {
+                Debug.Log(www.error);
+            }
 		}
 		else
 		{
 			string logReturnedString = www.downloadHandler.text;
-			Debug.Log(logReturnedString);
+            if (isDebugging) {
+                Debug.Log(logReturnedString);
+            }
 		}
 	}
 

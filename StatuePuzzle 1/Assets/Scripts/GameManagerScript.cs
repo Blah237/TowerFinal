@@ -422,7 +422,9 @@ public class GameManagerScript : MonoBehaviour {
         if (!didWin) {
             return false; 
         }
-        Debug.Log("VICTORY!");
+        if (LoggingManager.instance.isDebugging) {
+            Debug.Log("VICTORY!");
+        }
 		//AudioManagerScript.instance.mirrorGoal.loop = false;
 		//AudioManagerScript.instance.mimicGoal.loop = false;
 		LoggingManager.instance.RecordEvent (LoggingManager.EventCodes.LEVEL_COMPLETE, "Level complete");
@@ -432,13 +434,17 @@ public class GameManagerScript : MonoBehaviour {
         inputReady = false; 
 	    WinScript.playerWin = true;
         WinScript.newChallengeUnlock = false;
-        Debug.Log("Won Level " + levelNum);
+        if (LoggingManager.instance.isDebugging) {
+            Debug.Log("Won Level " + levelNum);
+        }
         if (CreateLevelSelect.challengeUnlocks.ContainsKey(levelNum)) {
             int chal = CreateLevelSelect.challengeUnlocks[levelNum];
             if(PlayerPrefs.GetInt("chal_"+chal+"_unlocked", 0) != 1) {
                 PlayerPrefs.SetInt("chal_" + chal + "_unlocked", 1);
                 WinScript.newChallengeUnlock = true;
-                Debug.Log("Challenge " + chal + " Unlocked!");
+                if (LoggingManager.instance.isDebugging) {
+                    Debug.Log("Challenge " + chal + " Unlocked!");
+                }
             }
         }
 	    pauseReady = false;

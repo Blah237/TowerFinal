@@ -8,6 +8,7 @@ using UnityEngine.SceneManagement;
 public class NextLevelScript : MonoBehaviour {
 	
 	public static string currentLevel;
+    private bool isready = true;
 	
 	void Start() { Time.timeScale = 1; }
 
@@ -31,10 +32,16 @@ public class NextLevelScript : MonoBehaviour {
 
 	public void LoadScene()
 	{
+        if (!isready) {
+            return;
+        }
+        isready = false;
 		WinScript.playerWin = false;
 		string nextLevel = getNextLevel();
 		GameManagerScript.levelName = nextLevel;
-		Debug.Log(nextLevel);
+        if (LoggingManager.instance.isDebugging) {
+            Debug.Log(nextLevel);
+        }
 		SceneManager.LoadScene(1);
 	}
 }
