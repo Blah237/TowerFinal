@@ -7493,9 +7493,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a7f126947d84034c897994218f4348a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  privacy: {fileID: 0}
-  mailing: {fileID: 0}
-  credits: {fileID: 0}
+  privacy: {fileID: 1364324472}
+  mailing: {fileID: 221779856}
+  credits: {fileID: 151190447}
 --- !u!95 &1716123680
 Animator:
   serializedVersion: 3
