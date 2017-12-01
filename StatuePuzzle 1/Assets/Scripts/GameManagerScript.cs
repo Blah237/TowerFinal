@@ -118,6 +118,8 @@ public class GameManagerScript : MonoBehaviour {
 
     [SerializeField]
     public static string levelName;
+    public static int levelNum;
+
     Level boardState; //Row, Column
                       // East col+, North row+
 
@@ -433,14 +435,24 @@ public class GameManagerScript : MonoBehaviour {
             return false; 
         }
         Debug.Log("VICTORY!");
-		AudioManagerScript.instance.mirrorGoal.loop = false;
-		AudioManagerScript.instance.mimicGoal.loop = false;
+		//AudioManagerScript.instance.mirrorGoal.loop = false;
+		//AudioManagerScript.instance.mimicGoal.loop = false;
 		LoggingManager.instance.RecordEvent (LoggingManager.EventCodes.LEVEL_COMPLETE, "Level complete");
 		LoggingManager.instance.RecordLevelEnd ();
         player.Celebrate();
         //AudioManagerScript.instance.soundFx.PlayOneShot(player.victorySound);
         inputReady = false; 
 	    WinScript.playerWin = true;
+        WinScript.newChallengeUnlock = false;
+        Debug.Log("Won Level " + levelNum);
+        if (CreateLevelSelect.challengeUnlocks.ContainsKey(levelNum)) {
+            int chal = CreateLevelSelect.challengeUnlocks[levelNum];
+            if(PlayerPrefs.GetInt("chal_"+chal+"_unlocked", 0) != 1) {
+                PlayerPrefs.SetInt("chal_" + chal + "_unlocked", 1);
+                WinScript.newChallengeUnlock = true;
+                Debug.Log("Challenge " + chal + " Unlocked!");
+            }
+        }
 	    pauseReady = false;
         tutorial.enabled = false;
         tutorial1.SetActive(false);
