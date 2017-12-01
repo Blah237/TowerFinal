@@ -200,7 +200,7 @@ public abstract class MoveableScript : MonoBehaviour {
 
     public abstract void SetAnimationState();
 
-	public void startSpin(int degrees, bool willSwap = true) {
+    public virtual void startSpin(int degrees, bool willSwap = true) { 
 		this.requiredRotation = degrees;
         this.willSwap = willSwap;
     }
