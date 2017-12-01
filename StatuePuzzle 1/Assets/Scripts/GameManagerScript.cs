@@ -117,7 +117,8 @@ public class GameManagerScript : MonoBehaviour {
     Direction? inputDir;
     
     [SerializeField]
-    public static string levelName; 
+    public static string levelName;
+    int levelNum;
     Level boardState; //Row, Column
                       // East col+, North row+
 
@@ -140,7 +141,7 @@ public class GameManagerScript : MonoBehaviour {
 		boardState = IOScript.ParseLevel(levelName);
 
 		// TODO: Below the way we get the index is DISGUSTING, this whole shitshow needs refactored
-		int levelNum = CreateLevelSelect.levelList.FindIndex(s => s == levelName);
+		levelNum = CreateLevelSelect.levelList.FindIndex(s => s == levelName);
 		LoggingManager.instance.RecordLevelStart (levelNum, levelName);
 
         mapOrigin = new Vector2(-boardState.cols / 2.0f, -boardState.rows / 2.0f);
@@ -254,8 +255,8 @@ public class GameManagerScript : MonoBehaviour {
 			}
 		}
 
-		Debug.Log (mimicsOnGoal);
-		Debug.Log (AudioManagerScript.instance.mimicGoal.isPlaying);
+		//Debug.Log (mimicsOnGoal);
+		//Debug.Log (AudioManagerScript.instance.mimicGoal.isPlaying);
 
 		if (mirrorsOnGoal > 0 && !AudioManagerScript.instance.mirrorGoal.isPlaying) {
 			AudioManagerScript.instance.mirrorGoal.Play();
@@ -439,14 +440,24 @@ public class GameManagerScript : MonoBehaviour {
             return false; 
         }
         Debug.Log("VICTORY!");
-		AudioManagerScript.instance.mirrorGoal.loop = false;
-		AudioManagerScript.instance.mimicGoal.loop = false;
+		//AudioManagerScript.instance.mirrorGoal.loop = false;
+		//AudioManagerScript.instance.mimicGoal.loop = false;
 		LoggingManager.instance.RecordEvent (LoggingManager.EventCodes.LEVEL_COMPLETE, "Level complete");
 		LoggingManager.instance.RecordLevelEnd ();
         player.Celebrate();
         //AudioManagerScript.instance.soundFx.PlayOneShot(player.victorySound);
         inputReady = false; 
 	    WinScript.playerWin = true;
+        WinScript.newChallengeUnlock = false;
+        Debug.Log("Won Level " + levelNum);
+        if (CreateLevelSelect.challengeUnlocks.ContainsKey(levelNum)) {
+            int chal = CreateLevelSelect.challengeUnlocks[levelNum];
+            if(PlayerPrefs.GetInt("chal_"+chal+"_unlocked", 0) != 1) {
+                PlayerPrefs.SetInt("chal_" + chal + "_unlocked", 0);
+                WinScript.newChallengeUnlock = true;
+                Debug.Log("Challenge " + chal + " Unlocked!");
+            }
+        }
 	    pauseReady = false;
         tutorial.enabled = false;
         tutorial1.SetActive(false);
