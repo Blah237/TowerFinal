@@ -8,6 +8,7 @@ public abstract class MoveableScript : MonoBehaviour {
     private bool isMoving;
     [SerializeField]
 	public float requiredRotation = 0f;
+    public bool willSwap = false;
 	public bool shouldSwap = false;
 	public bool shouldShrink = false;
 	public bool shouldGrow = false;
@@ -54,6 +55,10 @@ public abstract class MoveableScript : MonoBehaviour {
 
     public bool GetIsColliding() {
         return isColliding; 
+    }
+
+    public bool GetIsDone() {
+        return !isMoving && !isColliding && requiredRotation == 0f && !shouldShrink && !shouldGrow;
     }
 
 	public coord GetCoords() {
@@ -116,7 +121,7 @@ public abstract class MoveableScript : MonoBehaviour {
 			this.transform.Rotate (new Vector3 (0, rotateAmount, 0));
 			this.requiredRotation -= rotateAmount;
 			if (requiredRotation <= 0) {
-				this.shouldSwap = true;
+				this.shouldSwap = this.willSwap;
 			}
 			this.outline.GetComponent<Renderer> ().enabled = false;
 		} else {
@@ -127,7 +132,7 @@ public abstract class MoveableScript : MonoBehaviour {
 		}
 		shouldShrink = shouldShrink && !shouldGrow;
 		if (shouldGrow) {
-			Debug.Log ("GROWING");
+            Debug.Log ("GROWING");
 			Debug.Log (initScale);
 			this.transform.localScale += scaleAmt;
 			if (this.transform.localScale.x >= initScale.x) {
@@ -187,9 +192,10 @@ public abstract class MoveableScript : MonoBehaviour {
         coords = portalCoords;
     }
 
-	public void startSpin(int degrees) {
+	public void startSpin(int degrees, bool willSwap = true) {
 		this.requiredRotation = degrees;
-	}
+        this.willSwap = willSwap;
+    }
 
     public void SetAnimationState(Direction direction) {
         int animateDir = (int)this.direction;
