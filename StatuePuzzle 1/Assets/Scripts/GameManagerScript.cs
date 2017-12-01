@@ -279,8 +279,6 @@ public class GameManagerScript : MonoBehaviour {
 
         updateLoopingSounds();
 
-        inputReady = (!WinScript.playerWin && getAllDone());
-
         CheckSwaps();
 
         if (inputReady) {
@@ -302,6 +300,7 @@ public class GameManagerScript : MonoBehaviour {
                 move(dir);
             }
         } else {
+            inputReady = (!WinScript.playerWin && getAllDone());
             pauseReady = (!WinScript.playerWin);
         }
         if (pauseReady && checkPause()) {

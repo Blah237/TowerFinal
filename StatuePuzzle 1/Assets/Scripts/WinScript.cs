@@ -9,9 +9,9 @@ public class WinScript : MonoBehaviour
     public static bool newChallengeUnlock = false;
 	public static bool playerWin;
 	//public float restartDelay = 5f;
-	private GameObject NextLevel;
-	private GameObject LevelSelectWin;
-	private GameObject RestartWin;
+	public GameObject NextLevel;
+	public GameObject LevelSelectWin;
+	public GameObject RestartWin;
     private GameObject ChallengeUnlockedView;
 
 	private Animator anim;
@@ -21,9 +21,6 @@ public class WinScript : MonoBehaviour
 	void Start ()
 	{
 		anim = GetComponent<Animator>();
-		NextLevel = GameObject.Find("Next Level");
-		LevelSelectWin = GameObject.Find("Button");
-		RestartWin = GameObject.Find("Restart Level");
 	}
 	
 	// Update is called once per frame
