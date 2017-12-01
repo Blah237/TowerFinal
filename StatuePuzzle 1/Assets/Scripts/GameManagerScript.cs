@@ -60,42 +60,42 @@ public struct coord {
 
 public class GameManagerScript : MonoBehaviour {
 
-	List<MoveableScript> moveables = new List<MoveableScript>();
-	public Stack<DynamicState> dynamicStateStack = new Stack<DynamicState>();
+    List<MoveableScript> moveables = new List<MoveableScript>();
+    public Stack<DynamicState> dynamicStateStack = new Stack<DynamicState>();
     public PlayerScript player;
     public MimicScript mimic;
     public MirrorScript mirror;
     public GameObject wall;
-    public GameObject frontWall; 
+    public GameObject frontWall;
     public GoalScript goal;
-    public LaserScript laser; 
-	
-	public WinScript winscript;
-	public DeathScript deathscript;
-	public PauseScript pausescript;
-	public RestartLevel restartscript;
+    public LaserScript laser;
 
-	public ButtonToggleScript button;
-	
-	public GameObject ground;
-	public Camera mainCamera;
+    public WinScript winscript;
+    public DeathScript deathscript;
+    public PauseScript pausescript;
+    public RestartLevel restartscript;
+
+    public ButtonToggleScript button;
+
+    public GameObject ground;
+    public Camera mainCamera;
 
     public Text tutorial;
     public GameObject tutorial1;
-    public GameObject tutorial3; 
+    public GameObject tutorial3;
     public GameObject tutorial6;
-    public GameObject tutorialCanvas; 
-	public Text restartConfirmText;
+    public GameObject tutorialCanvas;
+    public Text restartConfirmText;
 
-	public bool win;
-	public bool dead;
-	public bool showRestartConfirm;	
+    public bool win;
+    public bool dead;
+    public bool showRestartConfirm;
 
-	private int restartScreenTimer = 0;
-    
+    private int restartScreenTimer = 0;
+
     List<coord> goalCoords = new List<coord>();
-    Dictionary<coord, GoalScript> goalAtCoords = new Dictionary<coord, GoalScript>(); 
-    List<LaserScript> laserList = new List<LaserScript>(); 
+    Dictionary<coord, GoalScript> goalAtCoords = new Dictionary<coord, GoalScript>();
+    List<LaserScript> laserList = new List<LaserScript>();
 
     public GameObject swap;
     public GameObject portal;
@@ -105,7 +105,7 @@ public class GameManagerScript : MonoBehaviour {
     List<coord> portalCoords = new List<coord>();
     Dictionary<coord, coord> portalMap = new Dictionary<coord, coord>();
     HashSet<ButtonToggleScript> buttonsPressed = new HashSet<ButtonToggleScript>();
-    HashSet<MoveableScript> needsSwap = new HashSet<MoveableScript>(); 
+    HashSet<MoveableScript> needsSwap = new HashSet<MoveableScript>();
 
     public static Vector2 mapOrigin;
 
@@ -113,12 +113,13 @@ public class GameManagerScript : MonoBehaviour {
 
     [SerializeField]
     public static bool inputReady = true;
-	public static bool pauseReady = true;
+    public static bool pauseReady = true;
     Direction? inputDir;
-    
+
     [SerializeField]
     public static string levelName;
     public static int levelNum;
+
     Level boardState; //Row, Column
                       // East col+, North row+
 
@@ -132,72 +133,71 @@ public class GameManagerScript : MonoBehaviour {
 
     // Use this for initialization
     void Start() {
-		
-		AudioManagerScript.instance.mimicGoal.loop = true;
-		AudioManagerScript.instance.mirrorGoal.loop = true;
-		firstStart = false;
+
+        AudioManagerScript.instance.mimicGoal.loop = true;
+        AudioManagerScript.instance.mirrorGoal.loop = true;
+        firstStart = false;
 
         //load level using Melody's I/O
-		boardState = IOScript.ParseLevel(levelName);
+        boardState = IOScript.ParseLevel(levelName);
 
-		// TODO: Below the way we get the index is DISGUSTING, this whole shitshow needs refactored
-		levelNum = CreateLevelSelect.levelList.FindIndex(s => s == levelName);
-		LoggingManager.instance.RecordLevelStart (levelNum, levelName);
+        // TODO: Below the way we get the index is DISGUSTING, this whole shitshow needs refactored
+        int levelNum = CreateLevelSelect.levelList.FindIndex(s => s == levelName);
+        LoggingManager.instance.RecordLevelStart(levelNum, levelName);
 
         mapOrigin = new Vector2(-boardState.cols / 2.0f, -boardState.rows / 2.0f);
         mainCamera.orthographicSize = boardState.rows / 2.0f + 1;
         tutorial.text = boardState.tutorial;
         tutorial.enabled = true;
-        if(levelNum == 0) {
-            tutorial1.SetActive(true); 
-        } else if(levelNum == 5) {
-            tutorial6.SetActive(true); 
+        if (levelNum == 0) {
+            tutorial1.SetActive(true);
+        } else if (levelNum == 5) {
+            tutorial6.SetActive(true);
         }
-        
+
 
         int buttonCount = 0;
 
         //instantiate lasers based on parsed lasers
         if (boardState.lasers != null) {
             foreach (Laser la in boardState.lasers) {
-                LaserScript l = GameObject.Instantiate(laser); 
-                l.makeLaser(la, mapOrigin); 
+                LaserScript l = GameObject.Instantiate(laser);
+                l.makeLaser(la, mapOrigin);
                 laserList.Add(l);
             }
         }
 
         //instantiate items based on board
         for (int i = 0; i < boardState.rows; i++) {
-            for(int j = 0; j < boardState.cols; j++) {
+            for (int j = 0; j < boardState.cols; j++) {
                 if (boardState.board[i, j] == 1) {
                     //wall
-                    GameObject w; 
-                    if(i == 0 || boardState.board[i-1,j] != 1) {
-                        w = GameObject.Instantiate(frontWall); 
+                    GameObject w;
+                    if (i == 0 || boardState.board[i - 1, j] != 1) {
+                        w = GameObject.Instantiate(frontWall);
                     } else {
-                        w = GameObject.Instantiate(wall); 
+                        w = GameObject.Instantiate(wall);
                     }
                     w.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0);
                 } else if (boardState.board[i, j] >= 10 && boardState.board[i, j] < 20) {
                     // goal
                     GoalScript c = GameObject.Instantiate(goal);
                     c.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0);
-                    goalAtCoords.Add(new coord(i, j), c); 
+                    goalAtCoords.Add(new coord(i, j), c);
                     goalCoords.Add(new coord(i, j));
-                } else if (boardState.board[i, j] >= 20 && boardState.board[i, j] < 30)
-	            {
-		            // swap
-		            GameObject c = GameObject.Instantiate(swap);
-		            c.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0);
-		            swapCoords.Add(new coord(i, j));
-	            } else if (boardState.board[i,j] >= 30 && boardState.board[i,j] < 40) {
-	                // button
-	                ButtonToggleScript c = GameObject.Instantiate(button);
-	                c.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0);
+                } else if (boardState.board[i, j] >= 20 && boardState.board[i, j] < 30) {
+                    // swap
+                    GameObject c = GameObject.Instantiate(swap);
+                    c.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0);
+                    swapCoords.Add(new coord(i, j));
+                } else if (boardState.board[i, j] >= 30 && boardState.board[i, j] < 40) {
+                    // button
+                    ButtonToggleScript c = GameObject.Instantiate(button);
+                    c.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y, 0);
                     c.laser = laserList[boardState.buttons[buttonCount]];
                     c.InitButton();
-                    buttonCoords.Add(new coord(i,j), c);
-                    buttonCount++; 
+                    buttonCoords.Add(new coord(i, j), c);
+                    buttonCount++;
                 } else if (boardState.board[i, j] >= 50 && boardState.board[i, j] < 60) {
                     // portal
                     GameObject p = GameObject.Instantiate(portal);
@@ -212,22 +212,22 @@ public class GameManagerScript : MonoBehaviour {
                 if (boardState.board[i, j] % 10 == 2) {
                     // player
                     player = GameObject.Instantiate(player);
-                    player.SetCoords(j, i); 
+                    player.SetCoords(j, i);
                     player.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y + player.yOffset, -0.2f);
-                    moveables.Add(player); 
-                } else if (boardState.board[i,j] % 10 == 3) {
+                    moveables.Add(player);
+                } else if (boardState.board[i, j] % 10 == 3) {
                     // mimic
                     MimicScript m = GameObject.Instantiate(mimic);
                     m.SetCoords(j, i);
                     m.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y + m.yOffset, -0.2f);
-                    moveables.Add(m); 
-                } else if (boardState.board[i,j] % 10 == 4) {
+                    moveables.Add(m);
+                } else if (boardState.board[i, j] % 10 == 4) {
                     // mirror
                     MirrorScript m = GameObject.Instantiate(mirror);
                     m.SetCoords(j, i);
                     m.transform.position = new Vector3(j + mapOrigin.x, i + mapOrigin.y + m.yOffset, -0.2f);
                     moveables.Add(m);
-                } 
+                }
             }
         }
 
@@ -236,135 +236,127 @@ public class GameManagerScript : MonoBehaviour {
                 portalMap.Add(portalCoords[i], portalCoords[boardState.portals[i]]);
             }
         }
-	}
+    }
 
-	void updateLoopingSounds() {
+    void updateLoopingSounds() {
 
-		if (pausescript.paused) {
-			return;
-		}
+        if (pausescript.paused) {
+            return;
+        }
 
-		// Looping sound effects
-		int mirrorsOnGoal = 0;
-		int mimicsOnGoal = 0;
-		foreach (MoveableScript m in moveables) {
-			if (m.type == BoardCodes.MIMIC && goalCoords.Contains(m.GetCoords())) {
-				mimicsOnGoal++;
-			} else if (m.type == BoardCodes.MIRROR && goalCoords.Contains(m.GetCoords())) {
-				mirrorsOnGoal++;
-			}
-		}
+        // Looping sound effects
+        int mirrorsOnGoal = 0;
+        int mimicsOnGoal = 0;
+        foreach (MoveableScript m in moveables) {
+            if (m.type == BoardCodes.MIMIC && goalCoords.Contains(m.GetCoords())) {
+                mimicsOnGoal++;
+            } else if (m.type == BoardCodes.MIRROR && goalCoords.Contains(m.GetCoords())) {
+                mirrorsOnGoal++;
+            }
+        }
 
-		//Debug.Log (mimicsOnGoal);
-		//Debug.Log (AudioManagerScript.instance.mimicGoal.isPlaying);
+        if (mirrorsOnGoal > 0 && !AudioManagerScript.instance.mirrorGoal.isPlaying) {
+            AudioManagerScript.instance.mirrorGoal.Play();
+        } else if (mirrorsOnGoal <= 0) {
+            AudioManagerScript.instance.mirrorGoal.Stop();
+        }
 
-		if (mirrorsOnGoal > 0 && !AudioManagerScript.instance.mirrorGoal.isPlaying) {
-			AudioManagerScript.instance.mirrorGoal.Play();
-		} else if (mirrorsOnGoal <= 0) {
-			AudioManagerScript.instance.mirrorGoal.Stop();
-		}
+        if (mimicsOnGoal > 0 && !AudioManagerScript.instance.mimicGoal.isPlaying) {
+            AudioManagerScript.instance.mimicGoal.Play();
+        } else if (mimicsOnGoal <= 0) {
+            AudioManagerScript.instance.mimicGoal.Stop();
+        }
+    }
 
-		if (mimicsOnGoal > 0 && !AudioManagerScript.instance.mimicGoal.isPlaying) {
-			AudioManagerScript.instance.mimicGoal.Play();
-		} else if (mimicsOnGoal <= 0) {
-			AudioManagerScript.instance.mimicGoal.Stop();
-		}
-	}
+    // Update is called once per frame
+    void Update() {
 
-	// Update is called once per frame
-	void Update () {
+        // TODO: Hacky, but neccessary if we want accurate recording and not a real loading screen
+        if (!firstStart) {
+            recordDynamicState();
+            firstStart = true;
+        }
 
-		// TODO: Hacky, but neccessary if we want accurate recording and not a real loading screen
-		if (!firstStart) {
-			recordDynamicState ();
-			firstStart = true;
-		}
+        updateLoopingSounds();
 
-		updateLoopingSounds ();
+        inputReady = (!WinScript.playerWin && getAllDone());
 
-		if (inputReady) {
+        CheckSwaps();
+
+        if (inputReady) {
             foreach (ButtonToggleScript button in buttonsPressed) {
                 button.TogglePressed();
             }
-            buttonsPressed.Clear(); 
+            buttonsPressed.Clear();
             foreach (MoveableScript m in needsSwap) {
-                PerformSwap(m); 
+                PerformSwap(m);
             }
             needsSwap.Clear();
             if (!WinScript.playerWin) {
                 checkWin();
-                checkFailState(); 
+                checkFailState();
             }
             Direction dir = readInput();
-			if (dir != Direction.NONE && !WinScript.playerWin)
-			{
-				inputReady = false;
-				move(dir);
-			}
-		} else {
-			inputReady = (!WinScript.playerWin && getAllDone());
-			pauseReady = (!WinScript.playerWin);
-		}
-		if (pauseReady && checkPause())
-		{
-			pausescript.TogglePause();
+            if (dir != Direction.NONE && !WinScript.playerWin) {
+                inputReady = false;
+                move(dir);
+            }
+        } else {
+            pauseReady = (!WinScript.playerWin);
+        }
+        if (pauseReady && checkPause()) {
+            pausescript.TogglePause();
             tutorial.enabled = !tutorial.enabled;
-            tutorialCanvas.SetActive(!tutorialCanvas.activeInHierarchy); 
-		} else if (pauseReady && Input.GetKeyDown(KeyCode.Escape))
-		{
-			if (pausescript.paused)
-			{
-				LoadLevelSelect.LoadSceneEscFromPause();
-			}
-			else
-			{
-				pausescript.TogglePause();
-				tutorial.enabled = !tutorial.enabled;
-				tutorialCanvas.SetActive(!tutorialCanvas.activeInHierarchy);
-			}
-		}
-		if (pausescript.paused)
-		{
-			showRestartConfirm = false;
-			restartConfirmText.GetComponent<Text>().color = Color.clear;
-			inputReady = false;
-		}
-		handleRestart();
-	}
+            tutorialCanvas.SetActive(!tutorialCanvas.activeInHierarchy);
+        } else if (pauseReady && Input.GetKeyDown(KeyCode.Escape)) {
+            if (pausescript.paused) {
+                LoadLevelSelect.LoadSceneEscFromPause();
+            } else {
+                pausescript.TogglePause();
+                tutorial.enabled = !tutorial.enabled;
+                tutorialCanvas.SetActive(!tutorialCanvas.activeInHierarchy);
+            }
+        }
+        if (pausescript.paused) {
+            showRestartConfirm = false;
+            restartConfirmText.GetComponent<Text>().color = Color.clear;
+            inputReady = false;
+        }
+        handleRestart();
+    }
 
     bool getAllDone() {
         foreach (MoveableScript m in moveables) {
-            if (m.GetIsMoving() || m.GetIsColliding()) {
+            if (!m.GetIsDone()) {
                 return false;
             }
         }
         return true;
     }
 
-	public void resume()
-	{
-		pausescript.TogglePause();
-		tutorial.enabled = !tutorial.enabled;
-		tutorialCanvas.SetActive(!tutorialCanvas.activeInHierarchy); 
-	}
+    public void resume() {
+        pausescript.TogglePause();
+        tutorial.enabled = !tutorial.enabled;
+        tutorialCanvas.SetActive(!tutorialCanvas.activeInHierarchy);
+    }
 
-	private void undo() {
-		// TODO: Record an undo with logging as an event
-        if(dynamicStateStack.Count <= 1) {
+    private void undo() {
+        // TODO: Record an undo with logging as an event
+        if (dynamicStateStack.Count <= 1) {
             return;
         }
-		try {
-			dynamicStateStack.Pop();
-			DynamicState ds = dynamicStateStack.Peek();
-			LoggingManager.instance.RecordEvent(LoggingManager.EventCodes.UNDO,ds.toJson());
-			//int mimicIdx = 0;
-			//int mirrorIdx = 0;
-			List<coord> mimicCoords = ds.mimicPositions.ToList ();
-			List<coord> mirrorCoords = ds.mirrorPositions.ToList ();
-            while(moveables.Count > 0) {
+        try {
+            dynamicStateStack.Pop();
+            DynamicState ds = dynamicStateStack.Peek();
+            LoggingManager.instance.RecordEvent(LoggingManager.EventCodes.UNDO, ds.toJson());
+            //int mimicIdx = 0;
+            //int mirrorIdx = 0;
+            List<coord> mimicCoords = ds.mimicPositions.ToList();
+            List<coord> mirrorCoords = ds.mirrorPositions.ToList();
+            while (moveables.Count > 0) {
                 MoveableScript ms = moveables[0];
                 moveables.RemoveAt(0);
-                if(ms is PlayerScript) {
+                if (ms is PlayerScript) {
                     continue;
                 }
                 Destroy(ms.gameObject);
@@ -372,7 +364,7 @@ public class GameManagerScript : MonoBehaviour {
             player.SetCoords(ds.playerPosition.col, ds.playerPosition.row);
             player.transform.position = new Vector3(player.GetCoords().col + mapOrigin.x, player.GetCoords().row + mapOrigin.y + player.yOffset);
             moveables.Add(player);
-            foreach(coord c in mimicCoords) {
+            foreach (coord c in mimicCoords) {
                 MimicScript m = GameObject.Instantiate(mimic);
                 m.SetCoords(c.col, c.row);
                 m.transform.position = new Vector3(c.col + mapOrigin.x, c.row + mapOrigin.y + m.yOffset, -0.2f);
@@ -384,19 +376,22 @@ public class GameManagerScript : MonoBehaviour {
                 m.transform.position = new Vector3(c.col + mapOrigin.x, c.row + mapOrigin.y + m.yOffset, -0.2f);
                 moveables.Add(m);
             }
-            foreach(coord c in buttonCoords.Keys) {
-                if(buttonCoords[c].laser.data.isActive != ds.activeButtons.Contains(c)) {
+            foreach (coord c in buttonCoords.Keys) {
+                if (buttonCoords[c].laser.data.isActive != ds.activeButtons.Contains(c)) {
                     buttonCoords[c].TogglePressed();
                 }
             }
 
-		} catch (InvalidOperationException) {
-			//TODO: Actually display this to the user 
-			Debug.Log ("Empty stack, no previous move to undo.");
-		}
-	}
+        } catch (InvalidOperationException) {
+            //TODO: Actually display this to the user 
+            Debug.Log("Empty stack, no previous move to undo.");
+        }
+    }
 
     Direction readInput() {
+        if (WinScript.playerWin || !getAllDone()) {
+            return Direction.NONE;
+        }
 		if (Input.GetAxis ("Horizontal") >= 1f) {
 			return Direction.EAST;
 		} else if (Input.GetAxis ("Horizontal") <= -1f) {
@@ -605,9 +600,9 @@ public class GameManagerScript : MonoBehaviour {
 						moveDirections [m] = Direction.NONE;
 						collided [m] = 1;
 						collided [other] = 1;
-						Debug.Log ("Couldn't move" + ":" + other.GetCoords ());
+						//Debug.Log ("Couldn't move" + ":" + other.GetCoords ());
 					} else {
-						Debug.Log (moveDirections [other] + ":" + other.GetCoords ());
+						//Debug.Log (moveDirections [other] + ":" + other.GetCoords ());
 					}
 				}
 			}
@@ -661,33 +656,52 @@ public class GameManagerScript : MonoBehaviour {
     }
 
     private void PerformSwap(MoveableScript moveable) {
-        Direction dr = moveable.direction;
-        int row = moveable.GetCoords().row;
-        int col = moveable.GetCoords().col; 
-
-        if (moveable.type == BoardCodes.MIMIC) {
-            boardState.board[row, col] = 24;
-            // Instantiate a Mirror
-            MirrorScript m = GameObject.Instantiate(mirror);
-            m.SetCoords(col, row);
-            m.transform.position = new Vector3(col + mapOrigin.x, row + mapOrigin.y + m.yOffset, 0);
-            moveables.Add(m);
-            m.ExecuteMove(dr, 0);
-            this.moveables.Remove(moveable);
-            GameObject.Destroy(moveable.gameObject);
-        }
-        else if (moveable.type == BoardCodes.MIRROR) {
-            boardState.board[row, col] = 23;
-            // Instantiate a Mimic
-            MimicScript m = GameObject.Instantiate(mimic);
-            m.SetCoords(col, row);
-            m.transform.position = new Vector3(col + mapOrigin.x, row + mapOrigin.y + m.yOffset, 0);
-            moveables.Add(m);
-            m.ExecuteMove(dr, 0);
-            this.moveables.Remove(moveable);
-            GameObject.Destroy(moveable.gameObject);
-        }
+		moveable.startSpin (270);
     }
+
+	private void CheckSwaps () {
+
+		List<MoveableScript> toDelete = new List<MoveableScript> ();
+		List<MoveableScript> toAdd = new List<MoveableScript> ();
+		foreach (MoveableScript moveable in moveables) {
+			Direction dr = moveable.direction;
+			int row = moveable.GetCoords().row;
+			int col = moveable.GetCoords().col; 
+			if (moveable.shouldSwap && moveable.type == BoardCodes.MIMIC) {
+                inputReady = false;
+				boardState.board [row, col] = 24;
+				// Instantiate a Mirror
+				MirrorScript m = GameObject.Instantiate (mirror);
+				m.SetCoords (col, row);
+                m.transform.Rotate(0f, -90f, 0f);
+                m.startSpin(90, false);
+				toAdd.Add (m);
+				toDelete.Add (moveable);
+			} else if (moveable.shouldSwap && moveable.type == BoardCodes.MIRROR) {
+                inputReady = false;
+                boardState.board [row, col] = 23;
+				// Instantiate a Mimic
+				MimicScript m = GameObject.Instantiate (mimic);
+				m.SetCoords (col, row);
+                m.transform.Rotate(0f, -90f, 0f);
+                m.startSpin(90, false);
+                toAdd.Add (m);
+				toDelete.Add (moveable);
+			}
+		}
+
+		foreach (MoveableScript moveable in toDelete) {
+			this.moveables.Remove (moveable);
+			GameObject.Destroy (moveable.gameObject);
+		}
+
+		foreach (MoveableScript m in toAdd) {
+			int col = m.GetCoords ().col;
+			int row = m.GetCoords ().row;
+			m.transform.position = new Vector3 (col + mapOrigin.x, row + mapOrigin.y + m.yOffset, 0);
+			moveables.Add (m);
+		}
+	}
 
 	private void recordDynamicState() {
 		DynamicState ds = new DynamicState ();

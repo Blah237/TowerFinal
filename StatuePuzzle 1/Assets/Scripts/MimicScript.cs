@@ -7,6 +7,23 @@ public class MimicScript : MoveableScript
     
     protected override void InitializeType() {
         this.type = BoardCodes.MIMIC;
+        this.direction = Direction.EAST; 
+    }
+
+    public override void SetAnimationState() {
+        int animateDir = (int)this.direction;
+        if (animator != null) {
+            if (!animator.isPlaying(animateDir + 4)) {
+                if (isColliding) {
+                    animateDir += 4;  //direction + 4 will give you the index of the colliding animation 
+                    animator.StopAllAnimations(); 
+                    animator.Play(animateDir, restart: true);
+                } else {
+                    animator.StopAllAnimations(); 
+                    animator.Play(animateDir, loop: true); 
+                } 
+            }
+        }
     }
 
     public override coord GetAttemptedMoveCoords(Direction direction, int[,] boardState, int numSpaces) {
@@ -42,7 +59,6 @@ public class MimicScript : MoveableScript
 
     public override Direction GetAttemptedMoveDirection(Direction direction, int[,] boardState) {
         this.direction = direction; 
-        SetAnimationState(direction); 
         switch (direction) {
             case Direction.NORTH:
                 if (coords.row <= 0 || boardState[coords.row + 1, coords.col] == 1) {
