@@ -254,9 +254,6 @@ public class GameManagerScript : MonoBehaviour {
 			}
 		}
 
-		Debug.Log (mimicsOnGoal);
-		Debug.Log (AudioManagerScript.instance.mimicGoal.isPlaying);
-
 		if (mirrorsOnGoal > 0 && !AudioManagerScript.instance.mirrorGoal.isPlaying) {
 			AudioManagerScript.instance.mirrorGoal.Play();
 		} else if (mirrorsOnGoal <= 0) {
@@ -335,7 +332,7 @@ public class GameManagerScript : MonoBehaviour {
 
     bool getAllDone() {
         foreach (MoveableScript m in moveables) {
-            if (m.GetIsMoving() || m.GetIsColliding()) {
+			if (m.GetIsMoving() || m.GetIsColliding() || m.requiredRotation > 0) {
                 return false;
             }
         }

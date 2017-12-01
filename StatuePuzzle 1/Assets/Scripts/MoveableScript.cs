@@ -7,8 +7,10 @@ public abstract class MoveableScript : MonoBehaviour {
     [SerializeField]
     private bool isMoving;
     [SerializeField]
-	private float requiredRotation = 0f;
+	public float requiredRotation = 0f;
 	public bool shouldSwap = false;
+	public bool shouldShrink = false;
+	public bool shouldGrow = false;
     private bool isColliding;
     public float speed = 1f;
     public float cSpeed = 0.7f;
@@ -25,6 +27,9 @@ public abstract class MoveableScript : MonoBehaviour {
     [SerializeField]
     public float yOffset;
 
+	private Vector3 scaleAmt = new Vector3(0.01f,0.01f,0f);
+	private Vector3 initScale;
+
     protected Animation2DManager animator; 
     
 	public AudioClip collideSound;
@@ -38,6 +43,7 @@ public abstract class MoveableScript : MonoBehaviour {
         InitializeType();
         animator = GetComponent<Animation2DManager>();
 		outline = this.transform.GetChild (0);
+		initScale = this.transform.localScale;
     }
 
     protected abstract void InitializeType();
@@ -116,6 +122,24 @@ public abstract class MoveableScript : MonoBehaviour {
 		} else {
 			this.outline.GetComponent<Renderer> ().enabled = true;
 		}
+		if (this.transform.localScale.x <= 0f) {
+			shouldGrow = true;
+		}
+		shouldShrink = shouldShrink && !shouldGrow;
+		if (shouldGrow) {
+			Debug.Log ("GROWING");
+			Debug.Log (initScale);
+			this.transform.localScale += scaleAmt;
+			if (this.transform.localScale.x >= initScale.x) {
+				Debug.Log ("STOP GROWING");
+				shouldGrow = false;
+				this.transform.localScale = initScale;
+			}
+		}
+		if (shouldShrink) {
+			Debug.Log ("SHRINKING");
+			this.transform.localScale -= scaleAmt;
+		}
 	}
 
 	//TODO: I think Unity is encouraging bad design here, but models should NOT be getting boardsate
@@ -159,6 +183,7 @@ public abstract class MoveableScript : MonoBehaviour {
     }
 
     public void EnterPortal(int[,] boardState, coord portalCoords) {
+		shouldShrink = true;
         coords = portalCoords;
     }
 
