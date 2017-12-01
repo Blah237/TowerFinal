@@ -31,10 +31,11 @@ public class WinScript : MonoBehaviour
 	{
 		if (playerWin)
 		{
-			anim.SetTrigger("Win");
+            anim.SetTrigger("Win");
 			PlayerPrefs.SetInt (GameManagerScript.levelName, 1); //Set to 1 to indicate a win
-            NextLevel.gameObject.SetActive(GameManagerScript.levelNum < 24);
-			NextLevel.GetComponent<Button>().interactable = GameManagerScript.levelNum < 24;
+            bool hasNext = GameManagerScript.levelNum < 24;
+            NextLevel.gameObject.SetActive(hasNext);
+			NextLevel.GetComponent<Button>().interactable = hasNext;
 			LevelSelectWin.GetComponent<Button>().interactable = true;
 			RestartWin.GetComponent<Button>().interactable = true;
 			RestartWin.GetComponent<Image>().raycastTarget = true;
@@ -47,7 +48,7 @@ public class WinScript : MonoBehaviour
             //if (restartTimer >= restartDelay) {
             //SceneManager.LoadScene(0);
             //}
-            if (Input.GetKeyDown(KeyCode.Return)) {
+            if (Input.GetKeyDown(KeyCode.Return) && hasNext) {
                 new NextLevelScript().LoadScene(); 
             }
 		}
