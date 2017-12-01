@@ -50,3 +50,12 @@ TagManager:
   - name: Moveable
     uniqueID: 838182337
     locked: 0
+  - name: BackUI
+    uniqueID: 191216011
+    locked: 0
+  - name: Fireworks
+    uniqueID: 1292971885
+    locked: 0
+  - name: ForeUI
+    uniqueID: 1923043205
+    locked: 0
