@@ -12,7 +12,7 @@ public class WinScript : MonoBehaviour
 	public GameObject NextLevel;
 	public GameObject LevelSelectWin;
 	public GameObject RestartWin;
-    private GameObject ChallengeUnlockedView;
+    public GameObject ChallengeUnlockedView;
 
 	private Animator anim;
 	//private float restartTimer;
@@ -36,6 +36,7 @@ public class WinScript : MonoBehaviour
 			LevelSelectWin.GetComponent<Button>().interactable = true;
 			RestartWin.GetComponent<Button>().interactable = true;
 			RestartWin.GetComponent<Image>().raycastTarget = true;
+            ChallengeUnlockedView.SetActive(newChallengeUnlock); 
 			
 			//playerWin = false;
 			//b.GetComponent<Image>().color = Color.green;
