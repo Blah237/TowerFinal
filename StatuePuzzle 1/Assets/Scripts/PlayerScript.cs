@@ -37,7 +37,7 @@ public class PlayerScript : MoveableScript {
                     Debug.Log("Play Transition"); 
                     animator.Play("transition", restart: true);
                     animState = AnimState.Transition; 
-                } else if (animState == AnimState.Transition && !animator.isPlaying("transition")) {
+                } else if (animState == AnimState.Bump || (animState == AnimState.Transition && !animator.isPlaying("transition"))) {
                     Debug.Log("Play Move");
                     animator.Play("move", restart: true, loop: true);
                     animState = AnimState.Move; 
