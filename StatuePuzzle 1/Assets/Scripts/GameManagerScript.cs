@@ -85,7 +85,7 @@ public class GameManagerScript : MonoBehaviour {
     public GameObject tutorial3;
     public GameObject tutorial6;
     public GameObject tutorialCanvas;
-    public Text restartConfirmText;
+    public GameObject restartConfirmText;
 
     public bool win;
     public bool dead;
@@ -318,7 +318,7 @@ public class GameManagerScript : MonoBehaviour {
         }
         if (pausescript.paused) {
             showRestartConfirm = false;
-            restartConfirmText.GetComponent<Text>().color = Color.clear;
+            restartConfirmText.SetActive(false); 
             inputReady = false;
         }
         handleRestart();
@@ -486,18 +486,18 @@ public class GameManagerScript : MonoBehaviour {
 			if (checkRestart())
 			{
 				showRestartConfirm = false;
-				restartConfirmText.GetComponent<Text>().color = Color.clear;
+                restartConfirmText.SetActive(false); 
 				restartscript.LoadScene();
 			} else if (Input.anyKeyDown)
 			{
 				showRestartConfirm = false;
-				restartConfirmText.GetComponent<Text>().color = Color.clear;
+                restartConfirmText.SetActive(false); 
 			}
 		}
 		else if (checkRestart() && pausescript.unpaused)
 		{
 			showRestartConfirm = true;
-			restartConfirmText.GetComponent<Text>().color = Color.white;
+            restartConfirmText.SetActive(true); 
 		}
 	}
 
