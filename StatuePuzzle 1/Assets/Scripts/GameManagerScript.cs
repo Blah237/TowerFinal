@@ -134,9 +134,7 @@ public class GameManagerScript : MonoBehaviour {
     // Use this for initialization
     void Start() {
 
-        AudioManagerScript.instance.mimicGoal.loop = true;
-        AudioManagerScript.instance.mirrorGoal.loop = true;
-        firstStart = false;
+		firstStart = false;
 
         //load level using Melody's I/O
         boardState = IOScript.ParseLevel(levelName);
@@ -255,17 +253,8 @@ public class GameManagerScript : MonoBehaviour {
             }
         }
 
-        if (mirrorsOnGoal > 0 && !AudioManagerScript.instance.mirrorGoal.isPlaying) {
-            AudioManagerScript.instance.mirrorGoal.Play();
-        } else if (mirrorsOnGoal <= 0) {
-            AudioManagerScript.instance.mirrorGoal.Stop();
-        }
-
-        if (mimicsOnGoal > 0 && !AudioManagerScript.instance.mimicGoal.isPlaying) {
-            AudioManagerScript.instance.mimicGoal.Play();
-        } else if (mimicsOnGoal <= 0) {
-            AudioManagerScript.instance.mimicGoal.Stop();
-        }
+        AudioManagerScript.instance.setMimicPlayingCount(mimicsOnGoal);
+        AudioManagerScript.instance.setMirrorPlayingCount(mirrorsOnGoal);
     }
 
     // Update is called once per frame
