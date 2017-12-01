@@ -6,12 +6,13 @@ using UnityEngine.UI;
 
 public class WinScript : MonoBehaviour
 {
-
+    public static bool newChallengeUnlock = false;
 	public static bool playerWin;
 	//public float restartDelay = 5f;
 	private GameObject NextLevel;
 	private GameObject LevelSelectWin;
 	private GameObject RestartWin;
+    private GameObject ChallengeUnlockedView;
 
 	private Animator anim;
 	//private float restartTimer;

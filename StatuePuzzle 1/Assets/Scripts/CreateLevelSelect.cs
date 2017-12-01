@@ -34,6 +34,7 @@ public class CreateLevelSelect : MonoBehaviour {
 	private static int CANVAS_WIDTH_OFFSET = 0;
 
 	public static List<String> levelList;
+    public static Dictionary<int, int> challengeUnlocks;
 
 	// Wrapper class for deserializing JSON, required for Unity's shit JSON util
 	private class LevelList {
@@ -45,7 +46,7 @@ public class CreateLevelSelect : MonoBehaviour {
 
 	static void BuildList()
 	{
-		if (LoggingManager.instance.GetABStoredValue () == 0) {
+        /*if (LoggingManager.instance.GetABStoredValue () == 0) {
 			TextAsset json = Resources.Load ("LevelProgressions/ProgA") as TextAsset;
 			levelList = LevelList.CreateFromJson (json.text).levelList;
 		} else if (LoggingManager.instance.GetABStoredValue () == 1) {
@@ -56,13 +57,22 @@ public class CreateLevelSelect : MonoBehaviour {
 		} else { // Logging manager is debugging, just default to ProgA
 			TextAsset json = Resources.Load ("LevelProgressions/ProgA") as TextAsset;
 			levelList = LevelList.CreateFromJson (json.text).levelList;
-		}
-	}
+		}*/
+        TextAsset json = Resources.Load("LevelProgressions/ProgFinal") as TextAsset;
+        levelList = LevelList.CreateFromJson(json.text).levelList;
 
-	// Use this for initialization
-	void Start()
+        challengeUnlocks = new Dictionary<int, int>();
+        challengeUnlocks.Add(11, 25);
+        challengeUnlocks.Add(15, 26);
+        challengeUnlocks.Add(19, 27);
+        challengeUnlocks.Add(22, 28);
+        challengeUnlocks.Add(24, 29);
+    }
+
+    // Use this for initialization
+    void Start()
 	{
-		if (levelList == null)
+		if (levelList == null || challengeUnlocks == null)
 		{
 			BuildList();
 		}
@@ -75,7 +85,7 @@ public class CreateLevelSelect : MonoBehaviour {
         //padX += 55;   //doing this because Nathaniel told me to 
         //height *= canvas.pixelRect.height;
 		bool reachedLockedLevel = false;
-		for (int i = 0; i < 30 - 5; i++)
+		for (int i = 0; i < levelList.Count - challengeUnlocks.Count; i++)
 		{
 			{
 				GameObject button = GameObject.Find("Level" + (i+1).ToString());
@@ -84,7 +94,7 @@ public class CreateLevelSelect : MonoBehaviour {
 				} else if (!reachedLockedLevel) {
 					//button.GetComponent<Image> ().color = Color.yellow;
 					reachedLockedLevel = true;
-				} else if (reachedLockedLevel) {
+				} else if (reachedLockedLevel && !LoggingManager.instance.isDebugging) {
 					button.GetComponent<Button>().interactable = false;
 				}
 
@@ -97,40 +107,45 @@ public class CreateLevelSelect : MonoBehaviour {
 				//positionSquare(bImage, i / cols, i % cols);
 			}
 		}
-		for (int ii = 25; ii < 230; ii++)
-		{
-			GameObject button = GameObject.Find("Level" + (ii+1).ToString());
-			if (PlayerPrefs.GetInt (levelList [ii], 0) == 1) { // 0 for incomplete, 1 for complete
-				switch (ii + 1)
-				{
-					case 1 :
-						button.GetComponent<Image> ().sprite = completedChallenge1;
-						break;
-					case 2 :
-						button.GetComponent<Image> ().sprite = completedChallenge2;
-						break;
-					case 3 :
-						button.GetComponent<Image> ().sprite = completedChallenge3;
-						break;
-					case 4 :
-						button.GetComponent<Image> ().sprite = completedChallenge4;
-						break;
-					case 5 :
-						button.GetComponent<Image> ().sprite = completedChallenge5;
-						break;
+        for (int i = levelList.Count - challengeUnlocks.Count; i < levelList.Count; i++) {
+            {
+	            GameObject button = GameObject.Find("Level" + (i+1).ToString());
+                if (PlayerPrefs.GetInt(levelList[i], 0) == 1) { // 0 for incomplete, 1 for complete
+		                switch (i + 1) {
+		                case 1 :
+		                button.GetComponent<Image> ().sprite = completedChallenge1;
+		                break;
+		                case 2 :
+		                button.GetComponent<Image> ().sprite = completedChallenge2;
+		                break;
+		                case 3 :
+		                button.GetComponent<Image> ().sprite = completedChallenge3;
+		                break;
+		                case 4 :
+		                button.GetComponent<Image> ().sprite = completedChallenge4;
+		                break;
+		                case 5 :
+		                button.GetComponent<Image> ().sprite = completedChallenge5;
+		                break;
 						
-				}
-			} else if (!reachedLockedLevel)
-			{
-				button.GetComponent<Image>().sprite = unlockedChallenge;
-				reachedLockedLevel = true;
-			} else if (reachedLockedLevel) {
-				button.GetComponent<Button>().interactable = false;
-			}
+	                }
 
-			button.GetComponent<LoadOnClick>().levelName = levelList[ii];
-		}
-	}
+                } else if (PlayerPrefs.GetInt("chal_"+i+"_unlocked", 0) == 1) {
+                    button.GetComponent<Image>().sprite = unlockedChallenge;
+                } else if (!LoggingManager.instance.isDebugging) {
+                    button.GetComponent<Button>().interactable = false;
+                }
+
+                //button.GetComponent<LoadOnClick>().levelName = levelList[i];
+                //Text text = button.GetComponentInChildren<Text>();
+                //text.text = "C" + (i - levelList.Count + challengeUnlocks.Count + 1);//levelList[i];
+                //text.fontSize = 14;
+                //Image bImage = button.GetComponent<Image>();
+                //bImage.transform.SetParent(canvas.transform);
+                //positionSquare(bImage, i / cols, i % cols);
+            }
+        }
+    }
 
 
 	void getFiles() {

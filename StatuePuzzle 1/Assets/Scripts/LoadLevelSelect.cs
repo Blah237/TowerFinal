@@ -22,8 +22,6 @@ public class LoadLevelSelect : MonoBehaviour {
 		}
 		AudioManagerScript.instance.stopEffects();
 		SceneManager.LoadScene(0);
-		
-
 	}
 
 	public static void LoadSceneEscFromPause()
