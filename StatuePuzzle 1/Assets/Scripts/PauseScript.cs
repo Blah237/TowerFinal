@@ -30,7 +30,7 @@ public class PauseScript : MonoBehaviour
 		unpaused = !unpaused;
 		if (paused)
 		{
-			AudioManagerScript.instance.stopEffects ();
+			//AudioManagerScript.instance.stopEffects ();
 			LevelSelectPause.GetComponent<Image>().raycastTarget = true;
 			LevelSelectPause.GetComponent<Button>().interactable = true;
 			RestartPause.GetComponent<Image>().raycastTarget = true;

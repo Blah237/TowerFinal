@@ -858,6 +858,36 @@ Prefab:
       propertyPath: m_RootOrder
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 82171702664388206, guid: c64a1e985a9111b4aa51f69566559c0f,
+        type: 2}
+      propertyPath: m_PlayOnAwake
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 82171702664388206, guid: c64a1e985a9111b4aa51f69566559c0f,
+        type: 2}
+      propertyPath: Loop
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 82223479641229222, guid: c64a1e985a9111b4aa51f69566559c0f,
+        type: 2}
+      propertyPath: Loop
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 82223479641229222, guid: c64a1e985a9111b4aa51f69566559c0f,
+        type: 2}
+      propertyPath: m_PlayOnAwake
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 82257439625404616, guid: c64a1e985a9111b4aa51f69566559c0f,
+        type: 2}
+      propertyPath: Loop
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 82257439625404616, guid: c64a1e985a9111b4aa51f69566559c0f,
+        type: 2}
+      propertyPath: m_PlayOnAwake
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: c64a1e985a9111b4aa51f69566559c0f, type: 2}
   m_IsPrefabParent: 0
