@@ -111,7 +111,6 @@ public class CreateLevelSelect : MonoBehaviour {
             {
 	            GameObject button = GameObject.Find("Level" + (i+1).ToString());
                 if (PlayerPrefs.GetInt(levelList[i], 0) == 1) { // 0 for incomplete, 1 for complete
-	                Debug.Log("challenge completed");
 		                switch (i) {
 		                case 25 :
 		                button.GetComponent<Image> ().sprite = completedChallenge1;
@@ -131,6 +130,8 @@ public class CreateLevelSelect : MonoBehaviour {
 						
 	                }
 
+                } else if (PlayerPrefs.GetInt("chal_"+i+"_unlocked", 0) == 1) {
+                    button.GetComponent<Image>().sprite = unlockedChallenge;
                 } else if (!LoggingManager.instance.isDebugging) {
                     button.GetComponent<Button>().interactable = false;
                 }
