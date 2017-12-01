@@ -136,6 +136,7 @@ public class CreateLevelSelect : MonoBehaviour {
                     button.GetComponent<Button>().interactable = false;
                 }
 
+	            button.GetComponent<LoadOnClick>().levelName = levelList[i];
                 //button.GetComponent<LoadOnClick>().levelName = levelList[i];
                 //Text text = button.GetComponentInChildren<Text>();
                 //text.text = "C" + (i - levelList.Count + challengeUnlocks.Count + 1);//levelList[i];
