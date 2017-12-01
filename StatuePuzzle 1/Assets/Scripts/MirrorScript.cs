@@ -7,9 +7,27 @@ public class MirrorScript : MoveableScript {
 	protected override void InitializeType ()
 	{
 		this.type = BoardCodes.MIRROR;
+        this.direction = Direction.WEST; 
 	}
 
-	public override coord GetAttemptedMoveCoords (Direction direction, int[,] boardState, int numSpaces)
+    public override void SetAnimationState() {
+        int animateDir = (int)this.direction;
+        if (animator != null) {
+            if (!animator.isPlaying(animateDir + 4)) {
+                if (isColliding) {
+                    animateDir += 4;  //direction + 4 will give you the index of the colliding animation 
+                    animator.StopAllAnimations();
+                    animator.Play(animateDir, restart: true);
+                }
+                else {
+                    animator.StopAllAnimations();
+                    animator.Play(animateDir, loop: true);
+                }
+            }
+        }
+    }
+
+    public override coord GetAttemptedMoveCoords (Direction direction, int[,] boardState, int numSpaces)
 	{
 		switch (direction) {
 		case Direction.SOUTH:
@@ -46,7 +64,6 @@ public class MirrorScript : MoveableScript {
         switch (direction) {
 		case Direction.NORTH: {
                     this.direction = Direction.SOUTH;
-                    SetAnimationState(this.direction); 
                     if (coords.row >= boardState.GetLength(0) || boardState[coords.row - 1, coords.col] == 1) {
                         return Direction.NONE;
                     }
@@ -56,7 +73,6 @@ public class MirrorScript : MoveableScript {
                 }
 		case Direction.SOUTH: {
                     this.direction = Direction.NORTH;
-                    SetAnimationState(this.direction); 
                     if (coords.row <= 0 || boardState[coords.row + 1, coords.col] == 1) {
                         return Direction.NONE;
                     }
@@ -66,7 +82,6 @@ public class MirrorScript : MoveableScript {
                 }
 		case Direction.EAST: {
                     this.direction = Direction.WEST;
-                    SetAnimationState(this.direction); 
                     if (coords.col >= boardState.GetLength(1) || boardState[coords.row, coords.col - 1] == 1) {
                         return Direction.NONE;
                     }
@@ -76,7 +91,6 @@ public class MirrorScript : MoveableScript {
                 }
 		case Direction.WEST: {
                     this.direction = Direction.EAST;
-                    SetAnimationState(this.direction); 
                     if (coords.col <= 0 || boardState[coords.row, coords.col + 1] == 1) {
                         return Direction.NONE;
                     }
