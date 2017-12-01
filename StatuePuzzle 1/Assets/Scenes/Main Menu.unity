@@ -230,7 +230,53 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1024389}
+<<<<<<< HEAD
 --- !u!1 &7706527
+=======
+--- !u!1001 &128088542
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4922256722465194, guid: 1e8a4309d44f5f14bae2df6391bf781e, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4922256722465194, guid: 1e8a4309d44f5f14bae2df6391bf781e, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4922256722465194, guid: 1e8a4309d44f5f14bae2df6391bf781e, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4922256722465194, guid: 1e8a4309d44f5f14bae2df6391bf781e, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4922256722465194, guid: 1e8a4309d44f5f14bae2df6391bf781e, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4922256722465194, guid: 1e8a4309d44f5f14bae2df6391bf781e, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4922256722465194, guid: 1e8a4309d44f5f14bae2df6391bf781e, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4922256722465194, guid: 1e8a4309d44f5f14bae2df6391bf781e, type: 2}
+      propertyPath: m_RootOrder
+      value: 4
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: 1e8a4309d44f5f14bae2df6391bf781e, type: 2}
+  m_IsPrefabParent: 0
+--- !u!1 &151190446
+>>>>>>> music-update
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -404,6 +450,7 @@ RectTransform:
   m_AnchoredPosition: {x: 1041.4501, y: 714.8}
   m_SizeDelta: {x: 2.1, y: 1.1}
   m_Pivot: {x: 0.5, y: 0.5}
+<<<<<<< HEAD
 --- !u!114 &29780672
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6783,6 +6830,9 @@ CanvasRenderer:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1444924219}
 --- !u!1 &1445437612
+=======
+--- !u!1 &221779855
+>>>>>>> music-update
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -7342,8 +7392,55 @@ CanvasRenderer:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
+<<<<<<< HEAD
   m_GameObject: {fileID: 1642093896}
 --- !u!1 &1683265006
+=======
+  m_GameObject: {fileID: 463511670}
+--- !u!1001 &692793093
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4977649515934602, guid: c64a1e985a9111b4aa51f69566559c0f, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4977649515934602, guid: c64a1e985a9111b4aa51f69566559c0f, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4977649515934602, guid: c64a1e985a9111b4aa51f69566559c0f, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4977649515934602, guid: c64a1e985a9111b4aa51f69566559c0f, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4977649515934602, guid: c64a1e985a9111b4aa51f69566559c0f, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4977649515934602, guid: c64a1e985a9111b4aa51f69566559c0f, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4977649515934602, guid: c64a1e985a9111b4aa51f69566559c0f, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4977649515934602, guid: c64a1e985a9111b4aa51f69566559c0f, type: 2}
+      propertyPath: m_RootOrder
+      value: 3
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: c64a1e985a9111b4aa51f69566559c0f, type: 2}
+  m_IsPrefabParent: 0
+--- !u!1 &725353763
+>>>>>>> music-update
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 1980633314524102, guid: 4651dcd2941554d29b84f95a4ee674fe,

@@ -134,9 +134,13 @@ public class GameManagerScript : MonoBehaviour {
     // Use this for initialization
     void Start() {
 
+<<<<<<< HEAD
         AudioManagerScript.instance.mimicGoal.loop = true;
         AudioManagerScript.instance.mirrorGoal.loop = true;
         firstStart = false;
+=======
+		firstStart = false;
+>>>>>>> music-update
 
         //load level using Melody's I/O
         boardState = IOScript.ParseLevel(levelName);
@@ -255,6 +259,7 @@ public class GameManagerScript : MonoBehaviour {
             }
         }
 
+<<<<<<< HEAD
         if (mirrorsOnGoal > 0 && !AudioManagerScript.instance.mirrorGoal.isPlaying) {
             AudioManagerScript.instance.mirrorGoal.Play();
         } else if (mirrorsOnGoal <= 0) {
@@ -270,6 +275,25 @@ public class GameManagerScript : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
+=======
+		//Debug.Log (mimicsOnGoal);
+		//Debug.Log (AudioManagerScript.instance.mimicGoal.isPlaying);
+
+        /*if (mirrorsOnGoal > 0 && !AudioManagerScript.instance.mirrorGoal.isPlaying) {
+			AudioManagerScript.instance.mirrorGoal.Play();
+		} else if (mirrorsOnGoal <= 0) {
+			AudioManagerScript.instance.mirrorGoal.Stop();
+		}
+
+		if (mimicsOnGoal > 0 && !AudioManagerScript.instance.mimicGoal.isPlaying) {
+			AudioManagerScript.instance.mimicGoal.Play();
+		} else if (mimicsOnGoal <= 0) {
+			AudioManagerScript.instance.mimicGoal.Stop();
+		}*/
+        AudioManagerScript.instance.setMimicPlayingCount(mimicsOnGoal);
+        AudioManagerScript.instance.setMirrorPlayingCount(mirrorsOnGoal);
+	}
+>>>>>>> music-update
 
         // TODO: Hacky, but neccessary if we want accurate recording and not a real loading screen
         if (!firstStart) {
