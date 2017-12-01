@@ -192,7 +192,7 @@ public abstract class MoveableScript : MonoBehaviour {
         coords = portalCoords;
     }
 
-	public void startSpin(int degrees, bool willSwap = true) {
+	public virtual void startSpin(int degrees, bool willSwap = true) {
 		this.requiredRotation = degrees;
         this.willSwap = willSwap;
     }

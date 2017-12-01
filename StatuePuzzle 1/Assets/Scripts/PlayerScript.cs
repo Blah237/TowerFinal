@@ -89,4 +89,8 @@ public class PlayerScript : MoveableScript {
 
 		return Direction.NONE;
 	}
+
+    public override void startSpin(int degrees, bool willSwap = true) {
+        this.willSwap = false;
+    }
 }
