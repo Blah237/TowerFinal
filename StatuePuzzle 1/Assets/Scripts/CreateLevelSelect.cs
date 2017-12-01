@@ -11,6 +11,15 @@ public class CreateLevelSelect : MonoBehaviour {
 
 	public LoadOnClick load;
 
+	public Sprite completedLevel;
+	public Sprite unlockedChallenge;
+	public Sprite completedChallenge1;
+	public Sprite completedChallenge2;
+	public Sprite completedChallenge3;
+	public Sprite completedChallenge4;
+	public Sprite completedChallenge5;
+	
+
 	public float width;
 	public float height;
     private float padX;
@@ -60,33 +69,66 @@ public class CreateLevelSelect : MonoBehaviour {
 
         //getFiles();
 
-        padX = (1f - width) / 2f * canvas.pixelRect.width;
-        width *= canvas.pixelRect.width;
-        width -= 120; //doing this because Nathaniel told me to 
-        padX += 55;   //doing this because Nathaniel told me to 
-        height *= canvas.pixelRect.height;
+        //padX = (1f - width) / 2f * canvas.pixelRect.width;
+        //width *= canvas.pixelRect.width;
+        //width -= 120; //doing this because Nathaniel told me to 
+        //padX += 55;   //doing this because Nathaniel told me to 
+        //height *= canvas.pixelRect.height;
 		bool reachedLockedLevel = false;
-		for (int i = 0; i < levelList.Count; i++)
+		for (int i = 0; i < 30 - 5; i++)
 		{
 			{
-				LoadOnClick button = GameObject.Instantiate(load);
+				GameObject button = GameObject.Find("Level" + (i+1).ToString());
 				if (PlayerPrefs.GetInt (levelList [i], 0) == 1) { // 0 for incomplete, 1 for complete
-					button.GetComponent<Image> ().color = Color.green;
+					button.GetComponent<Image> ().sprite = completedLevel;
 				} else if (!reachedLockedLevel) {
-					button.GetComponent<Image> ().color = Color.yellow;
+					//button.GetComponent<Image> ().color = Color.yellow;
 					reachedLockedLevel = true;
 				} else if (reachedLockedLevel) {
 					button.GetComponent<Button>().interactable = false;
 				}
 
 				button.GetComponent<LoadOnClick>().levelName = levelList[i];
-				Text text = button.GetComponentInChildren<Text>();
-                text.text = ""+ (i + 1);//levelList[i];
-				text.fontSize = 14;
-				Image bImage = button.GetComponent<Image>();
-				bImage.transform.SetParent(canvas.transform);
-				positionSquare(bImage, i / cols, i % cols);
+				//Text text = button.GetComponentInChildren<Text>();
+                //text.text = ""+ (i + 1);//levelList[i];
+				//text.fontSize = 14;
+				//Image bImage = button.GetComponent<Image>();
+				//bImage.transform.SetParent(canvas.transform);
+				//positionSquare(bImage, i / cols, i % cols);
 			}
+		}
+		for (int ii = 25; ii < 230; ii++)
+		{
+			GameObject button = GameObject.Find("Level" + (ii+1).ToString());
+			if (PlayerPrefs.GetInt (levelList [ii], 0) == 1) { // 0 for incomplete, 1 for complete
+				switch (ii + 1)
+				{
+					case 1 :
+						button.GetComponent<Image> ().sprite = completedChallenge1;
+						break;
+					case 2 :
+						button.GetComponent<Image> ().sprite = completedChallenge2;
+						break;
+					case 3 :
+						button.GetComponent<Image> ().sprite = completedChallenge3;
+						break;
+					case 4 :
+						button.GetComponent<Image> ().sprite = completedChallenge4;
+						break;
+					case 5 :
+						button.GetComponent<Image> ().sprite = completedChallenge5;
+						break;
+						
+				}
+			} else if (!reachedLockedLevel)
+			{
+				button.GetComponent<Image>().sprite = unlockedChallenge;
+				reachedLockedLevel = true;
+			} else if (reachedLockedLevel) {
+				button.GetComponent<Button>().interactable = false;
+			}
+
+			button.GetComponent<LoadOnClick>().levelName = levelList[ii];
 		}
 	}
 
