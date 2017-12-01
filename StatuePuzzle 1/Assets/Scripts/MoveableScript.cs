@@ -7,10 +7,16 @@ public abstract class MoveableScript : MonoBehaviour {
     [SerializeField]
     private bool isMoving;
     [SerializeField]
+	public float requiredRotation = 0f;
+    public bool willSwap = false;
+	public bool shouldSwap = false;
+	public bool shouldShrink = false;
+	public bool shouldGrow = false;
     private bool isColliding;
     public float speed = 1f;
     public float cSpeed = 0.7f;
     public float collideFactor; 
+	public Transform outline;
     [SerializeField]
     public Direction direction;
     [SerializeField]
@@ -21,6 +27,9 @@ public abstract class MoveableScript : MonoBehaviour {
     protected coord coords;
     [SerializeField]
     public float yOffset;
+
+	private Vector3 scaleAmt = new Vector3(0.01f,0.01f,0f);
+	private Vector3 initScale;
 
     protected Animation2DManager animator; 
     
@@ -34,6 +43,8 @@ public abstract class MoveableScript : MonoBehaviour {
     void Start() {
         InitializeType();
         animator = GetComponent<Animation2DManager>();
+		outline = this.transform.GetChild (0);
+		initScale = this.transform.localScale;
     }
 
     protected abstract void InitializeType();
@@ -44,6 +55,10 @@ public abstract class MoveableScript : MonoBehaviour {
 
     public bool GetIsColliding() {
         return isColliding; 
+    }
+
+    public bool GetIsDone() {
+        return !isMoving && !isColliding && requiredRotation == 0f && !shouldShrink && !shouldGrow;
     }
 
 	public coord GetCoords() {
@@ -101,6 +116,35 @@ public abstract class MoveableScript : MonoBehaviour {
                 transform.Translate(new Vector3(x * distance, y * distance, 0), Space.World);
             }
         }
+		if (requiredRotation > 0f) {
+			int rotateAmount = 10;
+			this.transform.Rotate (new Vector3 (0, rotateAmount, 0));
+			this.requiredRotation -= rotateAmount;
+			if (requiredRotation <= 0) {
+				this.shouldSwap = this.willSwap;
+			}
+			this.outline.GetComponent<Renderer> ().enabled = false;
+		} else {
+			this.outline.GetComponent<Renderer> ().enabled = true;
+		}
+		if (this.transform.localScale.x <= 0f) {
+			shouldGrow = true;
+		}
+		shouldShrink = shouldShrink && !shouldGrow;
+		if (shouldGrow) {
+            Debug.Log ("GROWING");
+			Debug.Log (initScale);
+			this.transform.localScale += scaleAmt;
+			if (this.transform.localScale.x >= initScale.x) {
+				Debug.Log ("STOP GROWING");
+				shouldGrow = false;
+				this.transform.localScale = initScale;
+			}
+		}
+		if (shouldShrink) {
+			Debug.Log ("SHRINKING");
+			this.transform.localScale -= scaleAmt;
+		}
 	}
 
 	//TODO: I think Unity is encouraging bad design here, but models should NOT be getting boardsate
@@ -144,7 +188,13 @@ public abstract class MoveableScript : MonoBehaviour {
     }
 
     public void EnterPortal(int[,] boardState, coord portalCoords) {
+		shouldShrink = true;
         coords = portalCoords;
+    }
+
+	public void startSpin(int degrees, bool willSwap = true) {
+		this.requiredRotation = degrees;
+        this.willSwap = willSwap;
     }
 
     public void SetAnimationState(Direction direction) {
