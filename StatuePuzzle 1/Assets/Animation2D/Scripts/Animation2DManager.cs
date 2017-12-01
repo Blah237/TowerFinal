@@ -23,7 +23,7 @@ public class Animation2DManager : MonoBehaviour {
         }
     }
 
-    public void Play(int animationID, bool reverse = false, bool loop = false, bool restart = true) {
+    public void Play(int animationID, bool reverse = false, bool loop = false, bool restart = false) {
         if (0 <= animationID && animationID < animations.Length) {
             animations[animationID].Play(reverse, loop, restart);
         }
@@ -67,6 +67,13 @@ public class Animation2DManager : MonoBehaviour {
             }
         }
         return false;
+    }
+
+    public bool isPlaying(int animationID) {
+        if (0 <= animationID && animationID < animations.Length) {
+            return animations[animationID].isPlaying;
+        }
+        return false; 
     }
 
     public void StopAllAnimations() {

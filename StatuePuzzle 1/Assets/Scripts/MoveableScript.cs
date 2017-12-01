@@ -5,16 +5,16 @@ using UnityEngine;
 public abstract class MoveableScript : MonoBehaviour {
 
     [SerializeField]
-    private bool isMoving;
+    protected bool isMoving;
     [SerializeField]
+    protected bool isColliding;
 	public float requiredRotation = 0f;
     public bool willSwap = false;
 	public bool shouldSwap = false;
 	public bool shouldShrink = false;
 	public bool shouldGrow = false;
-    private bool isColliding;
     public float speed = 1f;
-    public float cSpeed = 0.7f;
+    public float cSpeed = 0.9f;
     public float collideFactor; 
 	public Transform outline;
     [SerializeField]
@@ -28,6 +28,7 @@ public abstract class MoveableScript : MonoBehaviour {
     [SerializeField]
     public float yOffset;
 
+    private bool justChanged = false; 
 	private Vector3 scaleAmt = new Vector3(0.01f,0.01f,0f);
 	private Vector3 initScale;
 
@@ -75,7 +76,12 @@ public abstract class MoveableScript : MonoBehaviour {
 	}
 
 	private void Update() {
-		if(isMoving) {
+        //Debug.Log("isMoving: " + isMoving); 
+        if (!justChanged) {
+            SetAnimationState();
+        }
+        justChanged = false; 
+        if(isMoving) {
 			float dt = Time.deltaTime; 
 			int y = direction == Direction.NORTH ? 1 : (direction == Direction.SOUTH ? -1 : 0);
 			int x = direction == Direction.EAST ? 1 : (direction == Direction.WEST ? -1 : 0);
@@ -84,9 +90,10 @@ public abstract class MoveableScript : MonoBehaviour {
 			distanceToMove -= distance;
             if (distanceToMove <= 0) {
                 isMoving = false;
+                Debug.Log("Set Move to false"); 
+                justChanged = true; 
                 distance += distanceToMove;
                 distanceToMove = 0;
-                SetAnimationState(direction);
                 //snap to correct place for portals
                 Vector3 endPos = new Vector3(coords.col + GameManagerScript.mapOrigin.x, coords.row + GameManagerScript.mapOrigin.y + yOffset, this.transform.position.z);
                 this.transform.position = endPos;
@@ -108,7 +115,7 @@ public abstract class MoveableScript : MonoBehaviour {
             }
             if (distanceToMove <= 0) {
                 isColliding = false;
-                SetAnimationState(direction);
+                justChanged = true; 
                 Vector3 endPos = new Vector3(coords.col + GameManagerScript.mapOrigin.x, coords.row + GameManagerScript.mapOrigin.y + yOffset, this.transform.position.z);
                 this.transform.position = endPos;
             }
@@ -153,7 +160,7 @@ public abstract class MoveableScript : MonoBehaviour {
 	public abstract Direction GetAttemptedMoveDirection (Direction direction, int[,] boardState);
 
 	public void ExecuteMove(Direction direction, int numSpaces, bool animOnly = false) {
-
+        Debug.Log("Execute Move"); 
         distanceToMove = numSpaces;
         //TODO if your first direction is NONE, things get weird 
         if (direction == Direction.NONE) {
@@ -164,8 +171,7 @@ public abstract class MoveableScript : MonoBehaviour {
             isMoving = true;
             this.direction = direction;
         }
-
-        SetAnimationState(direction);
+        
         //Debug.Log(this.name + " moving " + direction.ToString());
 
         //change statue position
@@ -192,23 +198,10 @@ public abstract class MoveableScript : MonoBehaviour {
         coords = portalCoords;
     }
 
-	public virtual void startSpin(int degrees, bool willSwap = true) {
+    public abstract void SetAnimationState();
+
+    public virtual void startSpin(int degrees, bool willSwap = true) { 
 		this.requiredRotation = degrees;
         this.willSwap = willSwap;
-    }
-
-    public void SetAnimationState(Direction direction) {
-        int animateDir = (int)this.direction;
-        if (isColliding) {
-            animateDir += 4;  //direction + 4 will give you the index of the colliding animation 
-        } else if(isMoving && type == BoardCodes.PLAYER) {
-            animateDir += 8; //right now, only the bard has a walk cycle
-        }
-        if (animator != null) {
-            if (!animator.isPlaying("pep")) {
-                animator.StopAllAnimations();
-                animator.Play(animateDir, loop: true);
-            }
-        }
     }
 }
