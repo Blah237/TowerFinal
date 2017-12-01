@@ -588,9 +588,9 @@ public class GameManagerScript : MonoBehaviour {
 						moveDirections [m] = Direction.NONE;
 						collided [m] = 1;
 						collided [other] = 1;
-						Debug.Log ("Couldn't move" + ":" + other.GetCoords ());
+						//Debug.Log ("Couldn't move" + ":" + other.GetCoords ());
 					} else {
-						Debug.Log (moveDirections [other] + ":" + other.GetCoords ());
+						//Debug.Log (moveDirections [other] + ":" + other.GetCoords ());
 					}
 				}
 			}
