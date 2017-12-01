@@ -118,7 +118,7 @@ public class GameManagerScript : MonoBehaviour {
     
     [SerializeField]
     public static string levelName;
-    int levelNum;
+    public static int levelNum;
     Level boardState; //Row, Column
                       // East col+, North row+
 

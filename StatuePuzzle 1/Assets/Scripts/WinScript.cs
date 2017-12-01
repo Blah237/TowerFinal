@@ -33,7 +33,8 @@ public class WinScript : MonoBehaviour
 		{
 			anim.SetTrigger("Win");
 			PlayerPrefs.SetInt (GameManagerScript.levelName, 1); //Set to 1 to indicate a win
-			NextLevel.GetComponent<Button>().interactable = true;
+            NextLevel.gameObject.SetActive(GameManagerScript.levelNum < 24);
+			NextLevel.GetComponent<Button>().interactable = GameManagerScript.levelNum < 24;
 			LevelSelectWin.GetComponent<Button>().interactable = true;
 			RestartWin.GetComponent<Button>().interactable = true;
 			RestartWin.GetComponent<Image>().raycastTarget = true;
