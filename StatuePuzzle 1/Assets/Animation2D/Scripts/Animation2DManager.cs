@@ -24,14 +24,18 @@ public class Animation2DManager : MonoBehaviour {
     }
 
     public void Play(int animationID, bool reverse = false, bool loop = false, bool restart = false) {
-        if (0 <= animationID && animationID < animations.Length) {
-            animations[animationID].Play(reverse, loop, restart);
+        if (animations != null) {
+            if (0 <= animationID && animationID < animations.Length) {
+                animations[animationID].Play(reverse, loop, restart);
+            }
         }
     }
 
     public void Pause(int animationID) {
-        if (0 <= animationID && animationID < animations.Length) {
-            animations[animationID].Pause();
+        if (animations != null) {
+            if (0 <= animationID && animationID < animations.Length) {
+                animations[animationID].Pause();
+            }
         }
     }
 
@@ -70,15 +74,19 @@ public class Animation2DManager : MonoBehaviour {
     }
 
     public bool isPlaying(int animationID) {
-        if (0 <= animationID && animationID < animations.Length) {
-            return animations[animationID].isPlaying;
+        if (animations != null) {
+            if (0 <= animationID && animationID < animations.Length) {
+                return animations[animationID].isPlaying;
+            }
         }
         return false; 
     }
 
     public void StopAllAnimations() {
-        foreach (Animation2D anim in animations) {
-            anim.Pause(); 
+        if (animations != null) {
+            foreach (Animation2D anim in animations) {
+                anim.Pause();
+            }
         }
     }
 }
