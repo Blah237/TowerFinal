@@ -453,7 +453,7 @@ public class GameManagerScript : MonoBehaviour {
         if (CreateLevelSelect.challengeUnlocks.ContainsKey(levelNum)) {
             int chal = CreateLevelSelect.challengeUnlocks[levelNum];
             if(PlayerPrefs.GetInt("chal_"+chal+"_unlocked", 0) != 1) {
-                PlayerPrefs.SetInt("chal_" + chal + "_unlocked", 0);
+                PlayerPrefs.SetInt("chal_" + chal + "_unlocked", 1);
                 WinScript.newChallengeUnlock = true;
                 Debug.Log("Challenge " + chal + " Unlocked!");
             }

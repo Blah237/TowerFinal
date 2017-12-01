@@ -105,7 +105,7 @@ public class CreateLevelSelect : MonoBehaviour {
                     button.GetComponent<Image>().color = Color.green;
                 } else if (PlayerPrefs.GetInt("chal_"+i+"_unlocked", 0) == 1) {
                     button.GetComponent<Image>().color = Color.yellow;
-                } else if (true || !LoggingManager.instance.isDebugging) {
+                } else if (!LoggingManager.instance.isDebugging) {
                     button.GetComponent<Button>().interactable = false;
                 }
 
