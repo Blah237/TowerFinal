@@ -142,7 +142,7 @@ public class GameManagerScript : MonoBehaviour {
         boardState = IOScript.ParseLevel(levelName);
 
         // TODO: Below the way we get the index is DISGUSTING, this whole shitshow needs refactored
-        int levelNum = CreateLevelSelect.levelList.FindIndex(s => s == levelName);
+        levelNum = CreateLevelSelect.levelList.IndexOf(levelName);
         LoggingManager.instance.RecordLevelStart(levelNum, levelName);
 
         mapOrigin = new Vector2(-boardState.cols / 2.0f, -boardState.rows / 2.0f);
