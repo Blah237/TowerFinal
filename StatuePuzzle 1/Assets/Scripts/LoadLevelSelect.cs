@@ -21,6 +21,7 @@ public class LoadLevelSelect : MonoBehaviour {
 			}
 		}
 		AudioManagerScript.instance.stopEffects();
+		WinScript.playerWin = false;
 		SceneManager.LoadScene(0);
 	}
 
@@ -31,6 +32,7 @@ public class LoadLevelSelect : MonoBehaviour {
 			LoggingManager.instance.RecordLevelEnd ();
 		}
 		AudioManagerScript.instance.stopEffects();
+		WinScript.playerWin = false;
 		SceneManager.LoadScene(0);
 	}
 }

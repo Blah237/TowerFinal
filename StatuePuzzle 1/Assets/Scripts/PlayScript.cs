@@ -30,6 +30,7 @@ public class PlayScript : MonoBehaviour
 		}
 		GameManagerScript.levelName = CreateLevelSelect.getLevelList()[0];
 		NextLevelScript.currentLevel = CreateLevelSelect.getLevelList()[0];
+		WinScript.playerWin = false;
 		SceneManager.LoadScene(1);
 	}
 
